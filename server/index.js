@@ -49,9 +49,14 @@ function playMusic() {
   const throttle = new Throttle(bitrate / 8);
 
   throttle.on('data', chunk => {
-    for (const writable of writables) {
-      writable.write(chunk);
-    };
+    for (let i = writables.length - 1; i >= 0; i--) {
+      if (writables[i]._readableState.pipesCount === 0) {
+        removeCnt++;
+        writables.splice(i, 1);
+      } else {
+        writables[i].write(chunk);
+      }
+    }
   }).on('end', () => playMusic());
 
   toPlayReadable.pipe(throttle);
