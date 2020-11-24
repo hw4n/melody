@@ -12,25 +12,31 @@ const mp3path = './mp3'
 const songs = fs.readdirSync(mp3path);
 const playedSongs = [];
 
+const nowPlaying = {
+  title: "",
+}
+
 function playMusic() {
   if (songs.length === 0) {
     songs.push(...playedSongs);
+    playedSongs.length = 0;
     console.log("reloaded songs and now " + songs.length);
   }
 
   const song = songs.pop();
   const toPlay = mp3path + "/" + song;
   console.log(`will play ${song}`);
-  playedSongs.push(song);
+  nowPlaying.title = song;
+  playedSongs.unshift(song);
 
   const toPlayReadable = fs.createReadStream(toPlay);
   const bitrate = ffprobeSync(toPlay).format.bit_rate;
-  const throttle = new Throttle(bitrate * 2);
+  const throttle = new Throttle(bitrate / 8);
 
   throttle.on('data', chunk => {
     for (const writable of writables) {
       writable.write(chunk);
-    }
+    };
   }).on('end', () => playMusic());
 
   toPlayReadable.pipe(throttle);
@@ -38,7 +44,18 @@ function playMusic() {
 
 playMusic();
 
-app.get("/", (req, res) => {
+app.get("/nowplaying", (req, res) => {
+  res.json(nowPlaying)
+});
+
+app.get("/queue", (req, res) => {
+  res.json({
+    in_queue: songs,
+    played: playedSongs,
+  });
+});
+
+app.get("/stream", (req, res) => {
   const anotherOne = PassThrough();
   writables.push(anotherOne);
 
