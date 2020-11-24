@@ -51,7 +51,6 @@ function playMusic() {
   throttle.on('data', chunk => {
     for (let i = writables.length - 1; i >= 0; i--) {
       if (writables[i]._readableState.pipesCount === 0) {
-        removeCnt++;
         writables.splice(i, 1);
       } else {
         writables[i].write(chunk);
