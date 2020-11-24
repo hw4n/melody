@@ -8,8 +8,23 @@ const { ffprobeSync } = require('@dropb/ffprobe');
 
 const writables = [];
 
+function shuffle(array) {
+  let currentIndex = array.length, temporaryValue, randomIndex;
+
+  while (0 !== currentIndex) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
 const mp3path = './mp3'
-const songs = fs.readdirSync(mp3path);
+const songs = shuffle(fs.readdirSync(mp3path));
 const playedSongs = [];
 
 const nowPlaying = {
@@ -18,7 +33,7 @@ const nowPlaying = {
 
 function playMusic() {
   if (songs.length === 0) {
-    songs.push(...playedSongs);
+    songs.push(...shuffle(playedSongs));
     playedSongs.length = 0;
     console.log("reloaded songs and now " + songs.length);
   }
