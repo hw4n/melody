@@ -5,6 +5,8 @@ const PORT = 3333;
 const { PassThrough } = require('stream');
 const Throttle = require('throttle');
 const { ffprobeSync } = require('@dropb/ffprobe');
+const server = require("http").createServer(app);
+const io = require("socket.io")(server, {cors: {origin: "*"}});
 
 const writables = [];
 
@@ -59,18 +61,21 @@ function playMusic() {
   }).on('end', () => playMusic());
 
   toPlayReadable.pipe(throttle);
+
+  io.sockets.emit("data", {
+    queue: songs,
+    played: playedSongs,
+    playing: nowPlaying,
+  });
 }
 
 playMusic();
 
-app.get("/nowplaying", (req, res) => {
-  res.json(nowPlaying)
-});
-
-app.get("/queue", (req, res) => {
-  res.json({
-    in_queue: songs,
+io.on("connection", socket => {
+  socket.emit("data", {
+    queue: songs,
     played: playedSongs,
+    playing: nowPlaying,
   });
 });
 
@@ -82,6 +87,6 @@ app.get("/stream", (req, res) => {
     return anotherOne.pipe(res);
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server started at ${PORT}`);
 });
