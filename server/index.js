@@ -1,12 +1,25 @@
 const express = require("express");
 const app = express();
 const fs = require("fs");
+const path = require("path");
 const PORT = 3333;
 const { PassThrough } = require('stream');
 const Throttle = require('throttle');
-const { ffprobeSync } = require('@dropb/ffprobe');
+const { ffprobeSync, ffprobe } = require('@dropb/ffprobe');
+const { resolve } = require("path");
+const { rejects } = require("assert");
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {cors: {origin: "*"}});
+
+class Music {
+  constructor(duration, bit_rate, title, album, file) {
+    this.duration = duration,
+    this.bit_rate = bit_rate,
+    this.title = title,
+    this.album = album,
+    this.file = file
+  }
+}
 
 const writables = [];
 
@@ -26,12 +39,10 @@ function shuffle(array) {
 }
 
 const mp3path = './mp3'
-const songs = shuffle(fs.readdirSync(mp3path));
+const songs = [];
 const playedSongs = [];
 
-const nowPlaying = {
-  title: "",
-}
+let nowPlaying = {};
 
 function playMusic() {
   if (songs.length === 0) {
@@ -41,13 +52,12 @@ function playMusic() {
   }
 
   const song = songs.shift();
-  const toPlay = mp3path + "/" + song;
-  console.log(`will play ${song}`);
-  nowPlaying.title = song;
+  const toPlay = mp3path + "/" + song.file;
+  console.log(`will play ${song.title}`);
+  nowPlaying = song;
 
   const toPlayReadable = fs.createReadStream(toPlay);
-  const bitrate = ffprobeSync(toPlay).format.bit_rate;
-  const throttle = new Throttle(bitrate / 8);
+  const throttle = new Throttle(song.bit_rate / 8);
 
   throttle.on('data', chunk => {
     for (let i = writables.length - 1; i >= 0; i--) {
@@ -73,7 +83,34 @@ function playMusic() {
   }, 2000);
 }
 
-playMusic();
+// playMusic();
+
+const loadMusicFiles = new Promise((resolve, reject) => {
+  fs.readdirSync(mp3path).forEach((file, index, array) => {
+    const absolutePath = path.resolve(mp3path, file );
+    ffprobe(absolutePath)
+      .then(data => {
+        const { duration, bit_rate } = data.format;
+        let { title, album } = data.format.tags;
+        if (title === undefined) {
+          title = file.substr(0, file.lastIndexOf("."));
+        }
+        if (album === undefined) {
+          album = "";
+        }
+  
+        songs.push(new Music(duration, bit_rate, title, album, file));
+
+        if (index === array.length - 1) {
+          resolve();
+        }
+      });
+  });
+});
+
+loadMusicFiles.then(() => {
+  playMusic();
+})
 
 io.on("connection", socket => {
   socket.emit("data", {
