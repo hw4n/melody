@@ -1,38 +1,169 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+body {
+  background-color: #181818;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.container {
+  padding: 20px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+.songListHeader:first-of-type {
+  margin-top: 0;
+}
+
+.songListHeader {
+  text-transform: capitalize;
+  padding-bottom: 3px;
+  margin-bottom: 0;
+  margin-top: 30px;
+  border-bottom: 1px solid #282828;
+}
+
+li {
+  list-style-type: none;
+}
+
+.song {
+  border-bottom: 1px solid #282828;
+  padding: 5px 0;
+  /* padding-top: 3px; */
+  height: 30px;
+  line-height: 30px;
+}
+
+.playing {
+  color: #00d668;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 70px;
+  background-color: #282828;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+button {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+  color: white;
+}
+
+button:hover {
+  color: #00d668;
+}
+
+.volumeControlWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#volumeControl {
+  margin-left: 10px;
+}
+
+/* a lot of range input stuff */
+
+#volumeControl:hover input[type=range]::-webkit-slider-thumb {
+  background: #00d668;
+}
+
+input[type=range] {
+  width: 100%;
+  margin: 3.5px 0;
+  background-color: transparent;
+  -webkit-appearance: none;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  background: rgba(64, 64, 64, 0.78);
+  border: 0;
+  border-radius: 15px;
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  margin-top: -3.5px;
+  width: 15px;
+  height: 15px;
+  background: #ffffff;
+  border: 0;
+  border-radius: 15px;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #434343;
+}
+input[type=range]::-moz-range-track {
+  background: rgba(64, 64, 64, 0.78);
+  border: 0;
+  border-radius: 15px;
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+}
+input[type=range]::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  background: #ffffff;
+  border: 0;
+  border-radius: 15px;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  background: transparent;
+  border-color: transparent;
+  border-width: 4.4px 0;
+  color: transparent;
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+}
+input[type=range]::-ms-fill-lower {
+  background: #3d3d3d;
+  border: 0;
+  border-radius: 30px;
+}
+input[type=range]::-ms-fill-upper {
+  background: rgba(64, 64, 64, 0.78);
+  border: 0;
+  border-radius: 30px;
+}
+input[type=range]::-ms-thumb {
+  width: 15px;
+  height: 15px;
+  background: #ffffff;
+  border: 0;
+  border-radius: 15px;
+  cursor: pointer;
+  margin-top: 0px;
+  /*Needed to keep the Edge thumb centred*/
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: rgba(64, 64, 64, 0.78);
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #434343;
+}
+/*TODO: Use one of the selectors from https://stackoverflow.com/a/20541859/7077589 and figure out
+how to remove the virtical space around the range input in IE*/
+@supports (-ms-ime-align:auto) {
+  /* Pre-Chromium Edge only styles, selector taken from hhttps://stackoverflow.com/a/32202953/7077589 */
+  input[type=range] {
+    margin: 0;
+    /*Edge starts the margin from the thumb, not the track as other browsers do*/
   }
 }
