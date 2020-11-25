@@ -40,11 +40,11 @@ function playMusic() {
     console.log("reloaded songs and now " + songs.length);
   }
 
-  const song = songs.pop();
+  const song = songs.shift();
   const toPlay = mp3path + "/" + song;
   console.log(`will play ${song}`);
   nowPlaying.title = song;
-  playedSongs.unshift(song);
+  playedSongs.push(song);
 
   const toPlayReadable = fs.createReadStream(toPlay);
   const bitrate = ffprobeSync(toPlay).format.bit_rate;
