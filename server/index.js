@@ -44,7 +44,6 @@ function playMusic() {
   const toPlay = mp3path + "/" + song;
   console.log(`will play ${song}`);
   nowPlaying.title = song;
-  playedSongs.push(song);
 
   const toPlayReadable = fs.createReadStream(toPlay);
   const bitrate = ffprobeSync(toPlay).format.bit_rate;
@@ -58,15 +57,20 @@ function playMusic() {
         writables[i].write(chunk);
       }
     }
-  }).on('end', () => playMusic());
+  }).on('end', () => {
+    playedSongs.push(song);
+    playMusic();
+  });
 
   toPlayReadable.pipe(throttle);
 
-  io.sockets.emit("data", {
-    queue: songs,
-    played: playedSongs,
-    playing: nowPlaying,
-  });
+  setTimeout(() => {
+    io.sockets.emit("data", {
+      queue: songs,
+      played: playedSongs,
+      playing: nowPlaying,
+    });
+  }, 2000);
 }
 
 playMusic();
