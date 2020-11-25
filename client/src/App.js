@@ -34,12 +34,20 @@ function App() {
     <div className="App">
       <div className="container">
         <h3 className="songListHeader">now playing</h3>
-        <li className="song playing">{playing.title}</li>
+        <div className="song playing">
+          <span className="title">{playing.title}</span>
+          <span className="album">{playing.album}</span>
+          <span className="duration">{playing.duration}</span>
+        </div>
         <h3 className="songListHeader">next in queue</h3>
         <div className="queue">
           {queue.map(song => {
             return (
-              <li className="song">{song}</li>
+              <div className="song">
+                <div className="title">{song.title}</div>
+                <div className="album">{song.album}</div>
+                <div className="duration">{song.duration}</div>
+              </div>
             )
           })}
         </div>
@@ -47,7 +55,11 @@ function App() {
         <div className="played">
           {played.map(song => {
             return (
-              <li className="song">{song}</li>
+              <div className="song">
+                <span className="title">{song.title}</span>
+                <span className="album">{song.album}</span>
+                <span className="duration">{song.duration}</span>
+              </div>
             )
           })}
         </div>

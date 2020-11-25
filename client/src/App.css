@@ -29,6 +29,23 @@ li {
   /* padding-top: 3px; */
   height: 30px;
   line-height: 30px;
+
+  display: flex;
+  justify-content: space-around;
+}
+
+.song .title,
+.song .album,
+.song .duration {
+  width: 33.3%;
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song .duration {
+  text-align: right;
 }
 
 .playing {
