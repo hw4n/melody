@@ -12,12 +12,13 @@ const server = require("http").createServer(app);
 const io = require("socket.io")(server, {cors: {origin: "*"}});
 
 class Music {
-  constructor(duration, bit_rate, title, album, file) {
-    this.duration = duration,
-    this.bit_rate = bit_rate,
-    this.title = title,
-    this.album = album,
-    this.file = file
+  constructor(music) {
+    this.duration = music.duration,
+    this.bit_rate = music.bit_rate,
+    this.title = music.title,
+    this.album = music.album,
+    this.file = music.file,
+    this.artist = music.artist
   }
 }
 
@@ -90,16 +91,22 @@ const loadMusicFiles = new Promise((resolve, reject) => {
     const absolutePath = path.resolve(mp3path, file );
     ffprobe(absolutePath)
       .then(data => {
-        const { duration, bit_rate } = data.format;
-        let { title, album } = data.format.tags;
+        let { duration, bit_rate } = data.format;
+        const m = Math.floor(duration / 60);
+        const s = Math.floor(duration - m * 60);
+        duration = `${m}:${s.toString().padStart(2, 0)}`;
+        let { title, album, artist } = data.format.tags;
         if (title === undefined) {
           title = file.substr(0, file.lastIndexOf("."));
         }
         if (album === undefined) {
-          album = "";
+          album = "-";
+        }
+        if (artist === undefined) {
+          artist = "Various Artists";
         }
   
-        songs.push(new Music(duration, bit_rate, title, album, file));
+        songs.push(new Music({duration, bit_rate, title, album, artist, file}));
 
         if (index === array.length - 1) {
           resolve();
