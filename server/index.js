@@ -8,6 +8,8 @@ const Throttle = require('throttle');
 const { ffprobeSync, ffprobe } = require('@dropb/ffprobe');
 const { resolve } = require("path");
 const { rejects } = require("assert");
+const { promisify } = require("util");
+const { start } = require("repl");
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {cors: {origin: "*"}});
 
@@ -40,6 +42,7 @@ function shuffle(array) {
 }
 
 const mp3path = './mp3'
+const preload = [];
 const songs = [];
 const playedSongs = [];
 
@@ -49,11 +52,11 @@ function playMusic() {
   if (songs.length === 0) {
     songs.push(...shuffle(playedSongs));
     playedSongs.length = 0;
-    console.log("reloaded songs and now " + songs.length);
+    console.log(`Reloaded and shuffled ${songs.length} songs"`);
   }
 
   const song = songs.shift();
-  const toPlay = mp3path + "/" + song.file;
+  const toPlay = song.file;
   console.log(`will play ${song.title}`);
   nowPlaying = song;
 
@@ -84,21 +87,28 @@ function playMusic() {
   }, 2000);
 }
 
-// playMusic();
+const filterWords = ["カラオケ", "リミックス", "Ver.", "Off Vocal", "(オリジナル", "VERSION)", "ソロ", "Bonus Track", "ラジオ"];
 
-const loadMusicFiles = new Promise((resolve, reject) => {
-  fs.readdirSync(mp3path).forEach((file, index, array) => {
-    const absolutePath = path.resolve(mp3path, file );
-    ffprobe(absolutePath)
+const loadMusicFiles = async(filePathArray) => {
+  console.log("Begin loading music files");
+  let processCounter = 0;
+  for (let i = 0; i < filePathArray.length; i++) {
+    process.stdout.write(`Begin processing ${i} musics\r`);
+    const filePath = filePathArray[i];
+    
+    ffprobe(filePath)
       .then(data => {
+        processCounter += 1;
+
         let { duration, bit_rate } = data.format;
         const m = Math.floor(duration / 60);
         const s = Math.floor(duration - m * 60);
         duration = `${m}:${s.toString().padStart(2, 0)}`;
         let { title, album, artist } = data.format.tags;
         if (title === undefined) {
-          title = file.substr(0, file.lastIndexOf("."));
+          title = filePath.substr(0, filePath.lastIndexOf("."));
         }
+
         if (album === undefined) {
           album = "-";
         }
@@ -106,18 +116,38 @@ const loadMusicFiles = new Promise((resolve, reject) => {
           artist = "Various Artists";
         }
   
-        songs.push(new Music({duration, bit_rate, title, album, artist, file}));
+        preload.push(new Music({duration, bit_rate, title, album, artist, file: filePath}));
 
-        if (index === array.length - 1) {
-          resolve();
+        if (processCounter === filePathArray.length - 1) {
+          startPlaying();
         }
-      });
-  });
-});
+      })
+  };
+};
 
-loadMusicFiles.then(() => {
+function startPlaying() {
+  console.log(`Total number of music is: ${preload.length}`);
+          
+  songs.push(...shuffle(preload));
+  console.log("Shuffle done");
+  preload.length = 0;
+
   playMusic();
-})
+}
+
+const readdir = promisify(fs.readdir);
+const stat = promisify(fs.stat);
+
+async function getFiles(dir) {
+  const subdirs = await readdir(dir);
+  const files = await Promise.all(subdirs.map(async (subdir) => {
+    const res = resolve(dir, subdir);
+    return (await stat(res)).isDirectory() ? getFiles(res) : res;
+  }));
+  return files.reduce((a, f) => a.concat(f), []).filter(f => f.endsWith(".mp3"));
+}
+
+getFiles("./mp3").then(loadMusicFiles);
 
 io.on("connection", socket => {
   socket.emit("data", {
