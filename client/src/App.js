@@ -36,17 +36,20 @@ function App() {
         <h3 className="songListHeader divider">now playing</h3>
         <div className="columnIndicator divider">
           <div>title</div>
+          <div>artist</div>
           <div>album</div>
           <div><FontAwesomeIcon icon={faClock}/></div>
         </div>
         <div className="song playing">
-          <span className="title">{playing.title}</span>
-          <span className="album">{playing.album}</span>
-          <span className="duration">{playing.duration}</span>
+          <div className="title dotOverflow">{playing.title}</div>
+          <div className="title dotOverflow">{playing.artist}</div>
+          <div className="album dotOverflow">{playing.album}</div>
+          <div className="duration">{playing.duration}</div>
         </div>
         <h3 className="songListHeader divider">next in queue</h3>
         <div className="columnIndicator divider">
           <div>title</div>
+          <div>artist</div>
           <div>album</div>
           <div><FontAwesomeIcon icon={faClock}/></div>
         </div>
@@ -54,9 +57,10 @@ function App() {
           {queue.map(song => {
             return (
               <div className="song">
-                <div className="title">{song.title}</div>
-                <div className="album">{song.album}</div>
-                <div className="duration">{song.duration}</div>
+                <div className="title dotOverflow">{song.title}</div>
+                <div className="artist dotOverflow">{song.artist}</div>
+                <div className="album dotOverflow">{song.album}</div>
+                <div className="duration dotOverflow">{song.duration}</div>
               </div>
             )
           })}
@@ -64,6 +68,7 @@ function App() {
         <h3 className="songListHeader divider">already played</h3>
         <div className="columnIndicator divider">
           <div>title</div>
+          <div>artist</div>
           <div>album</div>
           <div><FontAwesomeIcon icon={faClock}/></div>
         </div>
@@ -71,9 +76,10 @@ function App() {
           {played.map(song => {
             return (
               <div className="song">
-                <span className="title">{song.title}</span>
-                <span className="album">{song.album}</span>
-                <span className="duration">{song.duration}</span>
+                <div className="title dotOverflow">{song.title}</div>
+                <div className="artist dotOverflow">{song.artist}</div>
+                <div className="album dotOverflow">{song.album}</div>
+                <div className="duration dotOverflow">{song.duration}</div>
               </div>
             )
           })}
@@ -83,23 +89,29 @@ function App() {
         <audio ref={playerRef}>
           <source src="/stream" type="audio/mpeg"/>
         </audio>
-        <button onClick={() => {
-          if (!isPlaying) {
-            playerRef.current.setAttribute("src", "/stream");
-            playerRef.current.play();
-            playerRef.current.volume = volumeRef.current.value;
-          } else {
-            playerRef.current.pause();
-            playerRef.current.setAttribute('src', "");
-          }
-          setIsPlaying(!isPlaying);
-        }}>
-          {!isPlaying ? (
-            <FontAwesomeIcon icon={faPlayCircle} size="2x"/>
-          ) : (
-            <FontAwesomeIcon icon={faStopCircle} size="2x"/>
-          )}
-        </button>
+        <div className="currentMusic">
+          <div className="currentTitle">{playing.title}</div>
+          <div className="currentArtist dotOverflow">{playing.artist}</div>
+        </div>
+        <div className="controller">
+          <button onClick={() => {
+            if (!isPlaying) {
+              playerRef.current.setAttribute("src", "/stream");
+              playerRef.current.play();
+              playerRef.current.volume = volumeRef.current.value;
+            } else {
+              playerRef.current.pause();
+              playerRef.current.setAttribute('src', "");
+            }
+            setIsPlaying(!isPlaying);
+          }}>
+            {!isPlaying ? (
+              <FontAwesomeIcon icon={faPlayCircle} size="2x"/>
+            ) : (
+              <FontAwesomeIcon icon={faStopCircle} size="2x"/>
+            )}
+          </button>
+        </div>
         <div className="volumeControlWrap">
           <button onClick={() => {
             if (!muted) {

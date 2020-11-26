@@ -57,14 +57,18 @@ li {
 }
 
 .song .title,
+.song .artist,
 .song .album,
 .song .duration {
   width: 33.3%;
+  padding: 0 20px;
+}
+
+.dotOverflow {
   overflow: hidden;
   display: inline-block;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 0 20px;
 }
 
 .song .duration {
@@ -86,6 +90,42 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+}
+
+footer div {
+  width: 33.3%;
+}
+
+.currentMusic {
+  padding: 20px;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.currentMusic div {
+  /* margin: auto;
+  vertical-align: middle; */
+}
+
+.currentTitle, .currentArtist {
+  width: 100%;
+}
+
+.currentTitle {
+  margin-top: auto;
+}
+
+.currentArtist {
+  margin-bottom: auto;
+  color: #a6a6a6;
+  font-size: 75%;
+}
+
+.controller {
+  display: flex;
+  justify-content: center;
 }
 
 button {
