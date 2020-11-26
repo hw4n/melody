@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import io from "socket.io-client";
 import { useEffect, useRef, useState } from 'react';
-import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
+import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 let SOCKET_URI = "/"
@@ -33,13 +33,23 @@ function App() {
   return (
     <div className="App">
       <div className="container">
-        <h3 className="songListHeader">now playing</h3>
+        <h3 className="songListHeader divider">now playing</h3>
+        <div className="columnIndicator divider">
+          <div>title</div>
+          <div>album</div>
+          <div><FontAwesomeIcon icon={faClock}/></div>
+        </div>
         <div className="song playing">
           <span className="title">{playing.title}</span>
           <span className="album">{playing.album}</span>
           <span className="duration">{playing.duration}</span>
         </div>
-        <h3 className="songListHeader">next in queue</h3>
+        <h3 className="songListHeader divider">next in queue</h3>
+        <div className="columnIndicator divider">
+          <div>title</div>
+          <div>album</div>
+          <div><FontAwesomeIcon icon={faClock}/></div>
+        </div>
         <div className="queue">
           {queue.map(song => {
             return (
@@ -51,7 +61,12 @@ function App() {
             )
           })}
         </div>
-        <h3 className="songListHeader">already played</h3>
+        <h3 className="songListHeader divider">already played</h3>
+        <div className="columnIndicator divider">
+          <div>title</div>
+          <div>album</div>
+          <div><FontAwesomeIcon icon={faClock}/></div>
+        </div>
         <div className="played">
           {played.map(song => {
             return (

@@ -13,10 +13,32 @@ body {
 
 .songListHeader {
   text-transform: capitalize;
+}
+
+.divider {
   padding-bottom: 3px;
   margin-bottom: 0;
   margin-top: 30px;
   border-bottom: 1px solid #282828;
+}
+
+.columnIndicator {
+  display: flex;
+}
+
+.columnIndicator.divider {
+  margin-top: 4px;
+}
+
+.columnIndicator div {
+  width: 33.3%;
+  padding: 0 20px;
+  text-transform: uppercase;
+  color: #b3b3b3;
+}
+
+.columnIndicator div:last-of-type {
+  text-align: right;
 }
 
 li {
@@ -42,10 +64,12 @@ li {
   display: inline-block;
   text-overflow: ellipsis;
   white-space: nowrap;
+  padding: 0 20px;
 }
 
 .song .duration {
   text-align: right;
+  color: #afafaf;
 }
 
 .playing {
