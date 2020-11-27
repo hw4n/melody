@@ -59,6 +59,10 @@ li {
   justify-content: space-around;
 }
 
+.song:hover {
+  background-color: #282828;
+}
+
 .song div {
   padding: 0 20px;
 }
@@ -71,6 +75,10 @@ li {
 
 .song .duration {
   width: 10%;
+}
+
+.tip {
+  color: #b3b3b3;
 }
 
 .played .song:last-of-type {
@@ -348,5 +356,8 @@ how to remove the virtical space around the range input in IE*/
   }
   footer .controller {
     width: 30%;
+  }
+  .tip {
+    font-size: 70%;
   }
 }
