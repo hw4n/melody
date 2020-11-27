@@ -164,8 +164,14 @@ button:hover {
   justify-content: center;
 }
 
+.volumeControlWrap button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+}
+
 #volumeControl {
-  margin-left: 10px;
+  margin: 0 10px;
 }
 
 /* a lot of range input stuff */

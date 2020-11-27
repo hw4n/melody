@@ -19,6 +19,7 @@ function App() {
   const [playing, setPlaying] = useState({});
   const [isPlaying, setIsPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [volume, setVolume] = useState(0.05);
 
   useEffect(() => {
     socket.on('data', (msg) => {
@@ -27,9 +28,27 @@ function App() {
       setPlayed(msg.played);
       setPlaying(msg.playing);
     });
-  });
 
-  const playerRef = useRef();
+    if (muted && volume > 0) {
+      setVolume(-volume);
+      volumeRef.current.value = 0;
+    } else if (!muted && volume < 0) {
+      volumeRef.current.value = -volume;
+      setVolume(-volume);
+    }
+
+    if (volume <= 0) {
+      audioRef.current.volume = 0;
+    } else {
+      audioRef.current.volume = volume;
+    }
+
+    if (isPlaying) {
+      audioRef.current.play();
+    }
+  }, [muted, volume, isPlaying]);
+
+  const audioRef = useRef();
   const volumeRef = useRef();
 
   function handleSongDoubleClick(e) {
@@ -116,23 +135,19 @@ function App() {
         </div>
       </div>
       <footer>
-        <audio ref={playerRef}>
-          <source src="/stream" type="audio/mpeg"/>
-        </audio>
+        {isPlaying ? (
+          <audio ref={audioRef} src="/stream">
+            <source src="/stream" type="audio/mpeg"/>
+          </audio>
+        ) : (
+          <audio ref={audioRef} src="" preload="none"/>
+        )}
         <div className="currentMusic">
           <div className="currentTitle dotOverflow">{playing.title}</div>
           <div className="currentArtist dotOverflow">{playing.artist}</div>
         </div>
         <div className="controller">
           <button onClick={() => {
-            if (!isPlaying) {
-              playerRef.current.setAttribute("src", "/stream");
-              playerRef.current.play();
-              playerRef.current.volume = volumeRef.current.value;
-            } else {
-              playerRef.current.pause();
-              playerRef.current.setAttribute('src', "");
-            }
             setIsPlaying(!isPlaying);
           }}>
             {!isPlaying ? (
@@ -145,13 +160,12 @@ function App() {
         <div className="volumeControlWrap">
           <button onClick={() => {
             if (!muted) {
-              playerRef.current.volume = 0;
+              setMuted(true);
             } else {
-              playerRef.current.volume = 0.05;
+              setMuted(false);
             }
-            setMuted(!muted);
           }}>
-            {!muted ? (
+            {volume > 0 ? (
               <FontAwesomeIcon icon={faVolumeDown} size="2x"/>
             ) : (
               <FontAwesomeIcon icon={faVolumeMute} size="2x"/>
@@ -159,12 +173,7 @@ function App() {
           </button>
           <div id="volumeControl">
             <input type="range" min="0" max="0.2" step="0.01" defaultValue="0.05" ref={volumeRef} onChange={e => {
-              playerRef.current.volume = e.target.value;
-              if (playerRef.current.volume === 0) {
-                setMuted(true);
-              } else {
-                setMuted(false);
-              }
+              setVolume(e.target.value);
             }}/>
           </div>
         </div>
