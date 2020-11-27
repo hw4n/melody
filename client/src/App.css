@@ -1,6 +1,7 @@
 body {
   background-color: #181818;
   color: white;
+  user-select: none;
 }
 
 .container {
