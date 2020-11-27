@@ -20,7 +20,8 @@ class Music {
     this.title = music.title,
     this.album = music.album,
     this.file = music.file,
-    this.artist = music.artist
+    this.artist = music.artist,
+    this.id = music.id
   }
 }
 
@@ -55,9 +56,16 @@ function playMusic() {
     console.log(`Reloaded and shuffled ${songs.length} songs"`);
   }
 
-  const song = songs.shift();
+  let song;
+  if (userQueue.length > 0) {
+    song = userQueue.shift();
+    console.log(`Will play from userQ: ${song.title}`);
+  } else {
+    song = songs.shift();
+    console.log(`Will play from songs: ${song.title}`);
+  }
+
   const toPlay = song.file;
-  console.log(`will play ${song.title}`);
   nowPlaying = song;
 
   const toPlayReadable = fs.createReadStream(toPlay);
@@ -80,6 +88,7 @@ function playMusic() {
 
   setTimeout(() => {
     io.sockets.emit("data", {
+      priority: userQueue,
       queue: songs,
       played: playedSongs,
       playing: nowPlaying,
@@ -99,6 +108,7 @@ const loadMusicFiles = async(filePathArray) => {
     ffprobe(filePath)
       .then(data => {
         processCounter += 1;
+        id = processCounter;
 
         let { duration, bit_rate } = data.format;
         const m = Math.floor(duration / 60);
@@ -116,7 +126,7 @@ const loadMusicFiles = async(filePathArray) => {
           artist = "Various Artists";
         }
   
-        preload.push(new Music({duration, bit_rate, title, album, artist, file: filePath}));
+        preload.push(new Music({id, duration, bit_rate, title, album, artist, file: filePath}));
 
         if (processCounter === filePathArray.length - 1) {
           startPlaying();
@@ -149,12 +159,33 @@ async function getFiles(dir) {
 
 getFiles("./mp3").then(loadMusicFiles);
 
+const userQueue = [];
+
 io.on("connection", socket => {
   socket.emit("data", {
+    priority: userQueue,
     queue: songs,
     played: playedSongs,
     playing: nowPlaying,
   });
+
+  socket.on("queue", musicId => {
+    for (let i = 0; i < songs.length; i++) {
+      const song = songs[i];
+      if (song.id === musicId) {
+        userQueue.push(songs.splice(i, 1)[0]);
+        console.log(`Pushed to userQueue: ${song.title}`);
+
+        io.sockets.emit("data", {
+          priority: userQueue,
+          queue: songs,
+          played: playedSongs,
+          playing: nowPlaying,
+        });
+        break;
+      }
+    }
+  })
 });
 
 app.get("/stream", (req, res) => {
