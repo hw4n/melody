@@ -16,6 +16,8 @@ if (process.env.NODE_ENV === "development") {
   SOCKET_URI = "http://localhost:3333";
 }
 
+const DEFAULT_TITLE = process.env.TITLE || "Melody";
+
 const socket = io.connect(SOCKET_URI);
 
 function App() {
@@ -51,6 +53,7 @@ function App() {
 
     if (isPlaying) {
       audioRef.current.play();
+      document.title = `♪ Playing ${playing.title}`;
 
       if ("mediaSession" in navigator) {
         const { title, artist, album } = playing
@@ -68,6 +71,8 @@ function App() {
           }
         }
       }
+    } else {
+      document.title = DEFAULT_TITLE;
     }
   }, [muted, volume, isPlaying, playing]);
 
