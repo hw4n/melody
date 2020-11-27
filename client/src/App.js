@@ -90,7 +90,7 @@ function App() {
           <source src="/stream" type="audio/mpeg"/>
         </audio>
         <div className="currentMusic">
-          <div className="currentTitle">{playing.title}</div>
+          <div className="currentTitle dotOverflow">{playing.title}</div>
           <div className="currentArtist dotOverflow">{playing.artist}</div>
         </div>
         <div className="controller">

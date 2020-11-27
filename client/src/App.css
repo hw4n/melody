@@ -295,6 +295,35 @@ how to remove the virtical space around the range input in IE*/
 
 /* media queries */
 
+@media screen and (max-width: 992px) {
+  .columnIndicator div:nth-child(3),
+  .columnIndicator div:nth-child(4) {
+    display: none;
+  }
+  .columnIndicator div:first-of-type,
+  .columnIndicator div:nth-child(2) {
+    width: 50%;
+  }
+  .song .title,
+  .song .artist {
+    display: inline-block;
+    width: 50%;
+  }
+  .song .album,
+  .song .duration {
+    display: none;
+  }
+  footer .volumeControlWrap {
+    display: none;
+  }
+  footer .currentMusic {
+    width: 70%;
+  }
+  footer .controller {
+    width: 30%;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .columnIndicator div {
     display: none;
