@@ -4,13 +4,13 @@ body {
 }
 
 .container {
-  padding: 20px;
+  padding: 0 20px;
   overflow: auto;
-  max-height: 90vh;
+  max-height: 100vh;
 }
 
 .songListHeader:first-of-type {
-  margin-top: 0;
+  margin-top: 20px;
 }
 
 .songListHeader {
@@ -33,13 +33,14 @@ body {
 }
 
 .columnIndicator div {
-  width: 33.3%;
+  width: 30%;
   padding: 0 20px;
   text-transform: uppercase;
   color: #b3b3b3;
 }
 
 .columnIndicator div:last-of-type {
+  width: 10%;
   text-align: right;
 }
 
@@ -58,12 +59,22 @@ li {
   justify-content: space-around;
 }
 
+.song div {
+  padding: 0 20px;
+}
+
 .song .title,
 .song .artist,
-.song .album,
+.song .album {
+  width: 30%;
+}
+
 .song .duration {
-  width: 33.3%;
-  padding: 0 20px;
+  width: 10%;
+}
+
+.played .song:last-of-type {
+  margin-bottom: 90px;
 }
 
 .dotOverflow {
@@ -104,11 +115,6 @@ footer div {
   display: flex;
   flex-direction: column;
 
-}
-
-.currentMusic div {
-  /* margin: auto;
-  vertical-align: middle; */
 }
 
 .currentTitle, .currentArtist {
@@ -254,28 +260,28 @@ how to remove the virtical space around the range input in IE*/
 /* bunch of scrollbar stuff */
 
 ::-webkit-scrollbar {
-  width: 2px;
-  height: 2px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-button {
   width: 0px;
   height: 0px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #e1e1e1;
+  background: #d1d1d1;
   border: 0px none #ffffff;
-  border-radius: 50px;
+  border-radius: 0px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #ffffff;
 }
 ::-webkit-scrollbar-thumb:active {
-  background: #000000;
+  background: #dedede;
 }
 ::-webkit-scrollbar-track {
-  background: #666666;
+  background: #4a4a4a;
   border: 0px none #ffffff;
-  border-radius: 50px;
+  border-radius: 0px;
 }
 ::-webkit-scrollbar-track:hover {
   background: #666666;
@@ -285,4 +291,33 @@ how to remove the virtical space around the range input in IE*/
 }
 ::-webkit-scrollbar-corner {
   background: transparent;
+}
+
+/* media queries */
+
+@media screen and (max-width: 768px) {
+  .columnIndicator div {
+    display: none;
+  }
+  .columnIndicator div:first-of-type {
+    display: inline-block;
+    width: 100%;
+  }
+  .song .title {
+    width: 100%;
+  }
+  .song .artist,
+  .song .album,
+  .song .duration {
+    display: none;
+  }
+  footer .volumeControlWrap {
+    display: none;
+  }
+  footer .currentMusic {
+    width: 70%;
+  }
+  footer .controller {
+    width: 30%;
+  }
 }

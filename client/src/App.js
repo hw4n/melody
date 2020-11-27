@@ -42,7 +42,7 @@ function App() {
         </div>
         <div className="song playing">
           <div className="title dotOverflow">{playing.title}</div>
-          <div className="title dotOverflow">{playing.artist}</div>
+          <div className="artist dotOverflow">{playing.artist}</div>
           <div className="album dotOverflow">{playing.album}</div>
           <div className="duration">{playing.duration}</div>
         </div>
