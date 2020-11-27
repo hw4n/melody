@@ -5,6 +5,12 @@ import { useEffect, useRef, useState } from 'react';
 import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+const actionHandlers = [
+  ['pause',         () => { /* ... */ }],
+  ['previoustrack', () => { /* ... */ }],
+  ['nexttrack',     () => { /* ... */ }]
+];
+
 let SOCKET_URI = "/"
 if (process.env.NODE_ENV === "development") {
   SOCKET_URI = "http://localhost:3333";
@@ -45,8 +51,25 @@ function App() {
 
     if (isPlaying) {
       audioRef.current.play();
+
+      if ("mediaSession" in navigator) {
+        const { title, artist, album } = playing
+        navigator.mediaSession.metadata = new window.MediaMetadata({
+          title: title,
+          artist: artist,
+          album: album,
+        });
+
+        for (const [action, handler] of actionHandlers) {
+          try {
+            navigator.mediaSession.setActionHandler(action, handler);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
     }
-  }, [muted, volume, isPlaying]);
+  }, [muted, volume, isPlaying, playing]);
 
   const audioRef = useRef();
   const volumeRef = useRef();
@@ -174,6 +197,9 @@ function App() {
           <div id="volumeControl">
             <input type="range" min="0" max="0.2" step="0.01" defaultValue="0.05" ref={volumeRef} onChange={e => {
               setVolume(e.target.value);
+              if (e.target.value > 0) {
+                setMuted(false);
+              }
             }}/>
           </div>
         </div>
