@@ -102,20 +102,22 @@ function playMusic() {
 
   toPlayReadable.pipe(throttle);
 
-  getCoverArt(toPlay).then(() => {
-    fs.readFile("./cover.png", function(err, data) {
-      coverBuffer = new Buffer.from(data).toString('base64');
-      io.sockets.emit("data", {
-        priority: userQueue,
-        queue: songs,
-        played: playedSongs,
-        playing: {
-          ...nowPlaying,
-          cover: coverBuffer
-        }
+  setTimeout(() => {
+    getCoverArt(toPlay).then(() => {
+      fs.readFile("./cover.png", function(err, data) {
+        coverBuffer = new Buffer.from(data).toString('base64');
+        io.sockets.emit("data", {
+          priority: userQueue,
+          queue: songs,
+          played: playedSongs,
+          playing: {
+            ...nowPlaying,
+            cover: coverBuffer
+          }
+        });
       });
     });
-  });
+  }, 3000);
 }
 
 const filterWords = ["カラオケ", "リミックス", "Ver.", "Off Vocal", "(オリジナル", "VERSION)", "ソロ", "Bonus Track", "ラジオ"];
