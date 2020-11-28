@@ -27,7 +27,7 @@ function App() {
   const [playing, setPlaying] = useState({});
   const [isPlaying, setIsPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
-  const [volume, setVolume] = useState(0.05);
+  const [volume, setVolume] = useState(0.5);
 
   useEffect(() => {
     socket.on('data', (msg) => {
@@ -179,11 +179,17 @@ function App() {
           <audio ref={audioRef} src="" preload="none"/>
         )}
         <div className="currentMusic">
-          <img src={`data:image/png;base64, ${playing.cover}`}/>
-          <div className="currentMusicText">
-            <div className="currentTitle dotOverflow">{playing.title}</div>
-            <div className="currentArtist dotOverflow">{playing.artist}</div>
-          </div>
+          {playing.cover ? (
+            <>
+              <img class="coverArt" src={`data:image/png;base64, ${playing.cover}`} alt="album cover artwork"/>
+              <div className="currentMusicText">
+                <div className="currentTitle dotOverflow">{playing.title}</div>
+                <div className="currentArtist dotOverflow">{playing.artist}</div>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
         <div className="controller">
           <button onClick={() => {
@@ -211,7 +217,7 @@ function App() {
             )}
           </button>
           <div id="volumeControl">
-            <input type="range" min="0" max="0.2" step="0.01" defaultValue="0.05" ref={volumeRef} onChange={e => {
+            <input type="range" min="0" max="1" step="0.01" defaultValue="0.5" ref={volumeRef} onChange={e => {
               setVolume(e.target.value);
               if (e.target.value > 0) {
                 setMuted(false);
