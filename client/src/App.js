@@ -61,6 +61,14 @@ function App() {
           title: title,
           artist: artist,
           album: album,
+          artwork: [
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '96x96', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '128x128', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '192x192', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '256x256', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '384x384', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '512x512', type: 'image/png' },
+          ]
         });
 
         for (const [action, handler] of actionHandlers) {
@@ -171,8 +179,11 @@ function App() {
           <audio ref={audioRef} src="" preload="none"/>
         )}
         <div className="currentMusic">
-          <div className="currentTitle dotOverflow">{playing.title}</div>
-          <div className="currentArtist dotOverflow">{playing.artist}</div>
+          <img src={`data:image/png;base64, ${playing.cover}`}/>
+          <div className="currentMusicText">
+            <div className="currentTitle dotOverflow">{playing.title}</div>
+            <div className="currentArtist dotOverflow">{playing.artist}</div>
+          </div>
         </div>
         <div className="controller">
           <button onClick={() => {

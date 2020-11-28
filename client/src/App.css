@@ -112,18 +112,31 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+
+  border-top: 1px solid #121212;
 }
 
 footer div {
-  width: 33.3%;
+  width: 40%;
+}
+
+footer .controller {
+  width: 20%;
 }
 
 .currentMusic {
-  padding: 20px;
   height: 70px;
   display: flex;
-  flex-direction: column;
+}
 
+.currentMusic img {
+  width: 70px;
+}
+
+.currentMusicText {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .currentTitle, .currentArtist {
@@ -332,10 +345,10 @@ how to remove the virtical space around the range input in IE*/
     display: none;
   }
   footer .currentMusic {
-    width: 70%;
+    width: 80%;
   }
   footer .controller {
-    width: 30%;
+    width: 20%;
   }
 }
 
@@ -359,10 +372,10 @@ how to remove the virtical space around the range input in IE*/
     display: none;
   }
   footer .currentMusic {
-    width: 70%;
+    width: 80%;
   }
   footer .controller {
-    width: 30%;
+    width: 20%;
   }
   .tip {
     font-size: 70%;
