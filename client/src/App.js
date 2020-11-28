@@ -20,32 +20,6 @@ const DEFAULT_TITLE = process.env.TITLE || "Melody";
 
 const socket = io.connect(SOCKET_URI);
 
-function resizeCover(side) {
-  const img = document.querySelector(".coverArt");
-
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-
-  canvas.width = side;
-  canvas.height = side;
-
-  ctx.drawImage(img, 0, 0, side, side);
-
-  return canvas.toDataURL();
-}
-
-function resizeEveryCover() {
-  return new Promise((resolve, reject) => {
-    const cover96 = resizeCover(96);
-    const cover128 = resizeCover(128);
-    const cover192 = resizeCover(192);
-    const cover256 = resizeCover(256);
-    const cover384 = resizeCover(384);
-    const cover512 = resizeCover(512);
-    resolve({cover96, cover128, cover192, cover256, cover384, cover512});
-  });
-}
-
 function App() {
   const [priority, setPriority] = useState([]);
   const [queue, setQueue] = useState([]);
@@ -84,20 +58,24 @@ function App() {
       const { title, artist, album } = playing
 
       if (playing.cover) {
-        resizeEveryCover().then(c => {
-          navigator.mediaSession.metadata = new window.MediaMetadata({
-            title: title,
-            artist: artist,
-            album: album,
-            artwork: [
-              { src: c.cover96, sizes: '96x96', type: 'image/png' },
-              { src: c.cover128, sizes: '128x128', type: 'image/png' },
-              { src: c.cover192, sizes: '192x192', type: 'image/png' },
-              { src: c.cover256, sizes: '256x256', type: 'image/png' },
-              { src: c.cover384, sizes: '384x384', type: 'image/png' },
-              { src: c.cover512, sizes: '512x512', type: 'image/png' },
-            ]
-          });
+        navigator.mediaSession.metadata = new window.MediaMetadata({
+          title: title,
+          artist: artist,
+          album: album,
+          artwork: [
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '96x96', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '128x128', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '192x192', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '256x256', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '384x384', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '512x512', type: 'image/png' },
+          ]
+        });
+
+        navigator.mediaSession.setPositionState({
+          duration: 0,
+          playbackRate: audioRef.current.playbackRate,
+          position: 0
         });
   
         for (const [action, handler] of actionHandlers) {
