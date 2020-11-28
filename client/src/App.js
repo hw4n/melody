@@ -5,12 +5,6 @@ import { useEffect, useRef, useState } from 'react';
 import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const actionHandlers = [
-  ['pause',         () => { /* ... */ }],
-  ['previoustrack', () => { /* ... */ }],
-  ['nexttrack',     () => { /* ... */ }]
-];
-
 let SOCKET_URI = "/"
 if (process.env.NODE_ENV === "development") {
   SOCKET_URI = "http://localhost:3333";
@@ -28,6 +22,19 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.5);
+
+  const actionHandlers = [
+    ['play',          () => {
+      setIsPlaying(true);
+      navigator.mediaSession.playbackState = "playing";
+    }],
+    ['pause',         () => {
+      setIsPlaying(false);
+      navigator.mediaSession.playbackState = "paused";
+    }],
+    ['previoustrack', () => { /* ... */ }],
+    ['nexttrack',     () => { /* ... */ }]
+  ];
 
   useEffect(() => {
     socket.on('data', (msg) => {
@@ -54,40 +61,39 @@ function App() {
     if (isPlaying) {
       audioRef.current.play();
       document.title = `♪ Playing ${playing.title}`;
-
-      const { title, artist, album } = playing
-
-      if (playing.cover) {
-        navigator.mediaSession.metadata = new window.MediaMetadata({
-          title: title,
-          artist: artist,
-          album: album,
-          artwork: [
-            { src: `data:image/png;base64,${playing.cover}`, sizes: '96x96', type: 'image/png' },
-            { src: `data:image/png;base64,${playing.cover}`, sizes: '128x128', type: 'image/png' },
-            { src: `data:image/png;base64,${playing.cover}`, sizes: '192x192', type: 'image/png' },
-            { src: `data:image/png;base64,${playing.cover}`, sizes: '256x256', type: 'image/png' },
-            { src: `data:image/png;base64,${playing.cover}`, sizes: '384x384', type: 'image/png' },
-            { src: `data:image/png;base64,${playing.cover}`, sizes: '512x512', type: 'image/png' },
-          ]
-        });
-
-        navigator.mediaSession.setPositionState({
-          duration: 0,
-          playbackRate: audioRef.current.playbackRate,
-          position: 0
-        });
-  
-        for (const [action, handler] of actionHandlers) {
-          try {
-            navigator.mediaSession.setActionHandler(action, handler);
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      }
     } else {
       document.title = DEFAULT_TITLE;
+    }
+
+    if (playing.cover) {
+      const { title, artist, album } = playing
+      navigator.mediaSession.metadata = new window.MediaMetadata({
+        title: title,
+        artist: artist,
+        album: album,
+        artwork: [
+          { src: `data:image/png;base64,${playing.cover}`, sizes: '96x96', type: 'image/png' },
+          { src: `data:image/png;base64,${playing.cover}`, sizes: '128x128', type: 'image/png' },
+          { src: `data:image/png;base64,${playing.cover}`, sizes: '192x192', type: 'image/png' },
+          { src: `data:image/png;base64,${playing.cover}`, sizes: '256x256', type: 'image/png' },
+          { src: `data:image/png;base64,${playing.cover}`, sizes: '384x384', type: 'image/png' },
+          { src: `data:image/png;base64,${playing.cover}`, sizes: '512x512', type: 'image/png' },
+        ]
+      });
+
+      navigator.mediaSession.setPositionState({
+        duration: 0,
+        playbackRate: audioRef.current.playbackRate,
+        position: 0
+      });
+
+      for (const [action, handler] of actionHandlers) {
+        try {
+          navigator.mediaSession.setActionHandler(action, handler);
+        } catch (error) {
+          console.log(error);
+        }
+      }
     }
   }, [muted, volume, isPlaying, playing]);
 
