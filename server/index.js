@@ -12,6 +12,9 @@ const { promisify } = require("util");
 const { start } = require("repl");
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {cors: {origin: "*"}});
+const ffmpeg = require('fluent-ffmpeg');
+const { on } = require("process");
+const { error } = require("console");
 
 class Music {
   constructor(music) {
@@ -46,8 +49,21 @@ const mp3path = './mp3'
 const preload = [];
 const songs = [];
 const playedSongs = [];
+let coverBuffer;
 
 let nowPlaying = {};
+
+function getCoverArt(filePath) {
+  return new Promise((resolve, reject) => {
+    console.log(`Retrieving cover art from ${filePath}`);
+    ffmpeg(filePath)
+      .output("./cover.png")
+      .on("end", () => {
+        console.log("Retrieving cover art: Completed");
+        resolve();
+      }).run();
+  })
+}
 
 function playMusic() {
   if (songs.length === 0) {
@@ -86,14 +102,20 @@ function playMusic() {
 
   toPlayReadable.pipe(throttle);
 
-  setTimeout(() => {
-    io.sockets.emit("data", {
-      priority: userQueue,
-      queue: songs,
-      played: playedSongs,
-      playing: nowPlaying,
+  getCoverArt(toPlay).then(() => {
+    fs.readFile("./cover.png", function(err, data) {
+      coverBuffer = new Buffer.from(data).toString('base64');
+      io.sockets.emit("data", {
+        priority: userQueue,
+        queue: songs,
+        played: playedSongs,
+        playing: {
+          ...nowPlaying,
+          cover: coverBuffer
+        }
+      });
     });
-  }, 2000);
+  });
 }
 
 const filterWords = ["カラオケ", "リミックス", "Ver.", "Off Vocal", "(オリジナル", "VERSION)", "ソロ", "Bonus Track", "ラジオ"];
@@ -166,7 +188,10 @@ io.on("connection", socket => {
     priority: userQueue,
     queue: songs,
     played: playedSongs,
-    playing: nowPlaying,
+    playing: {
+      ...nowPlaying,
+      cover: coverBuffer
+    }
   });
 
   socket.on("queue", musicId => {
@@ -180,7 +205,10 @@ io.on("connection", socket => {
           priority: userQueue,
           queue: songs,
           played: playedSongs,
-          playing: nowPlaying,
+          playing: {
+            ...nowPlaying,
+            cover: coverBuffer
+          }
         });
         break;
       }
