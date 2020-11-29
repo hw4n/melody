@@ -23,19 +23,6 @@ function App() {
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.5);
 
-  const actionHandlers = [
-    ['play',          () => {
-      setIsPlaying(true);
-      navigator.mediaSession.playbackState = "playing";
-    }],
-    ['pause',         () => {
-      setIsPlaying(false);
-      navigator.mediaSession.playbackState = "paused";
-    }],
-    ['previoustrack', () => { /* ... */ }],
-    ['nexttrack',     () => { /* ... */ }]
-  ];
-
   useEffect(() => {
     socket.on('data', (msg) => {
       setPriority(msg.priority);
@@ -66,32 +53,47 @@ function App() {
     }
 
     if (playing.cover) {
-      const { title, artist, album } = playing
-      navigator.mediaSession.metadata = new window.MediaMetadata({
-        title: title,
-        artist: artist,
-        album: album,
-        artwork: [
-          { src: `data:image/png;base64,${playing.cover}`, sizes: '96x96', type: 'image/png' },
-          { src: `data:image/png;base64,${playing.cover}`, sizes: '128x128', type: 'image/png' },
-          { src: `data:image/png;base64,${playing.cover}`, sizes: '192x192', type: 'image/png' },
-          { src: `data:image/png;base64,${playing.cover}`, sizes: '256x256', type: 'image/png' },
-          { src: `data:image/png;base64,${playing.cover}`, sizes: '384x384', type: 'image/png' },
-          { src: `data:image/png;base64,${playing.cover}`, sizes: '512x512', type: 'image/png' },
-        ]
-      });
+      if ('mediaSession' in navigator) {
+        const { title, artist, album } = playing
+        navigator.mediaSession.metadata = new window.MediaMetadata({
+          title: title,
+          artist: artist,
+          album: album,
+          artwork: [
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '96x96', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '128x128', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '192x192', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '256x256', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '384x384', type: 'image/png' },
+            { src: `data:image/png;base64,${playing.cover}`, sizes: '512x512', type: 'image/png' },
+          ]
+        });
 
-      navigator.mediaSession.setPositionState({
-        duration: 0,
-        playbackRate: audioRef.current.playbackRate,
-        position: 0
-      });
+        navigator.mediaSession.setPositionState({
+          duration: 0,
+          playbackRate: audioRef.current.playbackRate,
+          position: 0
+        });
 
-      for (const [action, handler] of actionHandlers) {
-        try {
-          navigator.mediaSession.setActionHandler(action, handler);
-        } catch (error) {
-          console.log(error);
+        const actionHandlers = [
+          ['play',          () => {
+            setIsPlaying(true);
+            navigator.mediaSession.playbackState = "playing";
+          }],
+          ['pause',         () => {
+            setIsPlaying(false);
+            navigator.mediaSession.playbackState = "paused";
+          }],
+          ['previoustrack', () => { /* ... */ }],
+          ['nexttrack',     () => { /* ... */ }]
+        ];
+
+        for (const [action, handler] of actionHandlers) {
+          try {
+            navigator.mediaSession.setActionHandler(action, handler);
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
     }
