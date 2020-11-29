@@ -22,6 +22,7 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.5);
+  const [updateTime, setUpdateTime] = useState(Date.now());
 
   useEffect(() => {
     socket.on('data', (msg) => {
@@ -29,6 +30,7 @@ function App() {
       setQueue(msg.queue);
       setPlayed(msg.played);
       setPlaying(msg.playing);
+      setUpdateTime(Date.now());
     });
 
     if (muted && volume > 0) {
@@ -55,17 +57,18 @@ function App() {
     if (playing.cover) {
       if ('mediaSession' in navigator) {
         const { title, artist, album } = playing
+
         navigator.mediaSession.metadata = new window.MediaMetadata({
           title: title,
           artist: artist,
           album: album,
           artwork: [
-            { src: `data:image/png;base64,${playing.cover}`, sizes: '96x96', type: 'image/png' },
-            { src: `data:image/png;base64,${playing.cover}`, sizes: '128x128', type: 'image/png' },
-            { src: `data:image/png;base64,${playing.cover}`, sizes: '192x192', type: 'image/png' },
-            { src: `data:image/png;base64,${playing.cover}`, sizes: '256x256', type: 'image/png' },
-            { src: `data:image/png;base64,${playing.cover}`, sizes: '384x384', type: 'image/png' },
-            { src: `data:image/png;base64,${playing.cover}`, sizes: '512x512', type: 'image/png' },
+            { src: `/96.png?${updateTime}`,  sizes: '96x96',   type: 'image/png' },
+            { src: `/128.png?${updateTime}`, sizes: '128x128', type: 'image/png' },
+            { src: `/192.png?${updateTime}`, sizes: '192x192', type: 'image/png' },
+            { src: `/256.png?${updateTime}`, sizes: '256x256', type: 'image/png' },
+            { src: `/384.png?${updateTime}`, sizes: '384x384', type: 'image/png' },
+            { src: `/512.png?${updateTime}`, sizes: '512x512', type: 'image/png' },
           ]
         });
 
@@ -196,7 +199,7 @@ function App() {
         <div className="currentMusic">
           {playing.cover ? (
             <>
-              <img class="coverArt" src={`data:image/png;base64, ${playing.cover}`} alt="album cover artwork"/>
+              <img class="coverArt" src={`/96.png?${updateTime}`} alt="album cover artwork"/>
               <div className="currentMusicText">
                 <div className="currentTitle dotOverflow">{playing.title}</div>
                 <div className="currentArtist dotOverflow">{playing.artist}</div>
