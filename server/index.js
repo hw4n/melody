@@ -49,7 +49,6 @@ const mp3path = './mp3'
 const preload = [];
 const songs = [];
 const playedSongs = [];
-let coverBuffer;
 
 let nowPlaying = {};
 
@@ -57,7 +56,18 @@ function getCoverArt(filePath) {
   return new Promise((resolve, reject) => {
     console.log(`Retrieving cover art from ${filePath}`);
     ffmpeg(filePath)
-      .output("./cover.png")
+      .size("96x96")
+      .output("./cover/96.png")
+      .size("128x128")
+      .output("./cover/128.png")
+      .size("192x192")
+      .output("./cover/192.png")
+      .size("256x256")
+      .output("./cover/256.png")
+      .size("384x384")
+      .output("./cover/384.png")
+      .size("512x512")
+      .output("./cover/512.png")
       .on("end", () => {
         console.log("Retrieving cover art: Completed");
         resolve();
@@ -104,17 +114,11 @@ function playMusic() {
 
   setTimeout(() => {
     getCoverArt(toPlay).then(() => {
-      fs.readFile("./cover.png", function(err, data) {
-        coverBuffer = new Buffer.from(data).toString('base64');
-        io.sockets.emit("data", {
-          priority: userQueue,
-          queue: songs,
-          played: playedSongs,
-          playing: {
-            ...nowPlaying,
-            cover: coverBuffer
-          }
-        });
+      io.sockets.emit("data", {
+        priority: userQueue,
+        queue: songs,
+        played: playedSongs,
+        playing: nowPlaying
       });
     });
   }, 3000);
@@ -190,10 +194,7 @@ io.on("connection", socket => {
     priority: userQueue,
     queue: songs,
     played: playedSongs,
-    playing: {
-      ...nowPlaying,
-      cover: coverBuffer
-    }
+    playing: nowPlaying
   });
 
   socket.on("queue", musicId => {
@@ -207,16 +208,15 @@ io.on("connection", socket => {
           priority: userQueue,
           queue: songs,
           played: playedSongs,
-          playing: {
-            ...nowPlaying,
-            cover: coverBuffer
-          }
+          playing: nowPlaying
         });
         break;
       }
     }
   })
 });
+
+app.use(express.static(path.join(__dirname, "cover")));
 
 app.get("/stream", (req, res) => {
   const anotherOne = PassThrough();
