@@ -54,53 +54,51 @@ function App() {
       document.title = DEFAULT_TITLE;
     }
 
-    if (playing.cover) {
-      if ('mediaSession' in navigator) {
-        const { title, artist, album } = playing
+    if ('mediaSession' in navigator) {
+      const { title, artist, album } = playing
 
-        navigator.mediaSession.metadata = new window.MediaMetadata({
-          title: title,
-          artist: artist,
-          album: album,
-          artwork: [
-            { src: `/96.png?${updateTime}`,  sizes: '96x96',   type: 'image/png' },
-            { src: `/128.png?${updateTime}`, sizes: '128x128', type: 'image/png' },
-            { src: `/192.png?${updateTime}`, sizes: '192x192', type: 'image/png' },
-            { src: `/256.png?${updateTime}`, sizes: '256x256', type: 'image/png' },
-            { src: `/384.png?${updateTime}`, sizes: '384x384', type: 'image/png' },
-            { src: `/512.png?${updateTime}`, sizes: '512x512', type: 'image/png' },
-          ]
-        });
+      navigator.mediaSession.metadata = new window.MediaMetadata({
+        title: title,
+        artist: artist,
+        album: album,
+        artwork: [
+          { src: `/96.png?${updateTime}`,  sizes: '96x96',   type: 'image/png' },
+          { src: `/128.png?${updateTime}`, sizes: '128x128', type: 'image/png' },
+          { src: `/192.png?${updateTime}`, sizes: '192x192', type: 'image/png' },
+          { src: `/256.png?${updateTime}`, sizes: '256x256', type: 'image/png' },
+          { src: `/384.png?${updateTime}`, sizes: '384x384', type: 'image/png' },
+          { src: `/512.png?${updateTime}`, sizes: '512x512', type: 'image/png' },
+        ]
+      });
 
-        navigator.mediaSession.setPositionState({
-          duration: 0,
-          playbackRate: audioRef.current.playbackRate,
-          position: 0
-        });
+      navigator.mediaSession.setPositionState({
+        duration: 0,
+        playbackRate: audioRef.current.playbackRate,
+        position: 0
+      });
 
-        const actionHandlers = [
-          ['play',          () => {
-            setIsPlaying(true);
-            navigator.mediaSession.playbackState = "playing";
-          }],
-          ['pause',         () => {
-            setIsPlaying(false);
-            navigator.mediaSession.playbackState = "paused";
-          }],
-          ['previoustrack', () => { /* ... */ }],
-          ['nexttrack',     () => { /* ... */ }]
-        ];
+      const actionHandlers = [
+        ['play',          () => {
+          setIsPlaying(true);
+          navigator.mediaSession.playbackState = "playing";
+        }],
+        ['pause',         () => {
+          setIsPlaying(false);
+          navigator.mediaSession.playbackState = "paused";
+        }],
+        ['previoustrack', () => { /* ... */ }],
+        ['nexttrack',     () => { /* ... */ }]
+      ];
 
-        for (const [action, handler] of actionHandlers) {
-          try {
-            navigator.mediaSession.setActionHandler(action, handler);
-          } catch (error) {
-            console.log(error);
-          }
+      for (const [action, handler] of actionHandlers) {
+        try {
+          navigator.mediaSession.setActionHandler(action, handler);
+        } catch (error) {
+          console.log(error);
         }
       }
     }
-  }, [muted, volume, isPlaying, playing]);
+  }, [muted, volume, isPlaying, playing, updateTime]);
 
   const audioRef = useRef();
   const volumeRef = useRef();
@@ -197,7 +195,7 @@ function App() {
           <audio ref={audioRef} src="" preload="none"/>
         )}
         <div className="currentMusic">
-          {playing.cover ? (
+          {playing ? (
             <>
               <img class="coverArt" src={`/96.png?${updateTime}`} alt="album cover artwork"/>
               <div className="currentMusicText">
