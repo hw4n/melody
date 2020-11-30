@@ -112,16 +112,11 @@ function playMusic() {
 
   toPlayReadable.pipe(throttle);
 
-  setTimeout(() => {
-    getCoverArt(toPlay).then(() => {
-      io.sockets.emit("data", {
-        priority: userQueue,
-        queue: songs,
-        played: playedSongs,
-        playing: nowPlaying
-      });
-    });
-  }, 3000);
+  getCoverArt(toPlay).then(() => {
+    setTimeout(() => {
+      io.sockets.emit("playNext");
+    }, 3000);
+  });
 }
 
 const filterWords = ["カラオケ", "リミックス", "Ver.", "Off Vocal", "(オリジナル", "VERSION)", "ソロ", "Bonus Track", "ラジオ"];
