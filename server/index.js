@@ -189,12 +189,27 @@ getFiles("./mp3").then(loadMusicFiles);
 
 const userQueue = [];
 
+function minimizeMusicObject(music) {
+  const { duration, title, album, artist, id } = music
+  return {
+    duration,
+    title,
+    album,
+    artist,
+    id
+  }
+}
+
+function minimizeMusicArray(musicArray) {
+  return musicArray.map(music => minimizeMusicObject(music));
+}
+
 io.on("connection", socket => {
   socket.emit("data", {
-    priority: userQueue,
-    queue: songs,
-    played: playedSongs,
-    playing: nowPlaying
+    priority: minimizeMusicArray(userQueue),
+    queue: minimizeMusicArray(songs),
+    played: minimizeMusicArray(playedSongs),
+    playing: minimizeMusicObject(nowPlaying)
   });
 
   socket.on("queue", musicId => {
