@@ -56,18 +56,18 @@ function getCoverArt(filePath) {
   return new Promise((resolve, reject) => {
     console.log(`Retrieving cover art from ${filePath}`);
     ffmpeg(filePath)
-      .size("96x96")
       .output("./cover/96.png")
-      .size("128x128")
+      .size("96x96")
       .output("./cover/128.png")
-      .size("192x192")
+      .size("128x128")
       .output("./cover/192.png")
-      .size("256x256")
+      .size("192x192")
       .output("./cover/256.png")
-      .size("384x384")
+      .size("256x256")
       .output("./cover/384.png")
-      .size("512x512")
+      .size("384x384")
       .output("./cover/512.png")
+      .size("512x512")
       .on("end", () => {
         console.log("Retrieving cover art: Completed");
         resolve();
