@@ -25,11 +25,46 @@ function App() {
   const [updateTime, setUpdateTime] = useState(Date.now());
 
   useEffect(() => {
-    socket.on('data', (msg) => {
+    socket.on('init', (msg) => {
       setPriority(msg.priority);
       setQueue(msg.queue);
       setPlayed(msg.played);
       setPlaying(msg.playing);
+      setUpdateTime(Date.now());
+    });
+
+    socket.off('priority');
+    socket.on('priority', musicId => {
+      const newQueue = [...queue];
+      const newPriority = [...priority];
+      for (let i = 0; i < newQueue.length; i++) {
+        const music = newQueue[i];
+        if (music.id === musicId) {
+          const musicToPush = newQueue.splice(i, 1)[0];
+          newPriority.push(musicToPush);
+          setQueue(newQueue);
+          setPriority(newPriority);
+          break;
+        }
+      }
+    });
+
+    socket.off('playNext');
+    socket.on('playNext', () => {
+      console.count("playnext");
+      const newQueue = [...queue];
+      const newPriority = [...priority];
+      const musicToPush = playing;
+      if (priority.length > 0) {
+        const musicToSet = newPriority.splice(0, 1)[0];
+        setPlaying(musicToSet);
+        setPriority(newPriority);
+      } else {
+        const musicToSet = newQueue.splice(0, 1)[0];
+        setPlaying(musicToSet);
+        setQueue(newQueue);
+      }
+      setPlayed([...played, musicToPush]);
       setUpdateTime(Date.now());
     });
 
@@ -98,13 +133,13 @@ function App() {
         }
       }
     }
-  }, [muted, volume, isPlaying, playing, updateTime]);
+  }, [muted, volume, isPlaying, playing, updateTime, priority, queue, played]);
 
   const audioRef = useRef();
   const volumeRef = useRef();
 
   function handleSongDoubleClick(e) {
-    socket.emit("queue", parseInt(e.currentTarget.id));
+    socket.emit("priority", parseInt(e.currentTarget.id));
   }
 
   return (
