@@ -205,26 +205,20 @@ function minimizeMusicArray(musicArray) {
 }
 
 io.on("connection", socket => {
-  socket.emit("data", {
+  socket.emit("init", {
     priority: minimizeMusicArray(userQueue),
     queue: minimizeMusicArray(songs),
     played: minimizeMusicArray(playedSongs),
     playing: minimizeMusicObject(nowPlaying)
   });
 
-  socket.on("queue", musicId => {
+  socket.on("priority", musicId => {
     for (let i = 0; i < songs.length; i++) {
       const song = songs[i];
       if (song.id === musicId) {
         userQueue.push(songs.splice(i, 1)[0]);
         console.log(`Pushed to userQueue: ${song.title}`);
-
-        io.sockets.emit("data", {
-          priority: userQueue,
-          queue: songs,
-          played: playedSongs,
-          playing: nowPlaying
-        });
+        io.sockets.emit("priority", song.id);
         break;
       }
     }
