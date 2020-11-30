@@ -98,12 +98,8 @@ function playMusic() {
   const throttle = new Throttle(song.bit_rate / 8);
 
   throttle.on('data', chunk => {
-    for (let i = writables.length - 1; i >= 0; i--) {
-      if (writables[i]._readableState.pipesCount === 0) {
-        writables.splice(i, 1);
-      } else {
-        writables[i].write(chunk);
-      }
+    for (let i = 0; i < writables.length; i++) {
+      writables[i].write(chunk);
     }
   }).on('end', () => {
     playedSongs.push(song);
@@ -218,6 +214,19 @@ io.on("connection", socket => {
       }
     }
   })
+
+  socket.on("disconnect", () => {
+    let cleanUp = 0;
+    for (let i = writables.length - 1; i >= 0; i--) {
+      if (writables[i]._readableState.pipesCount === 0) {
+        writables.splice(i, 1);
+        cleanUp++;
+      }
+    }
+    if (cleanUp) {
+      console.log(`Cleaned ${cleanUp} writable(s)`);
+    }
+  });
 });
 
 app.use(express.static(path.join(__dirname, "cover")));
