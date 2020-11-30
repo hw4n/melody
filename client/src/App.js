@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import io from "socket.io-client";
 import { useEffect, useRef, useState } from 'react';
@@ -51,7 +50,6 @@ function App() {
 
     socket.off('playNext');
     socket.on('playNext', () => {
-      console.count("playnext");
       const newQueue = [...queue];
       const newPriority = [...priority];
       const musicToPush = playing;
@@ -232,7 +230,7 @@ function App() {
         <div className="currentMusic">
           {playing ? (
             <>
-              <img class="coverArt" src={`/96.png?${updateTime}`} alt="album cover artwork"/>
+              <img className="coverArt" src={`/96.png?${updateTime}`} alt="album cover artwork"/>
               <div className="currentMusicText">
                 <div className="currentTitle dotOverflow">{playing.title}</div>
                 <div className="currentArtist dotOverflow">{playing.artist}</div>
