@@ -24,6 +24,7 @@ function App() {
   const [updateTime, setUpdateTime] = useState(Date.now());
 
   useEffect(() => {
+    socket.off('init');
     socket.on('init', (msg) => {
       setPriority(msg.priority);
       setQueue(msg.queue);
