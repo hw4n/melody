@@ -30,6 +30,19 @@ function App() {
       setPlayed(msg.played);
       setPlaying(msg.playing);
       setUpdateTime(Date.now());
+
+      document.addEventListener("keydown", (e) => {
+        if (e.target.type === "text") {
+          return
+        }
+
+        if (e.key === " ") {
+          e.preventDefault();
+          setIsPlaying(isPlaying => !isPlaying);
+        } else if (e.key === "m" || e.key === "M") {
+          setMuted(muted => !muted);
+        }
+      });
     });
 
     socket.off('priority');
