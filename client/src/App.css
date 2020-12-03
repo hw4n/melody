@@ -49,6 +49,35 @@ li {
   list-style-type: none;
 }
 
+.search {
+  display: flex;
+  height: 40px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  color: #757575;
+  border-radius: 3px;
+  margin-top: 30px;
+}
+
+.search input {
+  height: 100%;
+  flex-grow: 1;
+  background-color: transparent;
+  border: none;
+  padding: 10px 10px;
+  color: #757575;
+}
+
+.search:hover,
+.search:hover input {
+  color: white;
+}
+
+.search:focus-within {
+  background-color: #404040;
+}
+
 .song {
   border-bottom: 1px solid #282828;
   padding: 5px 0;

@@ -1,7 +1,7 @@
 import './App.css';
 import io from "socket.io-client";
 import { useEffect, useRef, useState } from 'react';
-import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faClock, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 let SOCKET_URI = "/"
@@ -169,6 +169,10 @@ function App() {
           <div className="artist dotOverflow">{playing.artist}</div>
           <div className="album dotOverflow">{playing.album}</div>
           <div className="duration">{playing.duration}</div>
+        </div>
+        <div className="search">
+          <FontAwesomeIcon icon={faSearch}/>
+          <input type="text" placeholder="Search for Title / Artist / Album"/>
         </div>
         <h3 className="songListHeader divider">user queued list</h3>
         <div className="columnIndicator divider">
