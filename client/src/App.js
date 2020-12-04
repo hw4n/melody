@@ -217,7 +217,10 @@ function App() {
         </div>
         { searching ? (
           <>
-          <h3 className="songListHeader divider"><span className="searching">search result </span>user queued list</h3>
+          <div className="searchHeader songListHeader divider">
+            <h3 className=""><span className="searching">search result </span>user queued list</h3>
+            <h3 className="searching">{searchPriority.length} found</h3>
+          </div>
           <div className="columnIndicator divider">
             <div>title</div>
             <div>artist</div>
@@ -241,7 +244,10 @@ function App() {
               </div>
             </div>
           </div>
-          <h3 className="songListHeader divider"><span className="searching">search result </span>next in queue</h3>
+          <div className="searchHeader songListHeader divider">
+            <h3 className=""><span className="searching">search result </span>next in queue</h3>
+            <h3 className="searching">{searchQueue.length} found</h3>
+          </div>
           <div className="columnIndicator divider">
             <div>title</div>
             <div>artist</div>
@@ -260,7 +266,10 @@ function App() {
               )
             })}
           </div>
-          <h3 className="songListHeader divider"><span className="searching">search result </span>already played</h3>
+          <div className="searchHeader songListHeader divider">
+            <h3 className=""><span className="searching">search result </span>next in queue</h3>
+            <h3 className="searching">{searchPlayed.length} found</h3>
+          </div>
           <div className="columnIndicator divider">
             <div>title</div>
             <div>artist</div>

@@ -82,6 +82,16 @@ li {
   background-color: #404040;
 }
 
+.searchHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.searchHeader h3 {
+  margin: 0;
+}
+
 .searching {
   color: #ff9f1c;
 }
