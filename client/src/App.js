@@ -197,9 +197,10 @@ function App() {
         <div className="search">
           <FontAwesomeIcon icon={faSearch}/>
           <input type="text" placeholder="Search for Title / Artist / Album" onInput={(e) => {
-            if (e.target.value.trim().length > 0) {
+            const currentValue = e.target.value.trim();
+            if (currentValue.length > 0) {
               setSearching(true);
-              setSearchKeyword(e.target.value.toLowerCase());
+              setSearchKeyword(currentValue.toLowerCase());
             } else {
               setSearching(false);
               setSearchKeyword("");
