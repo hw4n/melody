@@ -205,11 +205,15 @@ function App() {
               setSearchKeyword("");
             }
           }}/>
-          <FontAwesomeIcon icon={faTimes} onClick={(e) => {
-            e.currentTarget.parentNode.querySelector("input").value = "";
-            setSearching(false);
-            setSearchKeyword("");
-          }}/>
+          { searchKeyword.length ? (
+            <FontAwesomeIcon icon={faTimes} onClick={(e) => {
+              e.currentTarget.parentNode.querySelector("input").value = "";
+              setSearching(false);
+              setSearchKeyword("");
+            }}/>
+          ) : (
+            <></>
+          )}
         </div>
         { searching ? (
           <>
