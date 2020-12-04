@@ -268,7 +268,7 @@ function App() {
             })}
           </div>
           <div className="searchHeader songListHeader divider">
-            <h3 className=""><span className="searching">search result </span>next in queue</h3>
+            <h3 className=""><span className="searching">search result </span>already played</h3>
             <h3 className="searching">{searchPlayed.length} found</h3>
           </div>
           <div className="columnIndicator divider">
