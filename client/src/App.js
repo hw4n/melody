@@ -27,9 +27,13 @@ function App() {
   const [searchPriority, setSearchPriority] = useState([]);
   const [searchQueue, setSearchQueue] = useState([]);
   const [searchPlayed, setSearchPlayed] = useState([]);
-
+  const [socketId, setSocketId] = useState(undefined);
 
   useEffect(() => {
+    if (socketId === undefined) {
+      setSocketId(socket.id);
+    }
+
     socket.off('init');
     socket.on('init', (msg) => {
       setPriority(msg.priority);
@@ -181,7 +185,7 @@ function App() {
       setSearchQueue(newSearchQueue);
       setSearchPlayed(newSearchPlayed);
     }
-  }, [muted, volume, isPlaying, playing, updateTime, priority, queue, played, searching, searchKeyword]);
+  }, [muted, volume, isPlaying, playing, updateTime, priority, queue, played, searching, searchKeyword, socketId]);
 
   const audioRef = useRef();
   const volumeRef = useRef();
@@ -371,8 +375,8 @@ function App() {
       </div>
       <footer>
         {isPlaying ? (
-          <audio ref={audioRef} src="/stream">
-            <source src="/stream" type="audio/mpeg"/>
+          <audio ref={audioRef} src={`/stream?id=${socketId}`}>
+            <source src={`/stream?id=${socketId}`} type="audio/mpeg"/>
           </audio>
         ) : (
           <audio ref={audioRef} src="" preload="none"/>
