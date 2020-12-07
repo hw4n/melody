@@ -83,12 +83,15 @@ function playMusic() {
   }
 
   let song;
+  let FROM_QUEUE;
   if (userQueue.length > 0) {
     song = userQueue.shift();
     console.log(`Will play from userQ: ${song.title}`);
+    FROM_QUEUE = "priority";
   } else {
     song = songs.shift();
     console.log(`Will play from songs: ${song.title}`);
+    FROM_QUEUE = "queue";
   }
 
   const toPlay = song.file;
@@ -110,7 +113,10 @@ function playMusic() {
 
   getCoverArt(toPlay).then(() => {
     setTimeout(() => {
-      io.sockets.emit("playNext");
+      io.sockets.emit("playNext", {
+        FROM_QUEUE,
+        id: song.id
+      });
     }, 3000);
   });
 }
