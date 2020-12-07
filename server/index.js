@@ -28,8 +28,6 @@ class Music {
   }
 }
 
-const writables = [];
-
 function shuffle(array) {
   let currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -101,8 +99,8 @@ function playMusic() {
   const throttle = new Throttle(song.bit_rate / 8);
 
   throttle.on('data', chunk => {
-    for (let i = 0; i < writables.length; i++) {
-      writables[i].write(chunk);
+    for (const writable of Object.values(writables)) {
+      writable.write(chunk);
     }
   }).on('end', () => {
     playedSongs.push(song);
@@ -201,7 +199,12 @@ function minimizeMusicArray(musicArray) {
   return musicArray.map(music => minimizeMusicObject(music));
 }
 
+const connectedSocketIds = [];
+
 io.on("connection", socket => {
+  connectedSocketIds.push(socket.id);
+  console.log(`Added ${socket.id} to connectedSocketIds[]`);
+
   socket.emit("init", {
     priority: minimizeMusicArray(userQueue),
     queue: minimizeMusicArray(songs),
@@ -222,27 +225,39 @@ io.on("connection", socket => {
   })
 
   socket.on("disconnect", () => {
-    let cleanUp = 0;
-    for (let i = writables.length - 1; i >= 0; i--) {
-      if (writables[i]._readableState.pipesCount === 0) {
-        writables.splice(i, 1);
-        cleanUp++;
+    for (const socketId of Object.keys(writables)) {
+      if (socketId === socket.id) {
+        delete writables[socketId];
+        console.log(`Removed ${socketId} from writables`);
+        break;
       }
     }
-    if (cleanUp) {
-      console.log(`Cleaned ${cleanUp} writable(s)`);
+
+    for (let i = 0; i < connectedSocketIds.length; i++) {
+      if (connectedSocketIds[i] === socket.id) {
+        connectedSocketIds.splice(i, 1);
+        console.log(`Removed ${socket.id} from connectedSocketIds[]`);
+        break;
+      }
     }
   });
 });
 
 app.use(express.static(path.join(__dirname, "cover")));
 
-app.get("/stream", (req, res) => {
-  const anotherOne = PassThrough();
-  writables.push(anotherOne);
+const writables = {};
 
-  res.setHeader("Content-Type", "audio/mpeg");
+app.get("/stream", (req, res) => {
+  if (connectedSocketIds.includes(req.query.id)) {
+    const anotherOne = PassThrough();
+    writables[req.query.id] = anotherOne;
+    console.log(`Added ${req.query.id} to writables`);
+
+    res.setHeader("Content-Type", "audio/mpeg");
     return anotherOne.pipe(res);
+  } else {
+    return res.status(401).send("");
+  }
 });
 
 server.listen(PORT, () => {
