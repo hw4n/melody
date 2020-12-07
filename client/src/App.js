@@ -69,18 +69,30 @@ function App() {
     });
 
     socket.off('playNext');
-    socket.on('playNext', () => {
+    socket.on('playNext', (next) => {
       const newQueue = [...queue];
       const newPriority = [...priority];
       const musicToPush = playing;
-      if (priority.length > 0) {
-        const musicToSet = newPriority.splice(0, 1)[0];
-        setPlaying(musicToSet);
-        setPriority(newPriority);
+      if (next.FROM_QUEUE === "priority") {
+        for (let i = 0; i < newPriority.length; i++) {
+          const music = newPriority[i];
+          if (music.id === next.id) {
+            const musicToSet = newPriority.splice(0, 1)[0];
+            setPlaying(musicToSet);
+            setPriority(newPriority);
+            break;
+          }
+        }
       } else {
-        const musicToSet = newQueue.splice(0, 1)[0];
-        setPlaying(musicToSet);
-        setQueue(newQueue);
+        for (let i = 0; i < newQueue.length; i++) {
+          const music = newQueue[i];
+          if (music.id === next.id) {
+            const musicToSet = newQueue.splice(0, 1)[0];
+            setPlaying(musicToSet);
+            setQueue(newQueue);
+            break;
+          }
+        }
       }
       setPlayed([...played, musicToPush]);
       setUpdateTime(Date.now());
