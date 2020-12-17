@@ -1,8 +1,10 @@
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
 const fs = require("fs");
 const path = require("path");
-const PORT = 3333;
+const PORT = process.env.PORT;
 const { PassThrough } = require('stream');
 const Throttle = require('throttle');
 const { ffprobeSync, ffprobe } = require('@dropb/ffprobe');
@@ -263,3 +265,12 @@ app.get("/stream", (req, res) => {
 server.listen(PORT, () => {
   console.log(`Server started at ${PORT}`);
 });
+
+if (process.env.STAGE === "live") {
+  const path = require("path");
+  app.use('/', express.static(path.join(__dirname, 'build')))
+
+  app.get('/*', (req, res) => {
+    res.redirect("/");
+  })
+}
