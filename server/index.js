@@ -7,16 +7,12 @@ const path = require("path");
 const PORT = process.env.PORT;
 const { PassThrough } = require('stream');
 const Throttle = require('throttle');
-const { ffprobeSync, ffprobe } = require('@dropb/ffprobe');
+const { ffprobe } = require('@dropb/ffprobe');
 const { resolve } = require("path");
-const { rejects } = require("assert");
 const { promisify } = require("util");
-const { start } = require("repl");
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {cors: {origin: "*"}});
 const ffmpeg = require('fluent-ffmpeg');
-const { on } = require("process");
-const { error } = require("console");
 
 class Music {
   constructor(music) {
@@ -45,7 +41,6 @@ function shuffle(array) {
   return array;
 }
 
-const mp3path = './mp3'
 const preload = [];
 const songs = [];
 const playedSongs = [];
@@ -120,8 +115,6 @@ function playMusic() {
     }, 3000);
   });
 }
-
-const filterWords = ["カラオケ", "リミックス", "Ver.", "Off Vocal", "(オリジナル", "VERSION)", "ソロ", "Bonus Track", "ラジオ"];
 
 const loadMusicFiles = async(filePathArray) => {
   console.log("Begin loading music files");
