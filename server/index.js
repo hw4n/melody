@@ -75,6 +75,13 @@ function playMusic() {
     songs.push(...shuffle(playedSongs));
     playedSongs.length = 0;
     console.log(`Reloaded and shuffled ${songs.length} songs"`);
+
+    io.sockets.emit("init", {
+      priority: minimizeMusicArray(userQueue),
+      queue: minimizeMusicArray(songs),
+      played: minimizeMusicArray(playedSongs),
+      playing: {},
+    });
   }
 
   let song;
@@ -117,12 +124,11 @@ function playMusic() {
 }
 
 const loadMusicFiles = async(filePathArray) => {
-  console.log("Begin loading music files");
+  console.log(`Begin loading ${filePathArray.length} music files`);
   let processCounter = 0;
   for (let i = 0; i < filePathArray.length; i++) {
-    process.stdout.write(`Begin processing ${i} musics\r`);
     const filePath = filePathArray[i];
-    
+
     ffprobe(filePath)
       .then(data => {
         processCounter += 1;
@@ -145,8 +151,9 @@ const loadMusicFiles = async(filePathArray) => {
         }
   
         preload.push(new Music({id, duration, bit_rate, title, album, artist, file: filePath}));
+        process.stdout.write(`Processed music, id ${id}\r`);
 
-        if (processCounter === filePathArray.length - 1) {
+        if (processCounter === filePathArray.length) {
           startPlaying();
         }
       })
@@ -154,8 +161,7 @@ const loadMusicFiles = async(filePathArray) => {
 };
 
 function startPlaying() {
-  console.log(`Total number of music is: ${preload.length}`);
-          
+  console.log(`\r${preload.length} musics loaded, begin shuffle`);
   songs.push(...shuffle(preload));
   console.log("Shuffle done");
   preload.length = 0;
