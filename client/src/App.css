@@ -133,7 +133,7 @@ li {
   color: #b3b3b3;
 }
 
-.played .song:last-of-type {
+.played {
   margin-bottom: 30px;
 }
 
