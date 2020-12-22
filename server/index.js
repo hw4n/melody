@@ -103,8 +103,13 @@ function playMusic() {
   const throttle = new Throttle(song.bit_rate / 8);
 
   throttle.on('data', chunk => {
-    for (const writable of Object.values(writables)) {
-      writable.write(chunk);
+    for (const [id, writable] of Object.entries(writables)) {
+      if (writable._readableState.flowing) {
+        writable.write(chunk);
+      } else {
+        delete writables[id];
+        console.log(`Removed a writable object, ${Object.entries(writables).length} writable(s) existing`);
+      }
     }
   }).on('end', () => {
     playedSongs.push(song);
@@ -226,14 +231,6 @@ io.on("connection", socket => {
   })
 
   socket.on("disconnect", () => {
-    for (const socketId of Object.keys(writables)) {
-      if (socketId === socket.id) {
-        delete writables[socketId];
-        console.log(`Removed ${socketId} from writables`);
-        break;
-      }
-    }
-
     for (let i = 0; i < connectedSocketIds.length; i++) {
       if (connectedSocketIds[i] === socket.id) {
         connectedSocketIds.splice(i, 1);
