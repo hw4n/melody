@@ -1,8 +1,9 @@
 import './App.css';
 import io from "socket.io-client";
 import { useEffect, useRef, useState } from 'react';
-import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faClock, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import MusicList from "./components/MusicList";
 
 let SOCKET_URI = "/"
 if (process.env.NODE_ENV === "development") {
@@ -190,26 +191,18 @@ function App() {
   const audioRef = useRef();
   const volumeRef = useRef();
 
-  function handleSongDoubleClick(e) {
+  function requestQueueing(e) {
     socket.emit("priority", parseInt(e.currentTarget.id));
   }
 
   return (
     <div className="App">
       <div className="container">
-        <h3 className="songListHeader divider">now playing</h3>
-        <div className="columnIndicator divider">
-          <div>title</div>
-          <div>artist</div>
-          <div>album</div>
-          <div><FontAwesomeIcon icon={faClock}/></div>
-        </div>
-        <div className="song playing">
-          <div className="title dotOverflow">{playing.title}</div>
-          <div className="artist dotOverflow">{playing.artist}</div>
-          <div className="album dotOverflow">{playing.album}</div>
-          <div className="duration">{playing.duration}</div>
-        </div>
+        <MusicList
+          listTitle="now playing"
+          customClassName="playing"
+          musicArray={[playing]}
+        />
         <div className="search">
           <FontAwesomeIcon icon={faSearch}/>
           <input type="text" placeholder="Search for Title / Artist / Album" onInput={(e) => {
@@ -234,142 +227,46 @@ function App() {
         </div>
         { searching ? (
           <>
-          <div className="searchHeader songListHeader divider">
-            <h3 className=""><span className="searching">search result </span>user queued list</h3>
-            <h3 className="searching">{searchPriority.length} found</h3>
-          </div>
-          <div className="columnIndicator divider">
-            <div>title</div>
-            <div>artist</div>
-            <div>album</div>
-            <div><FontAwesomeIcon icon={faClock}/></div>
-          </div>
-          <div className="priority">
-            {searchPriority.map(song => {
-              return (
-                <div className="song" key={song.id} id={song.id}>
-                  <div className="title dotOverflow">{song.title}</div>
-                  <div className="artist dotOverflow">{song.artist}</div>
-                  <div className="album dotOverflow">{song.album}</div>
-                  <div className="duration dotOverflow">{song.duration}</div>
-                </div>
-              )
-            })}
-            <div className="song">
-              <div className="tip dotOverflow">
-                You can queue any music you want by double-clicking music!
-              </div>
-            </div>
-          </div>
-          <div className="searchHeader songListHeader divider">
-            <h3 className=""><span className="searching">search result </span>next in queue</h3>
-            <h3 className="searching">{searchQueue.length} found</h3>
-          </div>
-          <div className="columnIndicator divider">
-            <div>title</div>
-            <div>artist</div>
-            <div>album</div>
-            <div><FontAwesomeIcon icon={faClock}/></div>
-          </div>
-          <div className="queue">
-            {searchQueue.map(song => {
-              return (
-                <div className="song" key={song.id} id={song.id} onDoubleClick={handleSongDoubleClick}>
-                  <div className="title dotOverflow">{song.title}</div>
-                  <div className="artist dotOverflow">{song.artist}</div>
-                  <div className="album dotOverflow">{song.album}</div>
-                  <div className="duration dotOverflow">{song.duration}</div>
-                </div>
-              )
-            })}
-          </div>
-          <div className="searchHeader songListHeader divider">
-            <h3 className=""><span className="searching">search result </span>already played</h3>
-            <h3 className="searching">{searchPlayed.length} found</h3>
-          </div>
-          <div className="columnIndicator divider">
-            <div>title</div>
-            <div>artist</div>
-            <div>album</div>
-            <div><FontAwesomeIcon icon={faClock}/></div>
-          </div>
-          <div className="played">
-            {searchPlayed.map(song => {
-              return (
-                <div className="song" key={song.id}>
-                  <div className="title dotOverflow">{song.title}</div>
-                  <div className="artist dotOverflow">{song.artist}</div>
-                  <div className="album dotOverflow">{song.album}</div>
-                  <div className="duration dotOverflow">{song.duration}</div>
-                </div>
-              )
-            })}
-          </div>
+            <MusicList
+              searching={true}
+              listTitle="user queued list"
+              customClassName="priority"
+              musicArray={searchPriority}
+              message="You can queue any music you want by double-clicking music!"
+            />
+            <MusicList
+              searching={true}
+              listTitle="next in queue"
+              customClassName="queue"
+              musicArray={searchQueue}
+              handleDoubleClick={requestQueueing}
+            />
+            <MusicList
+              searching={true}
+              listTitle="already played"
+              customClassName="played"
+              musicArray={searchPlayed}
+            />
           </>
         ) : (
           <>
-          <h3 className="songListHeader divider">user queued list</h3>
-          <div className="columnIndicator divider">
-            <div>title</div>
-            <div>artist</div>
-            <div>album</div>
-            <div><FontAwesomeIcon icon={faClock}/></div>
-          </div>
-          <div className="priority">
-            {priority.map(song => {
-              return (
-                <div className="song" key={song.id} id={song.id}>
-                  <div className="title dotOverflow">{song.title}</div>
-                  <div className="artist dotOverflow">{song.artist}</div>
-                  <div className="album dotOverflow">{song.album}</div>
-                  <div className="duration dotOverflow">{song.duration}</div>
-                </div>
-              )
-            })}
-            <div className="song">
-              <div className="tip dotOverflow">
-                You can queue any music you want by double-clicking music!
-              </div>
-            </div>
-          </div>
-          <h3 className="songListHeader divider">next in queue</h3>
-          <div className="columnIndicator divider">
-            <div>title</div>
-            <div>artist</div>
-            <div>album</div>
-            <div><FontAwesomeIcon icon={faClock}/></div>
-          </div>
-          <div className="queue">
-            {queue.map(song => {
-              return (
-                <div className="song" key={song.id} id={song.id} onDoubleClick={handleSongDoubleClick}>
-                  <div className="title dotOverflow">{song.title}</div>
-                  <div className="artist dotOverflow">{song.artist}</div>
-                  <div className="album dotOverflow">{song.album}</div>
-                  <div className="duration dotOverflow">{song.duration}</div>
-                </div>
-              )
-            })}
-          </div>
-          <h3 className="songListHeader divider">already played</h3>
-          <div className="columnIndicator divider">
-            <div>title</div>
-            <div>artist</div>
-            <div>album</div>
-            <div><FontAwesomeIcon icon={faClock}/></div>
-          </div>
-          <div className="played">
-            {played.map(song => {
-              return (
-                <div className="song" key={song.id}>
-                  <div className="title dotOverflow">{song.title}</div>
-                  <div className="artist dotOverflow">{song.artist}</div>
-                  <div className="album dotOverflow">{song.album}</div>
-                  <div className="duration dotOverflow">{song.duration}</div>
-                </div>
-              )
-            })}
-          </div>
+            <MusicList
+              listTitle="user queued list"
+              customClassName="priority"
+              musicArray={priority}
+              message="You can queue any music you want by double-clicking music!"
+            />
+            <MusicList
+              listTitle="next in queue"
+              customClassName="queue"
+              musicArray={queue}
+              handleDoubleClick={requestQueueing}
+            />
+            <MusicList
+              listTitle="already played"
+              customClassName="played"
+              musicArray={played}
+            />
           </>
         )}
       </div>
