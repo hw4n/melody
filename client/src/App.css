@@ -129,6 +129,11 @@ li {
   width: 10%;
 }
 
+.song .clickable:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .tip {
   color: #b3b3b3;
 }
