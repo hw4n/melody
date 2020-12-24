@@ -2,7 +2,22 @@ import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function MusicList(props) {
-  const { searching, listTitle, customClassName, musicArray, message, handleDoubleClick } = props;
+  const { searching, listTitle, customClassName, musicArray, message, handleDoubleClick: parentHandleDoubleClick, searchSetters } = props;
+
+  function handleDoubleClick(e) {
+    if (e.target.classList.contains("clickable")) {
+      return;
+    }
+
+    if (parentHandleDoubleClick !== undefined) {
+      parentHandleDoubleClick(e);
+    }
+  }
+
+  function handleKeywordClick(e) {
+    searchSetters.setSearching(true);
+    searchSetters.setSearchKeyword(e.currentTarget.innerText);
+  }
 
   return (
     <>
@@ -24,9 +39,15 @@ function MusicList(props) {
         {musicArray.map(song => {
           return (
             <div className="song" key={song.id} id={song.id} onDoubleClick={handleDoubleClick}>
-              <div className="title dotOverflow">{song.title}</div>
-              <div className="artist dotOverflow">{song.artist}</div>
-              <div className="album dotOverflow">{song.album}</div>
+              <div className="title dotOverflow">
+                <span className="clickable" onClick={handleKeywordClick}>{song.title}</span>
+              </div>
+              <div className="artist dotOverflow">
+                <span className="clickable" onClick={handleKeywordClick}>{song.artist}</span>
+              </div>
+              <div className="album dotOverflow">
+                <span className="clickable" onClick={handleKeywordClick}>{song.album}</span>
+              </div>
               <div className="duration dotOverflow">{song.duration}</div>
             </div>
           )

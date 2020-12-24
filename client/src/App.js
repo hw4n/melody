@@ -171,11 +171,13 @@ function App() {
 
     if (searching) {
       function musicHasSearchKeyword(music) {
+        const keyword = searchKeyword.toLowerCase();
+
         let { title, artist, album } = music;
         title = title.toLowerCase()
         artist = artist.toLowerCase()
         album = album.toLowerCase()
-        return (title.includes(searchKeyword) || artist.includes(searchKeyword) || album.includes(searchKeyword))
+        return (title.includes(keyword) || artist.includes(keyword) || album.includes(keyword))
       }
 
       const newSearchPriority = priority.slice().filter(musicHasSearchKeyword);
@@ -202,14 +204,15 @@ function App() {
           listTitle="now playing"
           customClassName="playing"
           musicArray={[playing]}
+          searchSetters={{setSearching, setSearchKeyword}}
         />
         <div className="search">
           <FontAwesomeIcon icon={faSearch}/>
-          <input type="text" placeholder="Search for Title / Artist / Album" onInput={(e) => {
+          <input type="text" placeholder="Search for Title / Artist / Album" value={searchKeyword} onInput={(e) => {
             const currentValue = e.target.value.trim();
             if (currentValue.length > 0) {
               setSearching(true);
-              setSearchKeyword(currentValue.toLowerCase());
+              setSearchKeyword(currentValue);
             } else {
               setSearching(false);
               setSearchKeyword("");
@@ -233,6 +236,7 @@ function App() {
               customClassName="priority"
               musicArray={searchPriority}
               message="You can queue any music you want by double-clicking music!"
+              searchSetters={{setSearching, setSearchKeyword}}
             />
             <MusicList
               searching={true}
@@ -240,12 +244,14 @@ function App() {
               customClassName="queue"
               musicArray={searchQueue}
               handleDoubleClick={requestQueueing}
+              searchSetters={{setSearching, setSearchKeyword}}
             />
             <MusicList
               searching={true}
               listTitle="already played"
               customClassName="played"
               musicArray={searchPlayed}
+              searchSetters={{setSearching, setSearchKeyword}}
             />
           </>
         ) : (
@@ -255,17 +261,20 @@ function App() {
               customClassName="priority"
               musicArray={priority}
               message="You can queue any music you want by double-clicking music!"
+              searchSetters={{setSearching, setSearchKeyword}}
             />
             <MusicList
               listTitle="next in queue"
               customClassName="queue"
               musicArray={queue}
               handleDoubleClick={requestQueueing}
+              searchSetters={{setSearching, setSearchKeyword}}
             />
             <MusicList
               listTitle="already played"
               customClassName="played"
               musicArray={played}
+              searchSetters={{setSearching, setSearchKeyword}}
             />
           </>
         )}
