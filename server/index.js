@@ -226,12 +226,7 @@ io.on("connection", socket => {
   })
 
   socket.on("disconnect", () => {
-    for (const [socketId, writable] of Object.entries(writables)) {
-      if (!writable._readableState.flowing && socketId == socket.id) {
-        delete writables[id];
-        break;
-      }
-    }
+    delete writables[socket.id];
 
     for (let i = 0; i < connectedSocketIds.length; i++) {
       if (connectedSocketIds[i] === socket.id) {
