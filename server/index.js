@@ -231,18 +231,28 @@ io.on("connection", socket => {
     }
   })
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (reason) => {
+    logCyan(`${socket.id}: ${reason}`);
     delete writables[socket.id];
 
     for (let i = 0; i < connectedSocketIds.length; i++) {
       if (connectedSocketIds[i] === socket.id) {
         connectedSocketIds.splice(i, 1);
-        console.log(`Removed ${socket.id} from connectedSocketIds[]`);
+        logCyan(`Removed ${socket.id}`);
         break;
       }
     }
   });
 });
+
+function timestamp() {
+  const d = new Date();
+  return `[${d.toLocaleDateString()} ${d.toLocaleTimeString()}]`;
+}
+
+function logCyan(string) {
+  console.log("\x1b[36m%s\x1b[0m", `${timestamp()} ${string}`);
+}
 
 app.use(express.static(path.join(__dirname, "cover")));
 
@@ -260,6 +270,13 @@ app.get("/stream", (req, res) => {
     return res.status(401).send("");
   }
 });
+
+app.get("/status", (req, res) => {
+  res.status(200).json({
+    total_sockets: connectedSocketIds.length,
+    total_writables: Object.keys(writables).length
+  })
+})
 
 server.listen(PORT, () => {
   console.log(`Server started at ${PORT}`);
