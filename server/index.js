@@ -210,7 +210,7 @@ const connectedSocketIds = [];
 
 io.on("connection", socket => {
   connectedSocketIds.push(socket.id);
-  console.log(`Added ${socket.id} to connectedSocketIds[]`);
+  logCyan(`${socket.id} connected, ${socket.handshake.headers['user-agent']}`);
 
   socket.emit("init", {
     priority: minimizeMusicArray(userQueue),
@@ -238,7 +238,7 @@ io.on("connection", socket => {
     for (let i = 0; i < connectedSocketIds.length; i++) {
       if (connectedSocketIds[i] === socket.id) {
         connectedSocketIds.splice(i, 1);
-        logCyan(`Removed ${socket.id}`);
+        logCyan(`Removed ${socket.id}, ${socket.handshake.headers['user-agent']}`);
         break;
       }
     }
@@ -273,8 +273,14 @@ app.get("/stream", (req, res) => {
 
 app.get("/status", (req, res) => {
   res.status(200).json({
-    total_sockets: connectedSocketIds.length,
-    total_writables: Object.keys(writables).length
+    sockets: {
+      length: connectedSocketIds.length,
+      array: connectedSocketIds
+    },
+    writables: {
+      length: Object.keys(writables).length,
+      keys: Object.keys(writables)
+    },
   })
 })
 
