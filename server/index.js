@@ -11,7 +11,13 @@ const { ffprobe } = require('@dropb/ffprobe');
 const { resolve } = require("path");
 const { promisify } = require("util");
 const server = require("http").createServer(app);
-const io = require("socket.io")(server, {cors: {origin: "*"}});
+const io = require("socket.io")(server, {
+  pingTimeout: 1000 * 60 * 5,
+  pingInterval: 1000 * 10,
+  cors: {
+    origin: "*"
+  }
+});
 const ffmpeg = require('fluent-ffmpeg');
 
 class Music {
