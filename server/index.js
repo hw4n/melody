@@ -55,7 +55,6 @@ let nowPlaying = {};
 
 function getCoverArt(filePath) {
   return new Promise((resolve, reject) => {
-    console.log(`Retrieving cover art from ${filePath}`);
     ffmpeg(filePath)
       .output("./cover/96.png")
       .size("96x96")
@@ -70,7 +69,6 @@ function getCoverArt(filePath) {
       .output("./cover/512.png")
       .size("512x512")
       .on("end", () => {
-        console.log("Retrieving cover art: Completed");
         resolve();
       }).run();
   })
@@ -80,7 +78,7 @@ function playMusic() {
   if (songs.length === 0) {
     songs.push(...shuffle(playedSongs));
     playedSongs.length = 0;
-    console.log(`Reloaded and shuffled ${songs.length} songs"`);
+    logWhite(`Reloaded and shuffled ${songs.length} musics`);
 
     io.sockets.emit("init", {
       priority: minimizeMusicArray(userQueue),
@@ -94,11 +92,9 @@ function playMusic() {
   let FROM_QUEUE;
   if (userQueue.length > 0) {
     song = userQueue.shift();
-    console.log(`Will play from userQ: ${song.title}`);
     FROM_QUEUE = "priority";
   } else {
     song = songs.shift();
-    console.log(`Will play from songs: ${song.title}`);
     FROM_QUEUE = "queue";
   }
 
@@ -130,7 +126,7 @@ function playMusic() {
 }
 
 const loadMusicFiles = async(filePathArray) => {
-  console.log(`Begin loading ${filePathArray.length} music files`);
+  logWhite(`${filePathArray.length} musics found, started loading`);
   let processCounter = 0;
   for (let i = 0; i < filePathArray.length; i++) {
     const filePath = filePathArray[i];
@@ -167,12 +163,11 @@ const loadMusicFiles = async(filePathArray) => {
 };
 
 function startPlaying() {
-  console.log(`\r${preload.length} musics loaded, begin shuffle`);
   songs.push(...shuffle(preload));
-  console.log("Shuffle done");
   preload.length = 0;
 
   playMusic();
+  logWhite("Streaming started");
 }
 
 const readdir = promisify(fs.readdir);
@@ -224,7 +219,6 @@ io.on("connection", socket => {
       const song = songs[i];
       if (song.id === musicId) {
         userQueue.push(songs.splice(i, 1)[0]);
-        console.log(`Pushed to userQueue: ${song.title}`);
         io.sockets.emit("priority", song.id);
         break;
       }
@@ -254,6 +248,10 @@ function logCyan(string) {
   console.log("\x1b[36m%s\x1b[0m", `${timestamp()} ${string}`);
 }
 
+function logWhite(string) {
+  console.log("\x1b[37m%s\x1b[0m", `${timestamp()} ${string}`);
+}
+
 app.use(express.static(path.join(__dirname, "cover")));
 
 const writables = {};
@@ -262,7 +260,7 @@ app.get("/stream", (req, res) => {
   if (connectedSocketIds.includes(req.query.id)) {
     const anotherOne = PassThrough();
     writables[req.query.id] = anotherOne;
-    console.log(`Added ${req.query.id} to writables`);
+    logCyan(`Added ${req.query.id} to writables`);
 
     res.setHeader("Content-Type", "audio/mpeg");
     return anotherOne.pipe(res);
@@ -285,7 +283,7 @@ app.get("/status", (req, res) => {
 })
 
 server.listen(PORT, () => {
-  console.log(`Server started at ${PORT}`);
+  logWhite(`Server listening at port ${PORT}`);
 });
 
 if (process.env.STAGE === "live") {
