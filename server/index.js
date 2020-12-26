@@ -11,7 +11,13 @@ const { ffprobe } = require('@dropb/ffprobe');
 const { resolve } = require("path");
 const { promisify } = require("util");
 const server = require("http").createServer(app);
-const io = require("socket.io")(server, {cors: {origin: "*"}});
+const io = require("socket.io")(server, {
+  pingTimeout: 1000 * 60 * 5,
+  pingInterval: 1000 * 10,
+  cors: {
+    origin: "*"
+  }
+});
 const ffmpeg = require('fluent-ffmpeg');
 
 class Music {
@@ -204,7 +210,7 @@ const connectedSocketIds = [];
 
 io.on("connection", socket => {
   connectedSocketIds.push(socket.id);
-  console.log(`Added ${socket.id} to connectedSocketIds[]`);
+  logCyan(`${socket.id} connected, ${socket.handshake.headers['user-agent']}`);
 
   socket.emit("init", {
     priority: minimizeMusicArray(userQueue),
@@ -225,24 +231,28 @@ io.on("connection", socket => {
     }
   })
 
-  socket.on("disconnect", () => {
-    for (const socketId of Object.keys(writables)) {
-      if (socketId === socket.id) {
-        delete writables[socketId];
-        console.log(`Removed ${socketId} from writables`);
-        break;
-      }
-    }
+  socket.on("disconnect", (reason) => {
+    logCyan(`${socket.id}: ${reason}`);
+    delete writables[socket.id];
 
     for (let i = 0; i < connectedSocketIds.length; i++) {
       if (connectedSocketIds[i] === socket.id) {
         connectedSocketIds.splice(i, 1);
-        console.log(`Removed ${socket.id} from connectedSocketIds[]`);
+        logCyan(`Removed ${socket.id}, ${socket.handshake.headers['user-agent']}`);
         break;
       }
     }
   });
 });
+
+function timestamp() {
+  const d = new Date();
+  return `[${d.toLocaleDateString()} ${d.toLocaleTimeString()}]`;
+}
+
+function logCyan(string) {
+  console.log("\x1b[36m%s\x1b[0m", `${timestamp()} ${string}`);
+}
 
 app.use(express.static(path.join(__dirname, "cover")));
 
@@ -260,6 +270,19 @@ app.get("/stream", (req, res) => {
     return res.status(401).send("");
   }
 });
+
+app.get("/status", (req, res) => {
+  res.status(200).json({
+    sockets: {
+      length: connectedSocketIds.length,
+      array: connectedSocketIds
+    },
+    writables: {
+      length: Object.keys(writables).length,
+      keys: Object.keys(writables)
+    },
+  })
+})
 
 server.listen(PORT, () => {
   console.log(`Server started at ${PORT}`);
