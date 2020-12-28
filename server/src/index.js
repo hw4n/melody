@@ -53,20 +53,23 @@ const playedSongs = [];
 
 let nowPlaying = {};
 
+const coverDirectory = "./cover";
+const mp3Directory = "./mp3";
+
 function getCoverArt(filePath) {
   return new Promise((resolve, reject) => {
     ffmpeg(filePath)
-      .output("./cover/96.png")
+      .output(`${coverDirectory}/96.png`)
       .size("96x96")
-      .output("./cover/128.png")
+      .output(`${coverDirectory}/128.png`)
       .size("128x128")
-      .output("./cover/192.png")
+      .output(`${coverDirectory}/192.png`)
       .size("192x192")
-      .output("./cover/256.png")
+      .output(`${coverDirectory}/256.png`)
       .size("256x256")
-      .output("./cover/384.png")
+      .output(`${coverDirectory}/384.png`)
       .size("384x384")
-      .output("./cover/512.png")
+      .output(`${coverDirectory}/512.png`)
       .size("512x512")
       .on("end", () => {
         resolve();
@@ -182,7 +185,7 @@ async function getFiles(dir) {
   return files.reduce((a, f) => a.concat(f), []).filter(f => f.endsWith(".mp3"));
 }
 
-getFiles("./mp3").then(loadMusicFiles);
+getFiles(mp3Directory).then(loadMusicFiles);
 
 const userQueue = [];
 
@@ -252,7 +255,7 @@ function logWhite(string) {
   console.log("\x1b[37m%s\x1b[0m", `${timestamp()} ${string}`);
 }
 
-app.use(express.static(path.join(__dirname, "cover")));
+app.use(express.static(path.join(__dirname, "../", coverDirectory)));
 
 const writables = {};
 
