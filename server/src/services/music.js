@@ -1,4 +1,14 @@
-function playMusic() {
+const fs = require("fs");
+const Throttle = require('throttle');
+
+import getCoverArt from "../services/cover";
+
+const nowPlaying = global.PLAYING;
+const songs = global.MUSICS;
+const userQueue = global.QUEUE;
+const writables = global.WRITABLES;
+
+export default function playMusic() {
   if (songs.length === 0) {
     songs.push(...shuffle(playedSongs));
     playedSongs.length = 0;
@@ -47,16 +57,4 @@ function playMusic() {
       });
     }, 3000);
   });
-}
-
-class Music {
-  constructor(music) {
-    this.duration = music.duration,
-    this.bit_rate = music.bit_rate,
-    this.title = music.title,
-    this.album = music.album,
-    this.file = music.file,
-    this.artist = music.artist,
-    this.id = music.id
-  }
 }

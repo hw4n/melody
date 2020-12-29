@@ -2,14 +2,10 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
-const fs = require("fs");
 const path = require("path");
 const PORT = process.env.PORT;
 const { PassThrough } = require('stream');
-const Throttle = require('throttle');
-const { ffprobe } = require('@dropb/ffprobe');
-const { resolve } = require("path");
-const { promisify } = require("util");
+
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   pingTimeout: 1000 * 60 * 5,
@@ -18,12 +14,15 @@ const io = require("socket.io")(server, {
     origin: "*"
   }
 });
-const ffmpeg = require('fluent-ffmpeg');
+const loader = require("./loaders");
+const coverDirectory = "./cover";
+
+loader.initMusic();
 
 app.use(express.static(path.join(__dirname, "../", coverDirectory)));
 
 server.listen(PORT, () => {
-  logWhite(`Server listening at port ${PORT}`);
+  loader.logWhite(`Server listening at port ${PORT}`);
 });
 
 const apiRoutes = require("./api");

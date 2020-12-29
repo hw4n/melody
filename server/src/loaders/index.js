@@ -1,44 +1,63 @@
+const fs = require("fs");
+const { resolve } = require("path");
+const { promisify } = require("util");
+const { ffprobe } = require('@dropb/ffprobe');
+
+const { logWhite } = require("./logger");
+exports.logWhite = logWhite;
+
+const mp3Directory = "./mp3";
+
+global.PLAYING = {};
+global.MUSICS = [];
+global.QUEUE = [];
+global.WRITABLES = {};
+global.SOCKETS = [];
+
+import Music from "../interfaces/Music";
+
 const loadMusicFiles = async(filePathArray) => {
-  logWhite(`${filePathArray.length} musics found, started loading`);
-  let processCounter = 0;
-  for (let i = 0; i < filePathArray.length; i++) {
-    const filePath = filePathArray[i];
+  return new Promise((resolve, reject) => {
+    logWhite(`${filePathArray.length} musics found, started loading`);
+    let processCounter = 0;
+    for (let i = 0; i < filePathArray.length; i++) {
+      const filePath = filePathArray[i];
 
-    ffprobe(filePath)
-      .then(data => {
-        processCounter += 1;
-        id = processCounter;
+      ffprobe(filePath)
+        .then(data => {
+          processCounter += 1;
+          let id = processCounter;
 
-        let { duration, bit_rate } = data.format;
-        const m = Math.floor(duration / 60);
-        const s = Math.floor(duration - m * 60);
-        duration = `${m}:${s.toString().padStart(2, 0)}`;
-        let { title, album, artist } = data.format.tags;
-        if (title === undefined) {
-          title = filePath.substr(0, filePath.lastIndexOf("."));
-        }
+          let { duration, bit_rate } = data.format;
+          const m = Math.floor(duration / 60);
+          const s = Math.floor(duration - m * 60);
+          duration = `${m}:${s.toString().padStart(2, 0)}`;
+          let { title, album, artist } = data.format.tags;
+          if (title === undefined) {
+            title = filePath.substr(0, filePath.lastIndexOf("."));
+          }
 
-        if (album === undefined) {
-          album = "-";
-        }
-        if (artist === undefined) {
-          artist = "Various Artists";
-        }
-  
-        preload.push(new Music({id, duration, bit_rate, title, album, artist, file: filePath}));
-        process.stdout.write(`Processed music, id ${id}\r`);
+          if (album === undefined) {
+            album = "-";
+          }
+          if (artist === undefined) {
+            artist = "Various Artists";
+          }
 
-        if (processCounter === filePathArray.length) {
-          startPlaying();
-        }
-      })
-  };
+          global.MUSICS.push(new Music({id, duration, bit_rate, title, album, artist, file: filePath}));
+          process.stdout.write(`Processed music, id ${id}\r`);
+
+          if (processCounter === filePathArray.length) {
+            resolve();
+          }
+        })
+    };
+  });
 };
 
-function startPlaying() {
-  songs.push(...shuffle(preload));
-  preload.length = 0;
+import playMusic from "../services/music";
 
+function startPlaying() {
   playMusic();
   logWhite("Streaming started");
 }
@@ -55,4 +74,6 @@ async function getFiles(dir) {
   return files.reduce((a, f) => a.concat(f), []).filter(f => f.endsWith(".mp3"));
 }
 
-getFiles(mp3Directory).then(loadMusicFiles);
+exports.initMusic = () => {
+  getFiles(mp3Directory).then(loadMusicFiles).then(startPlaying);
+}
