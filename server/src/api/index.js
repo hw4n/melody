@@ -1,28 +1,30 @@
-const express = require("express");
-const router = express.Router();
+const express = require('express');
 
-router.get("/stream", (req, res) => {
-  if (connectedSocketIds.includes(req.query.id)) {
+const router = express.Router();
+const { PassThrough } = require('stream');
+const { logCyan } = require('../loaders/logger');
+
+router.get('/stream', (req, res) => {
+  if (global.SOCKETS.includes(req.query.id)) {
     const anotherOne = PassThrough();
-    writables[req.query.id] = anotherOne;
+    global.WRITABLES[req.query.id] = anotherOne;
     logCyan(`Added ${req.query.id} to writables`);
 
-    res.setHeader("Content-Type", "audio/mpeg");
+    res.setHeader('Content-Type', 'audio/mpeg');
     return anotherOne.pipe(res);
-  } else {
-    return res.status(401).send("");
   }
+  return res.status(401).send();
 });
 
-router.get("/status", (req, res) => {
+router.get('/status', (req, res) => {
   res.status(200).json({
     sockets: {
-      length: connectedSocketIds.length,
-      array: connectedSocketIds
+      length: global.SOCKETS.length,
+      array: global.SOCKETS,
     },
     writables: {
-      length: Object.keys(writables).length,
-      keys: Object.keys(writables)
+      length: Object.keys(global.WRITABLES).length,
+      keys: Object.keys(global.WRITABLES),
     },
   });
 });

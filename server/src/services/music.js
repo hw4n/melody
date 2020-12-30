@@ -1,49 +1,46 @@
-const fs = require("fs");
+import getCoverArt from './cover';
+import { minimizeMusicArray } from './minimize';
+import { logWhite } from '../loaders/logger';
+
+const fs = require('fs');
 const Throttle = require('throttle');
 
-import getCoverArt from "../services/cover";
-
-const nowPlaying = global.PLAYING;
-const songs = global.MUSICS;
-const userQueue = global.QUEUE;
-const writables = global.WRITABLES;
-
 export default function playMusic() {
-  if (songs.length === 0) {
-    songs.push(...shuffle(playedSongs));
-    playedSongs.length = 0;
-    logWhite(`Reloaded and shuffled ${songs.length} musics`);
+  if (global.MUSICS.length === 0) {
+    global.MUSICS.push(...global.PLAYED);
+    global.PLAYED.length = 0;
+    logWhite(`Reloaded ${global.MUSICS.length} musics`);
 
-    io.sockets.emit("init", {
-      priority: minimizeMusicArray(userQueue),
-      queue: minimizeMusicArray(songs),
-      played: minimizeMusicArray(playedSongs),
+    global.SOCKET.sockets.emit('init', {
+      priority: minimizeMusicArray(global.QUEUE),
+      queue: minimizeMusicArray(global.MUSICS),
+      played: minimizeMusicArray(global.PLAYED),
       playing: {},
     });
   }
 
   let song;
   let FROM_QUEUE;
-  if (userQueue.length > 0) {
-    song = userQueue.shift();
-    FROM_QUEUE = "priority";
+  if (global.QUEUE.length > 0) {
+    song = global.QUEUE.shift();
+    FROM_QUEUE = 'priority';
   } else {
-    song = songs.shift();
-    FROM_QUEUE = "queue";
+    song = global.MUSICS.shift();
+    FROM_QUEUE = 'queue';
   }
 
   const toPlay = song.file;
-  nowPlaying = song;
+  global.PLAYING = song;
 
   const toPlayReadable = fs.createReadStream(toPlay);
   const throttle = new Throttle(song.bit_rate / 8);
 
-  throttle.on('data', chunk => {
-    for (const writable of Object.values(writables)) {
+  throttle.on('data', (chunk) => {
+    Object.values(global.WRITABLES).forEach((writable) => {
       writable.write(chunk);
-    }
+    });
   }).on('end', () => {
-    playedSongs.push(song);
+    global.PLAYED.push(song);
     playMusic();
   });
 
@@ -51,9 +48,9 @@ export default function playMusic() {
 
   getCoverArt(toPlay).then(() => {
     setTimeout(() => {
-      io.sockets.emit("playNext", {
+      global.SOCKET.sockets.emit('playNext', {
         FROM_QUEUE,
-        id: song.id
+        id: song.id,
       });
     }, 3000);
   });

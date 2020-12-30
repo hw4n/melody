@@ -1,14 +1,20 @@
-function minimizeMusicObject(music) {
-  const { duration, title, album, artist, id } = music
+export function minimizeMusicObject(music) {
+  const {
+    duration,
+    title,
+    album,
+    artist,
+    id,
+  } = music;
   return {
     duration,
     title,
     album,
     artist,
-    id
-  }
+    id,
+  };
 }
 
-function minimizeMusicArray(musicArray) {
-  return musicArray.map(music => minimizeMusicObject(music));
+export function minimizeMusicArray(musicArray) {
+  return musicArray.map((music) => minimizeMusicObject(music));
 }
