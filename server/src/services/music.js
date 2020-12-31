@@ -5,7 +5,16 @@ import { logWhite } from '../loaders/logger';
 const fs = require('fs');
 const Throttle = require('throttle');
 
-export default function playMusic() {
+export function shuffleGlobalMusic() {
+  for (let i = global.MUSICS.length - 1; i > 0; i -= 1) {
+    const randomIndex = Math.floor(Math.random() * (i + 1));
+    const temp = global.MUSICS[randomIndex];
+    global.MUSICS[randomIndex] = global.MUSICS[i];
+    global.MUSICS[i] = temp;
+  }
+}
+
+export function playMusic() {
   if (global.MUSICS.length === 0) {
     global.MUSICS.push(...global.PLAYED);
     global.PLAYED.length = 0;

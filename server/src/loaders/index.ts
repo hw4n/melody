@@ -1,6 +1,6 @@
 import Music from '../interfaces/Music';
 import Global from '../interfaces/Global';
-import playMusic from '../services/music';
+import { shuffleGlobalMusic, playMusic } from '../services/music';
 
 const fs = require('fs');
 const { resolve: pathResolve } = require('path');
@@ -57,6 +57,7 @@ async function loadMusicFiles(filePathArray) {
 }
 
 function startPlaying() {
+  shuffleGlobalMusic();
   playMusic();
   socket.addListeners(global.SOCKET);
 }
