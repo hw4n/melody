@@ -171,7 +171,7 @@ function App() {
 
     if (searching) {
       function musicHasSearchKeyword(music) {
-        const keyword = searchKeyword.toLowerCase();
+        const keyword = searchKeyword.trim().toLowerCase();
 
         let { title, artist, album } = music;
         title = title.toLowerCase()
@@ -209,7 +209,12 @@ function App() {
         <div className="search">
           <FontAwesomeIcon icon={faSearch}/>
           <input type="text" placeholder="Search for Title / Artist / Album" value={searchKeyword} onInput={(e) => {
-            const currentValue = e.target.value.trim();
+            const currentValue = e.target.value;
+            if (currentValue.trim() === "") {
+              setSearching(false);
+              setSearchKeyword("");
+              return;
+            }
             if (currentValue.length > 0) {
               setSearching(true);
               setSearchKeyword(currentValue);
