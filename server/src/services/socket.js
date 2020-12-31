@@ -1,4 +1,4 @@
-import { logCyan } from '../loaders/logger';
+import { logCyan, logWhite } from '../loaders/logger';
 import { minimizeMusicObject, minimizeMusicArray } from './minimize';
 
 exports.addListeners = (io) => {
@@ -35,4 +35,5 @@ exports.addListeners = (io) => {
       }
     });
   });
+  logWhite('Added socket listeners');
 };

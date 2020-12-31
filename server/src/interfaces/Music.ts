@@ -1,4 +1,5 @@
-export default class Music {
+/* eslint-disable camelcase */
+interface IMusic {
   duration: string;
   bit_rate: string;
   title: string;
@@ -6,8 +7,26 @@ export default class Music {
   file: string;
   artist: string;
   id: number;
+}
 
-  constructor({id, duration, bit_rate, title, album, artist, file}) {
+export default class Music implements IMusic {
+  duration: string;
+
+  bit_rate: string;
+
+  title: string;
+
+  album: string;
+
+  file: string;
+
+  artist: string;
+
+  id: number;
+
+  constructor({
+    id, duration, bit_rate, title, album, artist, file,
+  }: IMusic) {
     this.id = id;
     this.duration = duration;
     this.bit_rate = bit_rate;

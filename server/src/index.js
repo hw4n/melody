@@ -12,6 +12,8 @@ const io = require('socket.io')(server, {
   cors: { origin: '*' },
 });
 
+global.SOCKET = io;
+
 const apiRoutes = require('./api');
 const loader = require('./loaders');
 
@@ -22,10 +24,5 @@ app.use(express.static('cover'));
 server.listen(PORT, () => {
   logWhite(`Server listening at port ${PORT}`);
 });
-
-global.SOCKET = io;
-const socket = require('./services/socket');
-
-socket.addListeners(io);
 
 loader.initMusic();
