@@ -18,7 +18,8 @@ export function playMusic() {
   if (global.MUSICS.length === 0) {
     global.MUSICS.push(...global.PLAYED);
     global.PLAYED.length = 0;
-    logWhite(`Reloaded ${global.MUSICS.length} musics`);
+    shuffleGlobalMusic();
+    logWhite(`Reloaded and shuffled ${global.MUSICS.length} musics`);
 
     global.SOCKET.sockets.emit('init', {
       priority: minimizeMusicArray(global.QUEUE),
