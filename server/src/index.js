@@ -17,10 +17,13 @@ global.SOCKET = io;
 const apiRoutes = require('./api');
 const loader = require('./loaders');
 
-const { PORT } = process.env;
+const { PORT, STAGE } = process.env;
 
 app.use('/', apiRoutes);
 app.use(express.static('cover'));
+if (STAGE === 'live') {
+  app.use(express.static('build'));
+}
 server.listen(PORT, () => {
   logWhite(`Server listening at port ${PORT}`);
 });
