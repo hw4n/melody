@@ -170,13 +170,17 @@ function App() {
     }
 
     if (searching) {
+      function stringToSearchString(string) {
+        return string.replace(/\s/g, "").toLowerCase();
+      }
+
       function musicHasSearchKeyword(music) {
-        const keyword = searchKeyword.trim().toLowerCase();
+        const keyword = stringToSearchString(searchKeyword);
 
         let { title, artist, album } = music;
-        title = title.toLowerCase()
-        artist = artist.toLowerCase()
-        album = album.toLowerCase()
+        title = stringToSearchString(title);
+        artist = stringToSearchString(artist);
+        album = stringToSearchString(album);
         return (title.includes(keyword) || artist.includes(keyword) || album.includes(keyword))
       }
 
