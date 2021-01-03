@@ -44,6 +44,11 @@ body {
   color: #b3b3b3;
 }
 
+.columnIndicator div.clickable:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .columnIndicator div:last-of-type {
   width: 10%;
   text-align: right;

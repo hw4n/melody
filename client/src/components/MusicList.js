@@ -1,8 +1,12 @@
+import { useState, useEffect } from 'react';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function MusicList(props) {
-  const { searching, listTitle, customClassName, musicArray, message, handleDoubleClick: parentHandleDoubleClick, searchSetters } = props;
+  const { searching, listTitle, customClassName, musicArray: originalMusicArray, message, handleDoubleClick: parentHandleDoubleClick, searchSetters } = props;
+  const [titleSort, setTitleSort] = useState(0);
+  const [originalOrder, setOriginalOrder] = useState();
+  const [musicArray, setMusicArray] = useState([]);
 
   function handleDoubleClick(e) {
     if (e.target.classList.contains("clickable")) {
@@ -19,6 +23,35 @@ function MusicList(props) {
     searchSetters.setSearchKeyword(e.currentTarget.innerText);
   }
 
+  function sortMusicsToOriginal(array) {
+    return array.slice().sort((a, b) => originalOrder.indexOf(a.id) - originalOrder.indexOf(b.id));
+  }
+
+  function sortMusicsAsc(array) {
+    return array.slice().sort((a, b) => a.title[0].charCodeAt() - b.title[0].charCodeAt());
+  }
+
+  function sortMusicsDesc(array) {
+    return array.slice().sort((a, b) => b.title[0].charCodeAt() - a.title[0].charCodeAt());
+  }
+
+  useEffect(() => {
+    setOriginalOrder(originalMusicArray.map(music => music.id));
+    setMusicArray(originalMusicArray.slice());
+  }, [originalMusicArray]);
+
+  useEffect(() => {
+    if (titleSort === 0) {
+      setMusicArray(musicArray => sortMusicsToOriginal(musicArray));
+    }
+    else if (titleSort === 1) {
+      setMusicArray(musicArray => sortMusicsAsc(musicArray));
+    } else {
+      setMusicArray(musicArray => sortMusicsDesc(musicArray));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [originalOrder, titleSort]);
+
   return (
     <>
       {searching ? (
@@ -30,7 +63,9 @@ function MusicList(props) {
         <h3 className="songListHeader divider">{listTitle}</h3>
       )}
       <div className="columnIndicator divider">
-        <div>title</div>
+        <div className="clickable" onClick={() => {
+          setTitleSort(x => (x + 1) % 3);
+        }}>title {titleSort === 0 ? "-" : titleSort === 1 ? "↑" : "↓"}</div>
         <div>artist</div>
         <div>album</div>
         <div><FontAwesomeIcon icon={faClock}/></div>
