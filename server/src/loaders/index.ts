@@ -1,13 +1,13 @@
 import Music from '../interfaces/Music';
 import Global from '../interfaces/Global';
 import { shuffleGlobalMusic, playMusic } from '../services/music';
+import addSocketListeners from '../services/socket';
 
 const fs = require('fs');
 const { resolve: pathResolve } = require('path');
 const { promisify } = require('util');
 const { ffprobe } = require('@dropb/ffprobe');
 const { logWhite } = require('./logger');
-const socket = require('../services/socket');
 
 const mp3Directory = './mp3';
 
@@ -59,7 +59,7 @@ async function loadMusicFiles(filePathArray) {
 function startPlaying() {
   shuffleGlobalMusic();
   playMusic();
-  socket.addListeners(global.SOCKET);
+  addSocketListeners(global.SOCKET);
 }
 
 const readdir = promisify(fs.readdir);

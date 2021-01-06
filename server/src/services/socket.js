@@ -1,7 +1,7 @@
 import { logCyan, logWhite } from '../loaders/logger';
 import { minimizeMusicObject, minimizeMusicArray } from './minimize';
 
-exports.addListeners = (io) => {
+export default function addSocketListeners(io) {
   io.on('connection', (socket) => {
     global.SOCKETS.push(socket.id);
     logCyan(`${socket.id} connected, ${socket.handshake.headers['user-agent']}`);
@@ -36,4 +36,4 @@ exports.addListeners = (io) => {
     });
   });
   logWhite('Added socket listeners');
-};
+}
