@@ -1,8 +1,9 @@
+import { logCyan } from '../loaders/logger';
+
 const express = require('express');
 
 const router = express.Router();
 const { PassThrough } = require('stream');
-const { logCyan } = require('../loaders/logger');
 
 router.get('/stream', (req, res) => {
   if (global.SOCKETS.includes(req.query.id)) {

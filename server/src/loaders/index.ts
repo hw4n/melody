@@ -2,12 +2,12 @@ import Music from '../interfaces/Music';
 import Global from '../interfaces/Global';
 import { shuffleGlobalMusic, playMusic } from '../services/music';
 import addSocketListeners from '../services/socket';
+import { logWhite } from './logger';
 
 const fs = require('fs');
 const { resolve: pathResolve } = require('path');
 const { promisify } = require('util');
 const { ffprobe } = require('@dropb/ffprobe');
-const { logWhite } = require('./logger');
 
 const mp3Directory = './mp3';
 
