@@ -102,7 +102,10 @@ function App() {
       setPlayed([...played, musicToPush]);
       setUpdateTime(Date.now());
     });
+    console.log("useeffect");
+  }, [played, playing, priority, queue, socketId]);
 
+  useEffect(() => {
     if (muted && volume > 0) {
       setVolume(-volume);
       volumeRef.current.value = 0;
@@ -116,7 +119,9 @@ function App() {
     } else {
       audioRef.current.volume = volume;
     }
+  }, [muted, volume])
 
+  useEffect(() => {
     if (isPlaying) {
       audioRef.current.play();
       document.title = `♪ Playing ${playing.title}`;
@@ -168,7 +173,9 @@ function App() {
         }
       }
     }
+  }, [isPlaying, playing, updateTime])
 
+  useEffect(() => {
     if (searching) {
       function stringToSearchString(string) {
         return string.replace(/\s/g, "").toLowerCase();
@@ -192,7 +199,7 @@ function App() {
       setSearchQueue(newSearchQueue);
       setSearchPlayed(newSearchPlayed);
     }
-  }, [muted, volume, isPlaying, playing, updateTime, priority, queue, played, searching, searchKeyword, socketId]);
+  }, [played, priority, queue, searchKeyword, searching])
 
   const audioRef = useRef();
   const volumeRef = useRef();
