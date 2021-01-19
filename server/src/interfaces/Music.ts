@@ -1,7 +1,8 @@
 /* eslint-disable camelcase */
 interface IMusic {
-  duration: string;
-  bit_rate: string;
+  duration: number;
+  size: number;
+  bit_rate: number;
   title: string;
   album: string;
   file: string;
@@ -10,9 +11,11 @@ interface IMusic {
 }
 
 export default class Music implements IMusic {
-  duration: string;
+  duration: number;
 
-  bit_rate: string;
+  size: number;
+
+  bit_rate: number;
 
   title: string;
 
@@ -25,11 +28,12 @@ export default class Music implements IMusic {
   id: number;
 
   constructor({
-    id, duration, bit_rate, title, album, artist, file,
+    id, duration, size, bit_rate, title, album, artist, file,
   }: IMusic) {
     this.id = id;
-    this.duration = duration;
-    this.bit_rate = bit_rate;
+    this.duration = Number(duration);
+    this.size = Number(size);
+    this.bit_rate = Number(bit_rate);
     this.title = title;
     this.album = album;
     this.artist = artist;

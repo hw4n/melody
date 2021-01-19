@@ -27,6 +27,8 @@ router.get('/status', (req, res) => {
       length: Object.keys(global.WRITABLES).length,
       keys: Object.keys(global.WRITABLES),
     },
+    queue: global.QUEUE,
+    musics: global.MUSICS,
   });
 });
 

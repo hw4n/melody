@@ -25,13 +25,8 @@ async function loadMusicFiles(filePathArray) {
       ffprobe(filePath)
         .then((data) => {
           const id = index;
-
-          let { duration } = data.format;
           // eslint-disable-next-line camelcase
-          const { bit_rate } = data.format;
-          const m = Math.floor(duration / 60);
-          const s = Math.floor(duration - m * 60);
-          duration = `${m}:${s.toString().padStart(2, '0')}`;
+          const { duration, size, bit_rate } = data.format;
           let { title, album, artist } = data.format.tags;
           if (title === undefined) {
             title = filePath.substr(0, filePath.lastIndexOf('.'));
@@ -45,7 +40,7 @@ async function loadMusicFiles(filePathArray) {
           }
 
           global.MUSICS.push(new Music({
-            id, duration, bit_rate, title, album, artist, file: filePath,
+            id, duration, size, bit_rate, title, album, artist, file: filePath,
           }));
 
           if (index === filePathArray.length - 1) {
