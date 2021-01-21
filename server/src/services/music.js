@@ -55,13 +55,13 @@ export function playMusic() {
   });
 
   toPlayReadable.pipe(throttle);
+  global.PLAYING_START = new Date();
 
   getCoverArt(toPlay).then(() => {
-    setTimeout(() => {
-      global.SOCKET.sockets.emit('playNext', {
-        FROM_QUEUE,
-        id: song.id,
-      });
-    }, 3000);
+    global.SOCKET.sockets.emit('playNext', {
+      FROM_QUEUE,
+      id: song.id,
+      start: global.PLAYING_START,
+    });
   });
 }

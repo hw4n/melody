@@ -1,10 +1,8 @@
 import { createReadStream } from 'fs';
-import { logCyan } from '../loaders/logger';
 
 const express = require('express');
 
 const router = express.Router();
-const { PassThrough } = require('stream');
 
 router.get('/stream', (req, res) => {
   const filePath = global.PLAYING.file;
@@ -46,6 +44,8 @@ router.get('/status', (req, res) => {
     },
     queue: global.QUEUE,
     musics: global.MUSICS,
+    playing: global.PLAYING,
+    start: global.PLAYING_START,
   });
 });
 
