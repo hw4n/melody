@@ -30,6 +30,7 @@ function App() {
   const [searchQueue, setSearchQueue] = useState([]);
   const [searchPlayed, setSearchPlayed] = useState([]);
   const [socketId, setSocketId] = useState(undefined);
+  const [playbackStart, setPlaybackStart] = useState();
 
   useEffect(() => {
     if (socketId === undefined) {
@@ -43,6 +44,7 @@ function App() {
       setPlayed(msg.played);
       setPlaying(msg.playing);
       setUpdateTime(Date.now());
+      setPlaybackStart(msg.start);
 
       document.addEventListener("keydown", (e) => {
         if (e.target.type === "text") {
@@ -102,6 +104,7 @@ function App() {
       }
       setPlayed([...played, musicToPush]);
       setUpdateTime(Date.now());
+      setPlaybackStart(next.start);
     });
   }, [played, playing, priority, queue, socketId]);
 
@@ -123,6 +126,7 @@ function App() {
 
   useEffect(() => {
     if (isPlaying) {
+      audioRef.current.currentTime = (new Date() - new Date(playbackStart)) / 1000;
       audioRef.current.play();
       document.title = `♪ Playing ${playing.title}`;
     } else {
@@ -173,7 +177,7 @@ function App() {
         }
       }
     }
-  }, [isPlaying, playing, updateTime])
+  }, [isPlaying, playbackStart, playing, updateTime])
 
   useEffect(() => {
     if (searching) {
@@ -298,8 +302,8 @@ function App() {
       </div>
       <footer>
         {isPlaying ? (
-          <audio ref={audioRef} src={`/stream?id=${socketId}`}>
-            <source src={`/stream?id=${socketId}`} type="audio/mpeg"/>
+          <audio ref={audioRef} src={`/stream?${updateTime}`}>
+            <source src={`/stream?${updateTime}`} type="audio/mpeg"/>
           </audio>
         ) : (
           <audio ref={audioRef} src="" preload="none"/>
