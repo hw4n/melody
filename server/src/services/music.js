@@ -50,12 +50,14 @@ export function playMusic() {
       writable.write(chunk);
     });
   }).on('end', () => {
-    global.PLAYED.push(song);
-    playMusic();
+    setTimeout(() => {
+      global.PLAYED.push(song);
+      playMusic();
+    }, 3000);
   });
 
   toPlayReadable.pipe(throttle);
-  global.PLAYING_START = new Date();
+  global.PLAYING_START = Number(new Date()) + 1000;
 
   getCoverArt(toPlay).then(() => {
     global.SOCKET.sockets.emit('playNext', {
