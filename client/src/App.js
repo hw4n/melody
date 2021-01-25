@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MusicList from "./components/MusicList";
+import Loader from "./components/Loader";
 import Flash from "./components/Flash";
 
 let SOCKET_URI = "/"
@@ -214,6 +215,11 @@ function App() {
 
   return (
     <div className="App">
+      { queue.length ? (
+        <></>
+      ) : (
+        <Loader/>
+      )}
       <Flash/>
       <div className="container">
         <MusicList
