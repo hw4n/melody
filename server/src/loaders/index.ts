@@ -14,7 +14,6 @@ const mp3Directory = './mp3';
 declare let global: Global;
 global.QUEUE = [];
 global.MUSICS = [];
-global.PLAYED = [];
 global.SOCKETS = [];
 global.WRITABLES = {};
 
