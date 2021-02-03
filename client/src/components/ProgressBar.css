@@ -6,6 +6,7 @@
 
 .progressWrap .time {
   font-size: 75%;
+  width: 50px;
   text-align: center;
   color: #b3b3b3;
 }

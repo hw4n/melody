@@ -322,7 +322,7 @@ function App() {
               <FontAwesomeIcon icon={faStopCircle} size="2x"/>
             )}
           </button>
-          <ProgressBar/>
+          <ProgressBar duration={playing.duration} playbackStart={playbackStart}/>
         </div>
         <div className="volumeControlWrap">
           <button onClick={() => {
