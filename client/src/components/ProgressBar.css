@@ -1,0 +1,28 @@
+.progressWrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.progressWrap .time {
+  font-size: 75%;
+  text-align: center;
+  color: #b3b3b3;
+}
+
+.progressBar {
+  height: 5px;
+  width: 100%;
+  background: #404040;
+  border-radius: 5px;
+  /* without below bar goes beyond */
+  overflow: hidden;
+}
+
+.progressBarCurrent {
+  height: 5px;
+  /* dynamically set width */
+  width: 0%;
+  background: #b3b3b3;
+  border-radius: 5px;
+}

@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MusicList from "./components/MusicList";
 import Loader from "./components/Loader";
 import Flash from "./components/Flash";
+import ProgressBar from "./components/ProgressBar";
 
 let SOCKET_URI = "/"
 if (process.env.NODE_ENV === "development") {
@@ -123,7 +124,11 @@ function App() {
   useEffect(() => {
     if (isPlaying) {
       audioRef.current.currentTime = (new Date() - new Date(playbackStart)) / 1000;
-      audioRef.current.play();
+      let playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.then().catch((e) => {
+        });
+      }
       document.title = `♪ Playing ${playing.title}`;
     } else {
       document.title = DEFAULT_TITLE;
@@ -317,6 +322,7 @@ function App() {
               <FontAwesomeIcon icon={faStopCircle} size="2x"/>
             )}
           </button>
+          <ProgressBar/>
         </div>
         <div className="volumeControlWrap">
           <button onClick={() => {
