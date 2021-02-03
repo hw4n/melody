@@ -10,6 +10,7 @@ export default function addSocketListeners(io) {
       queue: minimizeMusicArray(global.MUSICS),
       played: minimizeMusicArray(global.PLAYED),
       playing: minimizeMusicObject(global.PLAYING),
+      start: global.PLAYING_START,
     });
     socket.on('priority', (musicId) => {
       for (let i = 0; i < global.MUSICS.length; i += 1) {

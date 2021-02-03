@@ -1,20 +1,35 @@
-import { logCyan } from '../loaders/logger';
+import { createReadStream } from 'fs';
 
 const express = require('express');
 
 const router = express.Router();
-const { PassThrough } = require('stream');
 
 router.get('/stream', (req, res) => {
-  if (global.SOCKETS.includes(req.query.id)) {
-    const anotherOne = PassThrough();
-    global.WRITABLES[req.query.id] = anotherOne;
-    logCyan(`Added ${req.query.id} to writables`);
-
-    res.setHeader('Content-Type', 'audio/mpeg');
-    return anotherOne.pipe(res);
+  const filePath = global.PLAYING.file;
+  const fileSize = global.PLAYING.size;
+  const { range } = req.headers;
+  if (range) {
+    const parts = range.replace(/bytes=/, '').split('-');
+    const start = parseInt(parts[0], 10);
+    const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
+    const chunksize = (end - start) + 1;
+    const readStream = createReadStream(filePath, { start, end });
+    const head = {
+      'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': chunksize,
+      'Content-Type': 'audio/mpeg',
+    };
+    res.writeHead(206, head);
+    readStream.pipe(res);
+  } else {
+    const head = {
+      'Content-Length': fileSize,
+      'Content-Type': 'audio/mpeg',
+    };
+    res.writeHead(200, head);
+    createReadStream(filePath).pipe(res);
   }
-  return res.status(401).send();
 });
 
 router.get('/status', (req, res) => {
@@ -29,6 +44,8 @@ router.get('/status', (req, res) => {
     },
     queue: global.QUEUE,
     musics: global.MUSICS,
+    playing: global.PLAYING,
+    start: global.PLAYING_START,
   });
 });
 

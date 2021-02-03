@@ -50,18 +50,20 @@ export function playMusic() {
       writable.write(chunk);
     });
   }).on('end', () => {
-    global.PLAYED.push(song);
-    playMusic();
+    setTimeout(() => {
+      global.PLAYED.push(song);
+      playMusic();
+    }, 3000);
   });
 
   toPlayReadable.pipe(throttle);
+  global.PLAYING_START = Number(new Date()) + 1000;
 
   getCoverArt(toPlay).then(() => {
-    setTimeout(() => {
-      global.SOCKET.sockets.emit('playNext', {
-        FROM_QUEUE,
-        id: song.id,
-      });
-    }, 3000);
+    global.SOCKET.sockets.emit('playNext', {
+      FROM_QUEUE,
+      id: song.id,
+      start: global.PLAYING_START,
+    });
   });
 }
