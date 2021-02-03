@@ -78,7 +78,7 @@ function App() {
     socket.off('playNext');
     socket.on('playNext', (next) => {
       const newQueue = [...queue, playing];
-      const newPriority = [...priority, playing];
+      const newPriority = [...priority];
       if (next.FROM_QUEUE === "priority") {
         for (let i = 0; i < newPriority.length; i++) {
           const music = newPriority[i];
@@ -100,6 +100,7 @@ function App() {
           }
         }
       }
+      setQueue(newQueue);
       setUpdateTime(Date.now());
       setPlaybackStart(next.start);
     });
