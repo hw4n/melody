@@ -19,7 +19,6 @@ const socket = io.connect(SOCKET_URI);
 function App() {
   const [priority, setPriority] = useState([]);
   const [queue, setQueue] = useState([]);
-  const [played, setPlayed] = useState([]);
   const [playing, setPlaying] = useState({});
   const [isPlaying, setIsPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -29,7 +28,6 @@ function App() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchPriority, setSearchPriority] = useState([]);
   const [searchQueue, setSearchQueue] = useState([]);
-  const [searchPlayed, setSearchPlayed] = useState([]);
   const [socketId, setSocketId] = useState(undefined);
   const [playbackStart, setPlaybackStart] = useState();
 
@@ -42,7 +40,6 @@ function App() {
     socket.on('init', (msg) => {
       setPriority(msg.priority);
       setQueue(msg.queue);
-      setPlayed(msg.played);
       setPlaying(msg.playing);
       setUpdateTime(Date.now());
       setPlaybackStart(msg.start);
@@ -79,14 +76,13 @@ function App() {
 
     socket.off('playNext');
     socket.on('playNext', (next) => {
-      const newQueue = [...queue];
-      const newPriority = [...priority];
-      const musicToPush = playing;
+      const newQueue = [...queue, playing];
+      const newPriority = [...priority, playing];
       if (next.FROM_QUEUE === "priority") {
         for (let i = 0; i < newPriority.length; i++) {
           const music = newPriority[i];
           if (music.id === next.id) {
-            const musicToSet = newPriority.splice(0, 1)[0];
+            const musicToSet = newPriority.splice(i, 1)[0];
             setPlaying(musicToSet);
             setPriority(newPriority);
             break;
@@ -96,18 +92,17 @@ function App() {
         for (let i = 0; i < newQueue.length; i++) {
           const music = newQueue[i];
           if (music.id === next.id) {
-            const musicToSet = newQueue.splice(0, 1)[0];
+            const musicToSet = newQueue.splice(i, 1)[0];
             setPlaying(musicToSet);
             setQueue(newQueue);
             break;
           }
         }
       }
-      setPlayed([...played, musicToPush]);
       setUpdateTime(Date.now());
       setPlaybackStart(next.start);
     });
-  }, [played, playing, priority, queue, socketId]);
+  }, [playing, priority, queue, socketId]);
 
   useEffect(() => {
     if (muted && volume > 0) {
@@ -198,13 +193,11 @@ function App() {
 
       const newSearchPriority = priority.slice().filter(musicHasSearchKeyword);
       const newSearchQueue = queue.slice().filter(musicHasSearchKeyword);
-      const newSearchPlayed = played.slice().filter(musicHasSearchKeyword);
 
       setSearchPriority(newSearchPriority);
       setSearchQueue(newSearchQueue);
-      setSearchPlayed(newSearchPlayed);
     }
-  }, [played, priority, queue, searchKeyword, searching])
+  }, [priority, queue, searchKeyword, searching])
 
   const audioRef = useRef();
   const volumeRef = useRef();
@@ -273,13 +266,6 @@ function App() {
               handleDoubleClick={requestQueueing}
               searchSetters={{setSearching, setSearchKeyword}}
             />
-            <MusicList
-              searching={true}
-              listTitle="already played"
-              customClassName="played"
-              musicArray={searchPlayed}
-              searchSetters={{setSearching, setSearchKeyword}}
-            />
           </>
         ) : (
           <>
@@ -295,12 +281,6 @@ function App() {
               customClassName="queue"
               musicArray={queue}
               handleDoubleClick={requestQueueing}
-              searchSetters={{setSearching, setSearchKeyword}}
-            />
-            <MusicList
-              listTitle="already played"
-              customClassName="played"
-              musicArray={played}
               searchSetters={{setSearching, setSearchKeyword}}
             />
           </>
