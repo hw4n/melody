@@ -8,7 +8,6 @@ export default function addSocketListeners(io) {
     socket.emit('init', {
       priority: minimizeMusicArray(global.QUEUE),
       queue: minimizeMusicArray(global.MUSICS),
-      played: minimizeMusicArray(global.PLAYED),
       playing: minimizeMusicObject(global.PLAYING),
       start: global.PLAYING_START,
     });

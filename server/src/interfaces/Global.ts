@@ -5,7 +5,6 @@ interface Global {
   PLAYING: Music,
   QUEUE: Music[],
   MUSICS: Music[],
-  PLAYED: Music[],
   SOCKET: Socket,
   SOCKETS: string[],
   WRITABLES: {},
