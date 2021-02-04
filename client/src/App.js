@@ -197,11 +197,12 @@ function App() {
       function musicHasSearchKeyword(music) {
         const keyword = stringToSearchString(searchKeyword);
 
-        let { title, artist, album } = music;
+        let { title, artist, album, romaji } = music;
         title = stringToSearchString(title);
         artist = stringToSearchString(artist);
         album = stringToSearchString(album);
-        return (title.includes(keyword) || artist.includes(keyword) || album.includes(keyword))
+        romaji = stringToSearchString(romaji);
+        return (title.includes(keyword) || artist.includes(keyword) || album.includes(keyword) || romaji.includes(keyword));
       }
 
       const newSearchPriority = priority.slice().filter(musicHasSearchKeyword);
