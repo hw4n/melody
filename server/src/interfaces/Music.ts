@@ -8,6 +8,7 @@ interface IMusic {
   file: string;
   artist: string;
   id: number;
+  romaji: string;
 }
 
 export default class Music implements IMusic {
@@ -27,8 +28,10 @@ export default class Music implements IMusic {
 
   id: number;
 
+  romaji: string;
+
   constructor({
-    id, duration, size, bit_rate, title, album, artist, file,
+    id, duration, size, bit_rate, title, album, artist, file, romaji,
   }: IMusic) {
     this.id = id;
     this.duration = Number(duration);
@@ -38,5 +41,6 @@ export default class Music implements IMusic {
     this.album = album;
     this.artist = artist;
     this.file = file;
+    this.romaji = romaji;
   }
 }

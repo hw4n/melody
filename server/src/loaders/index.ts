@@ -17,7 +17,18 @@ global.MUSICS = [];
 global.SOCKETS = [];
 global.WRITABLES = {};
 
+const Kuroshiro = require('kuroshiro');
+const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
+
+const kuroshiro = new Kuroshiro();
+
+async function toRomaji(japanese) {
+  const result = await kuroshiro.convert(japanese, { to: 'romaji', romajiSystem: 'passport' });
+  return result;
+}
+
 async function loadMusicFiles(filePathArray) {
+  await kuroshiro.init(new KuromojiAnalyzer());
   return new Promise<void>((resolve) => {
     logWhite(`${filePathArray.length} musics found, started loading`);
     filePathArray.forEach((filePath, index) => {
@@ -38,9 +49,11 @@ async function loadMusicFiles(filePathArray) {
             artist = 'Various Artists';
           }
 
-          global.MUSICS.push(new Music({
-            id, duration, size, bit_rate, title, album, artist, file: filePath,
-          }));
+          toRomaji(title).then((romaji) => {
+            global.MUSICS.push(new Music({
+              id, duration, size, bit_rate, title, album, artist, file: filePath, romaji,
+            }));
+          });
 
           if (index === filePathArray.length - 1) {
             resolve();
