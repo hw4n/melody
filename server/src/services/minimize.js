@@ -5,7 +5,8 @@ export function minimizeMusicObject(music) {
     album,
     artist,
     id,
-    romaji,
+    titleRomaji,
+    artistRomaji,
   } = music;
   return {
     duration,
@@ -13,7 +14,8 @@ export function minimizeMusicObject(music) {
     album,
     artist,
     id,
-    romaji,
+    titleRomaji,
+    artistRomaji,
   };
 }
 
