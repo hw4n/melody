@@ -1,6 +1,10 @@
 import { logCyan, logWhite } from '../loaders/logger';
 import { minimizeMusicObject, minimizeMusicArray } from './minimize';
 
+function emitTotalUsers() {
+  global.SOCKET.emit('total_users', global.SOCKETS.length);
+}
+
 export default function addSocketListeners(io) {
   io.on('connection', (socket) => {
     global.SOCKETS.push(socket.id);
@@ -10,7 +14,9 @@ export default function addSocketListeners(io) {
       queue: minimizeMusicArray(global.MUSICS),
       playing: minimizeMusicObject(global.PLAYING),
       start: global.PLAYING_START,
+      total_users: global.SOCKETS.length,
     });
+    emitTotalUsers();
     socket.on('priority', (musicId) => {
       for (let i = 0; i < global.MUSICS.length; i += 1) {
         const song = global.MUSICS[i];
@@ -33,6 +39,7 @@ export default function addSocketListeners(io) {
           break;
         }
       }
+      emitTotalUsers();
     });
   });
   logWhite('Added socket listeners');
