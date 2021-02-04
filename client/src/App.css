@@ -237,10 +237,19 @@ button:hover {
   color: #00d668;
 }
 
-.volumeControlWrap {
+.controlPanelRight {
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.volumeControlWrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .volumeControlWrap button {
@@ -250,7 +259,17 @@ button:hover {
 }
 
 #volumeControl {
-  margin: 0 10px;
+  margin: 0 0 0 10px;
+  display: flex;
+  width: 75%;
+}
+
+.totalUsersWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #00d668;
 }
 
 /* a lot of range input stuff */
@@ -406,7 +425,7 @@ how to remove the virtical space around the range input in IE*/
   .song .duration {
     display: none;
   }
-  footer .volumeControlWrap {
+  footer .controlPanelRight {
     display: none;
   }
   footer .currentMusic {
@@ -433,7 +452,7 @@ how to remove the virtical space around the range input in IE*/
   .song .duration {
     display: none;
   }
-  footer .volumeControlWrap {
+  footer .controlPanelRight {
     display: none;
   }
   footer .currentMusic {

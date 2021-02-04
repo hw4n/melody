@@ -1,7 +1,7 @@
 import './App.css';
 import io from "socket.io-client";
 import { useEffect, useRef, useState } from 'react';
-import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faSearch, faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MusicList from "./components/MusicList";
 import Loader from "./components/Loader";
@@ -31,6 +31,7 @@ function App() {
   const [searchQueue, setSearchQueue] = useState([]);
   const [socketId, setSocketId] = useState(undefined);
   const [playbackStart, setPlaybackStart] = useState();
+  const [totalUsers, setTotalUsers] = useState(1);
 
   useEffect(() => {
     if (socketId === undefined) {
@@ -44,6 +45,7 @@ function App() {
       setPlaying(msg.playing);
       setUpdateTime(Date.now());
       setPlaybackStart(msg.start);
+      setTotalUsers(msg.total_users);
 
       document.addEventListener("keydown", (e) => {
         if (e.target.type === "text") {
@@ -103,6 +105,11 @@ function App() {
       setQueue(newQueue);
       setUpdateTime(Date.now());
       setPlaybackStart(next.start);
+    });
+
+    socket.off('total_users');
+    socket.on('total_users', (total_users) => {
+      setTotalUsers(total_users);
     });
   }, [playing, priority, queue, socketId]);
 
@@ -325,27 +332,33 @@ function App() {
           </button>
           <ProgressBar duration={playing.duration} playbackStart={playbackStart}/>
         </div>
-        <div className="volumeControlWrap">
-          <button onClick={() => {
-            if (!muted) {
-              setMuted(true);
-            } else {
-              setMuted(false);
-            }
-          }}>
-            {volume > 0 ? (
-              <FontAwesomeIcon icon={faVolumeDown} size="2x"/>
-            ) : (
-              <FontAwesomeIcon icon={faVolumeMute} size="2x"/>
-            )}
-          </button>
-          <div id="volumeControl">
-            <input type="range" min="0" max="1" step="0.01" defaultValue="0.5" ref={volumeRef} onChange={e => {
-              setVolume(e.target.value);
-              if (e.target.value > 0) {
+        <div class="controlPanelRight">
+          <div className="volumeControlWrap">
+            <button onClick={() => {
+              if (!muted) {
+                setMuted(true);
+              } else {
                 setMuted(false);
               }
-            }}/>
+            }}>
+              {volume > 0 ? (
+                <FontAwesomeIcon icon={faVolumeDown} size="2x"/>
+              ) : (
+                <FontAwesomeIcon icon={faVolumeMute} size="2x"/>
+              )}
+            </button>
+            <div id="volumeControl">
+              <input type="range" min="0" max="1" step="0.01" defaultValue="0.5" ref={volumeRef} onChange={e => {
+                setVolume(e.target.value);
+                if (e.target.value > 0) {
+                  setMuted(false);
+                }
+              }}/>
+            </div>
+          </div>
+          <div class="totalUsersWrap">
+            <FontAwesomeIcon icon={faUsers}/>
+            <div class="total_users">{totalUsers}</div>
           </div>
         </div>
       </footer>
