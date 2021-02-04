@@ -49,10 +49,21 @@ async function loadMusicFiles(filePathArray) {
             artist = 'Various Artists';
           }
 
-          toRomaji(title).then((romaji) => {
-            global.MUSICS.push(new Music({
-              id, duration, size, bit_rate, title, album, artist, file: filePath, romaji,
-            }));
+          toRomaji(title).then((titleRomaji) => {
+            toRomaji(artist).then((artistRomaji) => {
+              global.MUSICS.push(new Music({
+                id,
+                duration,
+                size,
+                bit_rate,
+                title,
+                album,
+                artist,
+                file: filePath,
+                titleRomaji,
+                artistRomaji,
+              }));
+            });
           });
 
           if (index === filePathArray.length - 1) {
