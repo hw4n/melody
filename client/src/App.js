@@ -329,15 +329,17 @@ function App() {
           )}
         </div>
         <div className="controller">
-          <button onClick={() => {
-            setIsPlaying(!isPlaying);
-          }}>
-            {!isPlaying ? (
-              <FontAwesomeIcon icon={faPlayCircle} size="2x"/>
-            ) : (
-              <FontAwesomeIcon icon={faStopCircle} size="2x"/>
-            )}
-          </button>
+          <div className="playButtonWrap">
+            <button onClick={() => {
+              setIsPlaying(!isPlaying);
+            }}>
+              {!isPlaying ? (
+                <FontAwesomeIcon icon={faPlayCircle} size="2x"/>
+              ) : (
+                <FontAwesomeIcon icon={faStopCircle} size="2x"/>
+              )}
+            </button>
+          </div>
           <ProgressBar duration={playing.duration} playbackStart={playbackStart}/>
         </div>
         <div class="controlPanelRight">

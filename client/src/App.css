@@ -223,6 +223,12 @@ footer .controller {
   justify-content: space-evenly;
 }
 
+.controller .playButtonWrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 button {
   background-color: transparent;
   background-repeat: no-repeat;
