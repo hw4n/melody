@@ -35,6 +35,13 @@ function MusicList(props) {
     return array.slice().sort((a, b) => b.title[0].charCodeAt() - a.title[0].charCodeAt());
   }
 
+  // completely duplicate with ProgressBar.js
+  function secondsToTimestring(x) {
+    const m = Math.floor(x / 60);
+    const s = Math.floor(x % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  }
+
   useEffect(() => {
     setOriginalOrder(originalMusicArray.map(music => music.id));
     setMusicArray(originalMusicArray.slice());
@@ -83,7 +90,7 @@ function MusicList(props) {
               <div className="album dotOverflow">
                 <span className="clickable" onClick={handleKeywordClick}>{song.album}</span>
               </div>
-              <div className="duration dotOverflow">{song.duration}</div>
+              <div className="duration dotOverflow">{secondsToTimestring(song.duration)}</div>
             </div>
           )
         })}
