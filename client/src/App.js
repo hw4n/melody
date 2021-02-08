@@ -130,12 +130,28 @@ function App() {
   }, [muted, volume])
 
   useEffect(() => {
-    if (isPlaying) {
-      audioRef.current.currentTime = (new Date() - new Date(playbackStart)) / 1000;
+    function playMusic() {
+      const AppleDevice = /(iPad|iPhone|iPod|Mac)/g.test(navigator.userAgent);
+      if (AppleDevice) {
+        audioRef.current.load();
+        audioRef.current.pause();
+      }
       let playPromise = audioRef.current.play();
       if (playPromise !== undefined) {
-        playPromise.then().catch((e) => {
-        });
+        playPromise.then(() => {
+          audioRef.current.currentTime = (new Date() - new Date(playbackStart)) / 1000;
+        }).catch((e) => {});
+      }
+    }
+
+    if (isPlaying) {
+      let currentTime = (new Date() - new Date(playbackStart)) / 1000;
+      if (currentTime < 0) {
+        setTimeout(() => {
+          playMusic();
+        }, (new Date() - new Date(playbackStart)) * -1);
+      } else {
+        playMusic();
       }
       document.title = `♪ Playing ${playing.title}`;
     } else {
