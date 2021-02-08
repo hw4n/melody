@@ -6,8 +6,7 @@ interface Global {
   QUEUE: Music[],
   MUSICS: Music[],
   SOCKET: Socket,
-  SOCKETS: string[],
-  WRITABLES: {},
+  SOCKETS: string[]
 }
 
 export default Global;

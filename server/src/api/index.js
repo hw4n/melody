@@ -38,10 +38,6 @@ router.get('/status', (req, res) => {
       length: global.SOCKETS.length,
       array: global.SOCKETS,
     },
-    writables: {
-      length: Object.keys(global.WRITABLES).length,
-      keys: Object.keys(global.WRITABLES),
-    },
     queue: global.QUEUE,
     musics: global.MUSICS,
     playing: global.PLAYING,

@@ -15,7 +15,6 @@ declare let global: Global;
 global.QUEUE = [];
 global.MUSICS = [];
 global.SOCKETS = [];
-global.WRITABLES = {};
 
 const Kuroshiro = require('kuroshiro');
 const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');

@@ -29,9 +29,6 @@ export default function addSocketListeners(io) {
     });
     socket.on('disconnect', (reason) => {
       logCyan(`${socket.id}: ${reason}`);
-      if (Object.keys(global.WRITABLES).includes(socket.id)) {
-        delete global.WRITABLES[socket.id];
-      }
       for (let i = 0; i < global.SOCKETS.length; i += 1) {
         if (global.SOCKETS[i] === socket.id) {
           global.SOCKETS.splice(i, 1);
