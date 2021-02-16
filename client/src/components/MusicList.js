@@ -42,6 +42,15 @@ function MusicList(props) {
     return `${m}:${s}`;
   }
 
+  function totalMinSec() {
+    if (musicArray.length) {
+      const totalLength = musicArray.reduce((acc, music) => {
+        return acc + Number(music.duration);
+      }, 0);
+      return secondsToTimestring(totalLength);
+    }
+  }
+
   useEffect(() => {
     setOriginalOrder(originalMusicArray.map(music => music.id));
     setMusicArray(originalMusicArray.slice());
@@ -61,14 +70,19 @@ function MusicList(props) {
 
   return (
     <>
+      <div className="songListHeader divider">
       {searching ? (
-        <div className="searchHeader songListHeader divider">
-          <h3 className=""><span className="searching">search result </span>{listTitle}</h3>
+        <>
+          <h3><span className="searching">search result </span>{listTitle}</h3>
           <h3 className="searching">{musicArray.length} found</h3>
-        </div>
+        </>
       ): (
-        <h3 className="songListHeader divider">{listTitle}</h3>
+        <>
+          <h3>{listTitle}</h3>
+          <h3>{totalMinSec()}</h3>
+        </>
       )}
+      </div>
       <div className="columnIndicator divider">
         <div className="clickable" onClick={() => {
           setTitleSort(x => (x + 1) % 3);

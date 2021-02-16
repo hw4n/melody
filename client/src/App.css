@@ -20,6 +20,12 @@ body {
 
 .songListHeader {
   text-transform: capitalize;
+  display: flex;
+  justify-content: space-between;
+}
+
+.songListHeader h3 {
+  margin-bottom: 0;
 }
 
 .divider {
