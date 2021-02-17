@@ -35,11 +35,18 @@ function MusicList(props) {
     return array.slice().sort((a, b) => b.title[0].charCodeAt() - a.title[0].charCodeAt());
   }
 
-  // completely duplicate with ProgressBar.js
   function secondsToTimestring(x) {
-    const m = Math.floor(x / 60);
-    const s = Math.floor(x % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
+    // if total length is less than a hour
+    if (x < 3600) {
+      const m = Math.floor(x / 60);
+      const s = Math.floor(x % 60).toString().padStart(2, "0");
+      return `${m}:${s}`;
+    } else {
+      const h = Math.floor(x / 3600);
+      const m = Math.floor(x % 3600 / 60).toString().padStart(2, "0");
+      const s = Math.floor(x % 3600 % 60).toString().padStart(2, "0");
+      return `${h}:${m}:${s}`;
+    }
   }
 
   function totalMinSec() {
