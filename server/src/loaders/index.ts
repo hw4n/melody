@@ -3,6 +3,7 @@ import Global from '../interfaces/Global';
 import { shuffleGlobalMusic, playMusic } from '../services/music';
 import addSocketListeners from '../services/socket';
 import { logWhite } from './logger';
+import dbMusic from '../models/Music';
 
 const fs = require('fs');
 const { resolve: pathResolve } = require('path');
@@ -20,6 +21,15 @@ const Kuroshiro = require('kuroshiro');
 const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
 
 const kuroshiro = new Kuroshiro();
+
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.DBURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}, () => {
+  logWhite('Connected to DB');
+});
 
 async function toRomaji(japanese) {
   const result = await kuroshiro.convert(japanese, { to: 'romaji', romajiSystem: 'passport' });
@@ -50,7 +60,7 @@ async function loadMusicFiles(filePathArray) {
 
           Promise.all([toRomaji(title), toRomaji(artist)])
             .then((romaji) => {
-              global.MUSICS.push(new Music({
+              const musicObject = new Music({
                 id,
                 duration,
                 size,
@@ -61,7 +71,9 @@ async function loadMusicFiles(filePathArray) {
                 file: filePath,
                 titleRomaji: romaji[0],
                 artistRomaji: romaji[1],
-              }));
+              });
+              global.MUSICS.push(musicObject);
+              dbMusic.create(musicObject);
             });
 
           if (index === filePathArray.length - 1) {
