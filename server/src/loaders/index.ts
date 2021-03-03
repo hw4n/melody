@@ -39,47 +39,90 @@ async function toRomaji(japanese) {
 async function loadMusicFiles(filePathArray) {
   await kuroshiro.init(new KuromojiAnalyzer());
   return new Promise<void>((resolve) => {
-    logWhite(`${filePathArray.length} musics found, started loading`);
-    filePathArray.forEach((filePath, index) => {
-      ffprobe(filePath)
-        .then((data) => {
-          const id = index;
-          // eslint-disable-next-line camelcase
-          const { duration, size, bit_rate } = data.format;
-          let { title, album, artist } = data.format.tags;
-          if (title === undefined) {
-            title = filePath.substr(0, filePath.lastIndexOf('.'));
-          }
-
-          if (album === undefined) {
-            album = '-';
-          }
-          if (artist === undefined) {
-            artist = 'Various Artists';
-          }
-
-          Promise.all([toRomaji(title), toRomaji(artist)])
-            .then((romaji) => {
-              const musicObject = new Music({
-                id,
-                duration,
-                size,
-                bit_rate,
-                title,
-                album,
-                artist,
-                file: filePath,
-                titleRomaji: romaji[0],
-                artistRomaji: romaji[1],
-              });
-              global.MUSICS.push(musicObject);
-              dbMusic.create(musicObject);
+    dbMusic.countDocuments({}, (err, count) => {
+      // same number of musics are on db
+      if (count === filePathArray.length) {
+        logWhite(`Using same ${count} musics from DB`);
+        dbMusic.find({}, (error, musics) => {
+          musics.forEach((music: any, index) => {
+            const {
+              id,
+              duration,
+              size,
+              // eslint-disable-next-line camelcase
+              bit_rate,
+              title,
+              album,
+              artist,
+              file,
+              titleRomaji,
+              artistRomaji,
+            } = music;
+            const musicObject = new Music({
+              id,
+              duration,
+              size,
+              bit_rate,
+              title,
+              album,
+              artist,
+              file,
+              titleRomaji,
+              artistRomaji,
             });
-
-          if (index === filePathArray.length - 1) {
-            resolve();
-          }
+            global.MUSICS.push(musicObject);
+            if (index === filePathArray.length - 1) {
+              resolve();
+            }
+          });
         });
+        return;
+      }
+      logWhite(`${filePathArray.length} musics found, started loading`);
+      dbMusic.collection.drop().then(() => {
+        logWhite('Dropped collection from DB to renew collection');
+        filePathArray.forEach((filePath, index) => {
+          ffprobe(filePath)
+            .then((data) => {
+              const id = index;
+              // eslint-disable-next-line camelcase
+              const { duration, size, bit_rate } = data.format;
+              let { title, album, artist } = data.format.tags;
+              if (title === undefined) {
+                title = filePath.substr(0, filePath.lastIndexOf('.'));
+              }
+
+              if (album === undefined) {
+                album = '-';
+              }
+              if (artist === undefined) {
+                artist = 'Various Artists';
+              }
+
+              Promise.all([toRomaji(title), toRomaji(artist)])
+                .then((romaji) => {
+                  const musicObject = new Music({
+                    id,
+                    duration,
+                    size,
+                    bit_rate,
+                    title,
+                    album,
+                    artist,
+                    file: filePath,
+                    titleRomaji: romaji[0],
+                    artistRomaji: romaji[1],
+                  });
+                  global.MUSICS.push(musicObject);
+                  dbMusic.create(musicObject);
+                });
+
+              if (index === filePathArray.length - 1) {
+                resolve();
+              }
+            });
+        });
+      });
     });
   });
 }
