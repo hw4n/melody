@@ -79,7 +79,7 @@ async function loadMusicFiles(filePathArray) {
         return;
       }
       logWhite(`${filePathArray.length} musics found, started loading`);
-      dbMusic.collection.drop().then(() => {
+      dbMusic.deleteMany(() => {
         logWhite('Dropped collection from DB to renew collection');
         filePathArray.forEach((filePath, index) => {
           ffprobe(filePath)
