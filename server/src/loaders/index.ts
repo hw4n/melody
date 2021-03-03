@@ -114,11 +114,13 @@ async function loadMusicFiles(filePathArray) {
                     artistRomaji: romaji[1],
                   });
                   global.MUSICS.push(musicObject);
-                  dbMusic.create(musicObject);
                 });
 
               if (index === filePathArray.length - 1) {
-                resolve();
+                dbMusic.insertMany(global.MUSICS).then((docs) => {
+                  logWhite(`Inserted ${docs.length} musics to DB`);
+                  resolve();
+                });
               }
             });
         });
