@@ -212,8 +212,8 @@ function App() {
 
       function musicHasSearchKeyword(music) {
         const keyword = stringToSearchString(searchKeyword);
-
-        let { title, artist, album, titleRomaji, artistRomaji } = music;
+        let { title, artist, album, romaji } = music;
+        let { title: titleRomaji, artist: artistRomaji } = romaji;
         title = stringToSearchString(title);
         artist = stringToSearchString(artist);
         album = stringToSearchString(album);
@@ -240,7 +240,7 @@ function App() {
   const volumeRef = useRef();
 
   function requestQueueing(e) {
-    socket.emit("priority", parseInt(e.currentTarget.id));
+    socket.emit("priority", e.currentTarget.id);
   }
 
   return (
