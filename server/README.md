@@ -76,8 +76,10 @@ This project provides only a backend server.
    ...more
    ```
    Don't change port if it's not needed, [Ody](https://github.com/hw4n/ody) uses proxy to port 3333 for default
+   Also set DBURI to your own mongoDB connection string
    ```
    PORT=3333
+   DBURI=mongodb+srv://...
    ```
 4. Create ``mp3`` and ``cover`` directory  
    ``mp3`` : Put any mp3 you want on the web, also it finds any mp3 file recursively, just put any mp3 files you have
