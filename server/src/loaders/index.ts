@@ -1,9 +1,8 @@
-import Music from '../interfaces/Music';
 import Global from '../interfaces/Global';
 import { shuffleGlobalMusic, playMusic } from '../services/music';
 import addSocketListeners from '../services/socket';
 import { logWhite } from './logger';
-import dbMusic from '../models/Music';
+import dbMusic, { IMusic } from '../models/Music';
 
 const fs = require('fs');
 const { resolve: pathResolve } = require('path');
@@ -44,33 +43,8 @@ async function loadMusicFiles(filePathArray) {
       if (count === filePathArray.length) {
         logWhite(`Using same ${count} musics from DB`);
         dbMusic.find({}, (error, musics) => {
-          musics.forEach((music: any, index) => {
-            const {
-              id,
-              duration,
-              size,
-              // eslint-disable-next-line camelcase
-              bit_rate,
-              title,
-              album,
-              artist,
-              file,
-              titleRomaji,
-              artistRomaji,
-            } = music;
-            const musicObject = new Music({
-              id,
-              duration,
-              size,
-              bit_rate,
-              title,
-              album,
-              artist,
-              file,
-              titleRomaji,
-              artistRomaji,
-            });
-            global.MUSICS.push(musicObject);
+          musics.forEach((music, index) => {
+            global.MUSICS.push(music);
             if (index === filePathArray.length - 1) {
               resolve();
             }
@@ -80,16 +54,15 @@ async function loadMusicFiles(filePathArray) {
       }
       logWhite(`${filePathArray.length} musics found, started loading`);
       dbMusic.deleteMany(() => {
-        logWhite('Dropped collection from DB to renew collection');
-        filePathArray.forEach((filePath, index) => {
-          ffprobe(filePath)
+        logWhite('Will renew collection on DB');
+        const processedMusic = [];
+        filePathArray.forEach((filepath, index) => {
+          ffprobe(filepath)
             .then((data) => {
-              const id = index;
-              // eslint-disable-next-line camelcase
-              const { duration, size, bit_rate } = data.format;
+              const { duration, size, bit_rate: bitrate } = data.format;
               let { title, album, artist } = data.format.tags;
               if (title === undefined) {
-                title = filePath.substr(0, filePath.lastIndexOf('.'));
+                title = filepath.substr(0, filepath.lastIndexOf('.'));
               }
 
               if (album === undefined) {
@@ -101,25 +74,32 @@ async function loadMusicFiles(filePathArray) {
 
               Promise.all([toRomaji(title), toRomaji(artist)])
                 .then((romaji) => {
-                  const musicObject = new Music({
-                    id,
+                  const music = {
                     duration,
                     size,
-                    bit_rate,
+                    bitrate,
                     title,
                     album,
                     artist,
-                    file: filePath,
-                    titleRomaji: romaji[0],
-                    artistRomaji: romaji[1],
-                  });
-                  global.MUSICS.push(musicObject);
+                    filepath,
+                    romaji: {
+                      title: '',
+                      artist: '',
+                    },
+                  } as IMusic;
+                  [music.romaji.title, music.romaji.artist] = romaji;
+                  processedMusic.push(music);
                 });
 
               if (index === filePathArray.length - 1) {
-                dbMusic.insertMany(global.MUSICS).then((docs) => {
-                  logWhite(`Inserted ${docs.length} musics to DB`);
-                  resolve();
+                dbMusic.insertMany(processedMusic).then((musics) => {
+                  logWhite(`Inserted ${musics.length} musics to DB`);
+                  musics.forEach((music, idx) => {
+                    global.MUSICS.push(music);
+                    if (idx === musics.length - 1) {
+                      resolve();
+                    }
+                  });
                 });
               }
             });

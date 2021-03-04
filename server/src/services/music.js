@@ -20,7 +20,7 @@ export function playMusic() {
     FROM_QUEUE = 'queue';
   }
 
-  const toPlay = song.file;
+  const toPlay = song.filepath;
   global.PLAYING = song;
 
   setTimeout(() => {

@@ -5,8 +5,7 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/stream', (req, res) => {
-  const filePath = global.PLAYING.file;
-  const fileSize = global.PLAYING.size;
+  const { filepath: filePath, size: fileSize } = global.PLAYING;
   const { range } = req.headers;
   if (range) {
     const parts = range.replace(/bytes=/, '').split('-');
