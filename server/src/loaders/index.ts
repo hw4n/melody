@@ -3,6 +3,7 @@ import { shuffleGlobalMusic, playMusic } from '../services/music';
 import addSocketListeners from '../services/socket';
 import { logWhite } from './logger';
 import dbMusic, { IMusic } from '../models/Music';
+import diff from '../services/diff';
 
 const fs = require('fs');
 const { resolve: pathResolve } = require('path');
@@ -35,81 +36,72 @@ async function toRomaji(japanese) {
   return result;
 }
 
-async function loadMusicFiles(filePathArray) {
-  await kuroshiro.init(new KuromojiAnalyzer());
-  return new Promise<void>((resolve) => {
-    dbMusic.countDocuments({}, (err, count) => {
-      // same number of musics are on db
-      if (count === filePathArray.length) {
-        logWhite(`Using same ${count} musics from DB`);
-        dbMusic.find({}, (error, musics) => {
-          musics.forEach((music, index) => {
-            global.MUSICS.push(music);
-            if (index === filePathArray.length - 1) {
-              resolve();
-            }
-          });
-        });
-        return;
+async function analyzeMusic(filepath): Promise<IMusic> {
+  return new Promise((resolve) => {
+    ffprobe(filepath).then((data) => {
+      const { duration, size, bit_rate: bitrate } = data.format;
+      let { title, album, artist } = data.format.tags;
+      if (title === undefined) {
+        title = filepath.substr(0, filepath.lastIndexOf('.'));
       }
-      logWhite(`${filePathArray.length} musics found, started loading`);
-      dbMusic.deleteMany(() => {
-        logWhite('Will renew collection on DB');
-        const processedMusic = [];
-        filePathArray.forEach((filepath, index) => {
-          ffprobe(filepath)
-            .then((data) => {
-              const { duration, size, bit_rate: bitrate } = data.format;
-              let { title, album, artist } = data.format.tags;
-              if (title === undefined) {
-                title = filepath.substr(0, filepath.lastIndexOf('.'));
-              }
 
-              if (album === undefined) {
-                album = '-';
-              }
-              if (artist === undefined) {
-                artist = 'Various Artists';
-              }
+      if (album === undefined) {
+        album = '-';
+      }
+      if (artist === undefined) {
+        artist = 'Various Artists';
+      }
 
-              Promise.all([toRomaji(title), toRomaji(artist)])
-                .then((romaji) => {
-                  const music = {
-                    duration,
-                    size,
-                    bitrate,
-                    title,
-                    album,
-                    artist,
-                    filepath,
-                    romaji: {
-                      title: '',
-                      artist: '',
-                    },
-                  } as IMusic;
-                  [music.romaji.title, music.romaji.artist] = romaji;
-                  processedMusic.push(music);
-                });
-
-              if (index === filePathArray.length - 1) {
-                dbMusic.insertMany(processedMusic).then((musics) => {
-                  logWhite(`Inserted ${musics.length} musics to DB`);
-                  musics.forEach((music, idx) => {
-                    global.MUSICS.push(music);
-                    if (idx === musics.length - 1) {
-                      resolve();
-                    }
-                  });
-                });
-              }
-            });
+      Promise.all([toRomaji(title), toRomaji(artist)])
+        .then((romaji) => {
+          const music = {
+            duration,
+            size,
+            bitrate,
+            title,
+            album,
+            artist,
+            filepath,
+            romaji: {
+              title: '',
+              artist: '',
+            },
+          } as IMusic;
+          [music.romaji.title, music.romaji.artist] = romaji;
+          resolve(music);
         });
-      });
     });
   });
 }
 
-function startPlaying() {
+async function loadMusicFiles(filePathArray: Array<String>) {
+  logWhite(`${filePathArray.length} music found from local`);
+  await kuroshiro.init(new KuromojiAnalyzer());
+  return new Promise<Array<IMusic>>((resolve) => {
+    dbMusic.find({}, (err, dbMusics) => {
+      logWhite(`${dbMusics.length} music found from DB`);
+      const dbSet = new Set(dbMusics.map((music) => music.filepath));
+      const localSet = new Set(filePathArray);
+      const dbOnly = diff(dbSet, localSet);
+      logWhite(`${dbOnly.length} music not found from local files`);
+      const localOnly = diff(localSet, dbSet);
+      logWhite(`${dbOnly.length} music not found from DB and will insert`);
+      Promise.all(localOnly.map((filepath) => analyzeMusic(filepath)))
+        .then((processedMusic) => {
+          dbMusic.insertMany(processedMusic).then(() => {
+            logWhite(`Inserted ${localOnly.length} music to DB`);
+            dbMusic.find({}, (error, musics) => {
+              logWhite(`Will exclude ${dbOnly.length} music from playlist`);
+              resolve(musics.filter((music) => !dbOnly.includes(music.filepath)));
+            });
+          });
+        });
+    });
+  });
+}
+
+function startPlaying(musics: Array<IMusic>) {
+  global.MUSICS.push(...musics);
   shuffleGlobalMusic();
   playMusic();
   addSocketListeners(global.SOCKET);
