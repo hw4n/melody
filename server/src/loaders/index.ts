@@ -85,7 +85,7 @@ async function loadMusicFiles(filePathArray: Array<String>) {
       const dbOnly = diff(dbSet, localSet);
       logWhite(`${dbOnly.length} music not found from local files`);
       const localOnly = diff(localSet, dbSet);
-      logWhite(`${dbOnly.length} music not found from DB and will insert`);
+      logWhite(`${localOnly.length} music not found from DB and will insert`);
       Promise.all(localOnly.map((filepath) => analyzeMusic(filepath)))
         .then((processedMusic) => {
           dbMusic.insertMany(processedMusic).then(() => {
