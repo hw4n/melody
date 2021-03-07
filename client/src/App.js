@@ -1,7 +1,7 @@
 import './App.css';
 import io from "socket.io-client";
 import { useEffect, useRef, useState } from 'react';
-import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faSearch, faTimes, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faSearch, faTimes, faFileAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MusicList from "./components/MusicList";
 import Loader from "./components/Loader";
@@ -32,6 +32,7 @@ function App() {
   const [socketId, setSocketId] = useState(undefined);
   const [playbackStart, setPlaybackStart] = useState();
   const [totalUsers, setTotalUsers] = useState(1);
+  const [lyricMode, setLyricMode] = useState(false);
 
   useEffect(() => {
     if (socketId === undefined) {
@@ -361,11 +362,12 @@ function App() {
         <div class="controlPanelRight">
           <div className="volumeControlWrap">
             <button onClick={() => {
-              if (!muted) {
-                setMuted(true);
-              } else {
-                setMuted(false);
-              }
+              setLyricMode(!lyricMode);
+            }}>
+              <FontAwesomeIcon icon={faFileAlt} size="2x"/>
+            </button>
+            <button onClick={() => {
+              setMuted(!muted);
             }}>
               {volume > 0 ? (
                 <FontAwesomeIcon icon={faVolumeDown} size="2x"/>
