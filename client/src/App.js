@@ -34,6 +34,33 @@ function App() {
   const [lyricMode, setLyricMode] = useState(false);
 
   useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      // ignore keydown from input[type=text]
+      if (e.target.type === "text") {
+        return;
+      }
+      switch (e.key) {
+        case " ":
+          setIsPlaying(isPlaying => !isPlaying);
+          break;
+        case "m":
+        case "M":
+          setMuted(muted => !muted);
+          break;
+        case "l":
+        case "L":
+          setLyricMode(lyricMode => !lyricMode);
+          break;
+        case "Escape":
+          setLyricMode(false);
+          break;
+        default:
+          break;
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     if (socketId === undefined) {
       setSocketId(socket.id);
     }
@@ -46,19 +73,6 @@ function App() {
       setUpdateTime(Date.now());
       setPlaybackStart(msg.start);
       setTotalUsers(msg.total_users);
-
-      document.addEventListener("keydown", (e) => {
-        if (e.target.type === "text") {
-          return
-        }
-
-        if (e.key === " ") {
-          e.preventDefault();
-          setIsPlaying(isPlaying => !isPlaying);
-        } else if (e.key === "m" || e.key === "M") {
-          setMuted(muted => !muted);
-        }
-      });
     });
 
     socket.off('priority');
@@ -254,7 +268,6 @@ function App() {
       { lyricMode ? (
         <Lyrics
           playing={playing}
-          setLyricMode={setLyricMode}
         />
       ) : (
         <></>

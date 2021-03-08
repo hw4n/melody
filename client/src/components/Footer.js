@@ -21,11 +21,7 @@ function Footer(props) {
   } = props;
 
   return (
-    <footer tabIndex="1" onKeyDown={(e) => {
-      if (e.key === "Escape") {
-        setLyricMode(false);
-      }
-    }}>
+    <footer>
       {isPlaying ? (
         <audio ref={audioRef} src={`/stream?${updateTime}`}>
           <source src={`/stream?${updateTime}`} type="audio/mpeg"/>
