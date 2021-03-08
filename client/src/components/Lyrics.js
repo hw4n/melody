@@ -4,6 +4,7 @@ import Loader from './Loader';
 
 function Lyrics(props) {
   const { title } = props.playing;
+  const { setLyricMode } = props;
   const [loading, setLoading] = useState(true);
   const [lyrics, setLyrics] = useState('');
 
@@ -29,7 +30,11 @@ function Lyrics(props) {
   }
 
   return (
-    <div class="lyricsWrap">
+    <div class="lyricsWrap" tabIndex="1" onKeyDown={(e) => {
+      if (e.key === "Escape") {
+        setLyricMode(false);
+      }
+    }}>
       { loading ? (
         <Loader transparent={true}/>
       ) : (

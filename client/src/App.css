@@ -18,6 +18,9 @@ body {
   padding: 0 20px;
   overflow: auto;
   max-height: calc(100vh - 71px);
+  /* firefox */
+  scrollbar-color: #d1d1d1 #4a4a4a;
+  scrollbar-width: thin;
 }
 
 .songListHeader:first-of-type {
@@ -179,6 +182,10 @@ footer {
   border-top: 1px solid #121212;
 }
 
+footer:focus {
+  outline: none;
+}
+
 footer div {
   width: 35%;
 }
@@ -241,8 +248,13 @@ button {
   color: white;
 }
 
-button:hover {
+button:hover,
+button.active {
   color: #00d668;
+}
+
+button.disabled {
+  color: #F20505;
 }
 
 .controlPanelRight {

@@ -12,6 +12,10 @@
   backdrop-filter: blur(10px);
 }
 
+.lyricsWrap:focus {
+  outline: none;
+}
+
 .lyricsHeader {
   width: 100%;
   height: 5%;
@@ -28,6 +32,9 @@
   overflow-y: scroll;
   user-select: text;
   padding: 1rem 0;
+  /* firefox */
+  scrollbar-color: #d1d1d1 #4a4a4a;
+  scrollbar-width: thin;
 }
 
 ::selection {

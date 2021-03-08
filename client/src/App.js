@@ -252,7 +252,10 @@ function App() {
       )}
       <Flash/>
       { lyricMode ? (
-        <Lyrics playing={playing}/>
+        <Lyrics
+          playing={playing}
+          setLyricMode={setLyricMode}
+        />
       ) : (
         <></>
       )}

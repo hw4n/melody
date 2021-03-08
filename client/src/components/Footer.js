@@ -21,7 +21,11 @@ function Footer(props) {
   } = props;
 
   return (
-    <footer>
+    <footer tabIndex="1" onKeyDown={(e) => {
+      if (e.key === "Escape") {
+        setLyricMode(false);
+      }
+    }}>
       {isPlaying ? (
         <audio ref={audioRef} src={`/stream?${updateTime}`}>
           <source src={`/stream?${updateTime}`} type="audio/mpeg"/>
@@ -60,12 +64,12 @@ function Footer(props) {
         <div className="volumeControlWrap">
           <button onClick={() => {
             setLyricMode(!lyricMode);
-          }}>
+          }} class={lyricMode ? "active" : ""}>
             <FontAwesomeIcon icon={faFileAlt} size="2x"/>
           </button>
           <button onClick={() => {
             setMuted(!muted);
-          }}>
+          }} class={muted ? "disabled" : ""}>
             {volume > 0 ? (
               <FontAwesomeIcon icon={faVolumeDown} size="2x"/>
             ) : (
