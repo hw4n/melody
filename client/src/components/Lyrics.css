@@ -16,14 +16,36 @@
   outline: none;
 }
 
-.lyricsHeader {
+.lyricsHeaderWrap {
   width: 100%;
   height: 5%;
   font-size: 1.5rem;
   display: flex;
-  flex-direction: column;
   border-bottom: 1px solid white;
   padding: 1rem 0;
+}
+
+.lyricsHeaderWrap div {
+  width: 20%;
+}
+
+.lyricsHeaderWrap .lyricsHeaderMiddle {
+  width: 60%;
+}
+
+.lyricsHeaderRight {
+  display: flex;
+  justify-content: center;
+}
+
+.lyricsHeaderRight button {
+  height: 100%;
+  text-transform: capitalize;
+}
+
+.lyricsHeaderRight span {
+  font-size: 1.2rem;
+  margin-left: 5px;
 }
 
 .lyrics {

@@ -106,7 +106,8 @@ li {
   background-color: #404040;
 }
 
-.searching {
+.searching,
+.in-progress {
   color: #ff9f1c;
 }
 
