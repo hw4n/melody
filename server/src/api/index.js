@@ -1,4 +1,5 @@
 import { createReadStream } from 'fs';
+import dbMusic from '../models/Music';
 
 const express = require('express');
 
@@ -41,6 +42,14 @@ router.get('/status', (req, res) => {
     musics: global.MUSICS,
     playing: global.PLAYING,
     start: global.PLAYING_START,
+  });
+});
+
+router.get('/lyrics', (req, res) => {
+  dbMusic.findById(global.PLAYING.id).then((music) => {
+    res.status(200).json({
+      lyrics: music.lyrics || '',
+    });
   });
 });
 
