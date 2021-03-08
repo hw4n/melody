@@ -8,7 +8,7 @@ function Lyrics(props) {
   const [lyrics, setLyrics] = useState('');
 
   useEffect(() => {
-    setLyrics(`${title}<hr>`);
+    setLyrics('');
     fetch('/lyrics')
       .then((res) => res.json())
       .then((data) => {
@@ -33,14 +33,14 @@ function Lyrics(props) {
       { loading ? (
         <Loader transparent={true}/>
       ) : (
-        lyrics.length ? (
-          <div
-            class="lyrics"
-            dangerouslySetInnerHTML={{__html: removeFormats(lyrics)}}
-          />
-        ) : (
-          <div class="lyrics">No lyrics yet</div>
-        )
+        <>
+        <div class="lyricsHeader">
+          {title}
+        </div>
+        <div
+          class="lyrics"
+          dangerouslySetInnerHTML={{__html: removeFormats(lyrics)}}
+        /></>
       )}
     </div>
   );
