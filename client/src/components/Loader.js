@@ -1,8 +1,8 @@
 import './Loader.css';
 
-function Loader() {
+function Loader(props) {
   return (
-    <div class="loader">
+    <div class={"loader" + (props.transparent ? " transparent" : "")}>
       <div class="lds-ripple">
         <div></div>
         <div></div>

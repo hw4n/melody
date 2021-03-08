@@ -1,15 +1,25 @@
+import { useState, useEffect } from 'react';
 import './Lyrics.css';
+import Loader from './Loader';
 
 function Lyrics(props) {
-  const { lyrics } = props;
+  const { title } = props.playing;
+  const [loading, setLoading] = useState(true);
+  const [lyrics, setLyrics] = useState('');
 
-  function createLyrics(string) {
-    if (string !== undefined) {
-      return removeFormats(string);
-    } else {
-      return 'No lyrics yet';
-    }
-  }
+  useEffect(() => {
+    setLyrics(`${title}<hr>`);
+    fetch('/lyrics')
+      .then((res) => res.json())
+      .then((data) => {
+        let lyricsToAppend = 'No lyrics yet';
+        if (data.lyrics) {
+          lyricsToAppend = data.lyrics;
+        }
+        setLyrics(lyrics => lyrics + lyricsToAppend);
+        setLoading(false);
+      });
+  }, [title]);
 
   function removeFormats(string) {
     return string
@@ -20,10 +30,18 @@ function Lyrics(props) {
 
   return (
     <div class="lyricsWrap">
-      <div
-        class="lyrics"
-        dangerouslySetInnerHTML={{__html: createLyrics(lyrics)}}
-      />
+      { loading ? (
+        <Loader transparent={true}/>
+      ) : (
+        lyrics.length ? (
+          <div
+            class="lyrics"
+            dangerouslySetInnerHTML={{__html: removeFormats(lyrics)}}
+          />
+        ) : (
+          <div class="lyrics">No lyrics yet</div>
+        )
+      )}
     </div>
   );
 }
