@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&family=Noto+Sans+KR&display=swap');
+
+* {
+  font-family: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
+}
+
 .App {
   max-height: 100vh;
 }

@@ -1,12 +1,10 @@
 import './App.css';
 import io from "socket.io-client";
 import { useEffect, useRef, useState } from 'react';
-import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faSearch, faTimes, faFileAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import MusicList from "./components/MusicList";
 import Loader from "./components/Loader";
 import Flash from "./components/Flash";
-import ProgressBar from "./components/ProgressBar";
+import EntirePlaylist from "./components/EntirePlaylist";
+import Footer from "./components/Footer";
 
 let SOCKET_URI = "/"
 if (process.env.NODE_ENV === "development") {
@@ -253,143 +251,35 @@ function App() {
       )}
       <Flash/>
       <div className="container">
-        <MusicList
-          listTitle="now playing"
-          customClassName="playing"
-          musicArray={[playing]}
-          searchSetters={{setSearching, setSearchKeyword}}
+        <EntirePlaylist
+          playing={playing}
+          priority={priority}
+          queue={queue}
+          searching={searching}
+          setSearching={setSearching}
+          searchKeyword={searchKeyword}
+          setSearchKeyword={setSearchKeyword}
+          searchPriority={searchPriority}
+          searchQueue={searchQueue}
+          requestQueueing={requestQueueing}
         />
-        <div className="search">
-          <FontAwesomeIcon icon={faSearch}/>
-          <input type="text" placeholder="Search for Title / Artist / Album" value={searchKeyword} onInput={(e) => {
-            const currentValue = e.target.value;
-            if (currentValue.trim() === "") {
-              setSearching(false);
-              setSearchKeyword("");
-              return;
-            }
-            if (currentValue.length > 0) {
-              setSearching(true);
-              setSearchKeyword(currentValue);
-            } else {
-              setSearching(false);
-              setSearchKeyword("");
-            }
-          }}/>
-          { searchKeyword.length ? (
-            <FontAwesomeIcon icon={faTimes} onClick={(e) => {
-              e.currentTarget.parentNode.querySelector("input").value = "";
-              setSearching(false);
-              setSearchKeyword("");
-            }}/>
-          ) : (
-            <></>
-          )}
-        </div>
-        { searching ? (
-          <>
-            <MusicList
-              searching={true}
-              listTitle="user queued list"
-              customClassName="priority"
-              musicArray={searchPriority}
-              message="You can queue any music you want by double-clicking music!"
-              searchSetters={{setSearching, setSearchKeyword}}
-            />
-            <MusicList
-              searching={true}
-              listTitle="next in queue"
-              customClassName="queue"
-              musicArray={searchQueue}
-              handleDoubleClick={requestQueueing}
-              searchSetters={{setSearching, setSearchKeyword}}
-            />
-          </>
-        ) : (
-          <>
-            <MusicList
-              listTitle="user queued list"
-              customClassName="priority"
-              musicArray={priority}
-              message="You can queue any music you want by double-clicking music!"
-              searchSetters={{setSearching, setSearchKeyword}}
-            />
-            <MusicList
-              listTitle="next in queue"
-              customClassName="queue"
-              musicArray={queue}
-              handleDoubleClick={requestQueueing}
-              searchSetters={{setSearching, setSearchKeyword}}
-            />
-          </>
-        )}
       </div>
-      <footer>
-        {isPlaying ? (
-          <audio ref={audioRef} src={`/stream?${updateTime}`}>
-            <source src={`/stream?${updateTime}`} type="audio/mpeg"/>
-          </audio>
-        ) : (
-          <audio ref={audioRef} src="" preload="none"/>
-        )}
-        <div className="currentMusic">
-          {playing ? (
-            <>
-              <img className="coverArt" src={`/96.png?${updateTime}`} alt="album cover artwork"/>
-              <div className="currentMusicText">
-                <div className="currentTitle dotOverflow">{playing.title}</div>
-                <div className="currentArtist dotOverflow">{playing.artist}</div>
-              </div>
-            </>
-          ) : (
-            <></>
-          )}
-        </div>
-        <div className="controller">
-          <div className="playButtonWrap">
-            <button onClick={() => {
-              setIsPlaying(!isPlaying);
-            }}>
-              {!isPlaying ? (
-                <FontAwesomeIcon icon={faPlayCircle} size="2x"/>
-              ) : (
-                <FontAwesomeIcon icon={faStopCircle} size="2x"/>
-              )}
-            </button>
-          </div>
-          <ProgressBar duration={playing.duration} playbackStart={playbackStart}/>
-        </div>
-        <div class="controlPanelRight">
-          <div className="volumeControlWrap">
-            <button onClick={() => {
-              setLyricMode(!lyricMode);
-            }}>
-              <FontAwesomeIcon icon={faFileAlt} size="2x"/>
-            </button>
-            <button onClick={() => {
-              setMuted(!muted);
-            }}>
-              {volume > 0 ? (
-                <FontAwesomeIcon icon={faVolumeDown} size="2x"/>
-              ) : (
-                <FontAwesomeIcon icon={faVolumeMute} size="2x"/>
-              )}
-            </button>
-            <div id="volumeControl">
-              <input type="range" min="0" max="1" step="0.01" defaultValue="0.5" ref={volumeRef} onChange={e => {
-                setVolume(e.target.value);
-                if (e.target.value > 0) {
-                  setMuted(false);
-                }
-              }}/>
-            </div>
-          </div>
-          <div class="totalUsersWrap">
-            <FontAwesomeIcon icon={faUsers}/>
-            <div class="total_users">{totalUsers}</div>
-          </div>
-        </div>
-      </footer>
+      <Footer
+        playing={playing}
+        isPlaying={isPlaying}
+        setIsPlaying={setIsPlaying}
+        lyricMode={lyricMode}
+        setLyricMode={setLyricMode}
+        muted={muted}
+        setMuted={setMuted}
+        volume={volume}
+        setVolume={setVolume}
+        audioRef={audioRef}
+        volumeRef={volumeRef}
+        updateTime={updateTime}
+        playbackStart={playbackStart}
+        totalUsers={totalUsers}
+      />
     </div>
   );
 }
