@@ -3,6 +3,7 @@ import io from "socket.io-client";
 import { useEffect, useRef, useState } from 'react';
 import Loader from "./components/Loader";
 import Flash from "./components/Flash";
+import Lyrics from "./components/Lyrics";
 import EntirePlaylist from "./components/EntirePlaylist";
 import Footer from "./components/Footer";
 
@@ -250,6 +251,11 @@ function App() {
         <Loader/>
       )}
       <Flash/>
+      { lyricMode ? (
+        <Lyrics lyrics={playing.lyrics}/>
+      ) : (
+        <></>
+      )}
       <div className="container">
         <EntirePlaylist
           playing={playing}

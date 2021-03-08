@@ -1,0 +1,25 @@
+.lyricsWrap {
+  width: 100%;
+  height: calc(100vh - 71px);
+  position: absolute;
+  z-index: 98;
+
+  display: flex;
+  justify-content: center;
+  text-align: center;
+
+  backdrop-filter: blur(10px);
+}
+
+.lyrics {
+  width: 70%;
+  color: white;
+  font-size: 1.5rem;
+  background-color: rgba(82, 82, 82, 0.5);
+  overflow-y: scroll;
+  user-select: text;
+}
+
+::selection {
+  background-color: rgba(255, 255, 255, 0.1);
+}
