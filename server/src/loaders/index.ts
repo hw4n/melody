@@ -4,6 +4,9 @@ import addSocketListeners from '../services/socket';
 import { logWhite } from './logger';
 import dbMusic, { IMusic } from '../models/Music';
 import diff from '../services/diff';
+import initReadline from '../services/console';
+
+initReadline();
 
 const fs = require('fs');
 const { resolve: pathResolve } = require('path');

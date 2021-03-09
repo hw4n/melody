@@ -7,6 +7,10 @@ export function logGreen(string) {
   console.log('\x1b[32m%s\x1b[0m', `${timestamp()} ${string}`);
 }
 
+export function logYellow(string) {
+  console.log('\x1b[33m%s\x1b[0m', `${timestamp()} ${string}`);
+}
+
 export function logCyan(string) {
   console.log('\x1b[36m%s\x1b[0m', `${timestamp()} ${string}`);
 }

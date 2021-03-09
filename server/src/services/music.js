@@ -23,7 +23,7 @@ export function playMusic() {
   const toPlay = song.filepath;
   global.PLAYING = song;
 
-  setTimeout(() => {
+  global.NEXT_TIMEOUT = setTimeout(() => {
     global.MUSICS.push(song);
     playMusic();
   }, (song.duration + 3) * 1000);
