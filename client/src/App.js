@@ -34,8 +34,9 @@ function App() {
 
   useEffect(() => {
     document.addEventListener("keydown", (e) => {
-      // ignore keydown from input[type=text]
-      if (e.target.type === "text") {
+      // ignore keydown from inputs
+      if (e.target.tagName === "INPUT" ||
+          e.target.tagName === "TEXTAREA") {
         return;
       }
       switch (e.key) {

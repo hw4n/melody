@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import './Lyrics.css';
 import Loader from './Loader';
@@ -41,18 +41,37 @@ function Lyrics(props) {
           <div class="lyricsHeaderLeft"></div>
           <div class="lyricsHeaderMiddle">{title}</div>
           <div class="lyricsHeaderRight">
-            <button onClick={() => {
-              setEditing(!editing);
-            }} class={editing ? "in-progress" : ""}>
-              <FontAwesomeIcon icon={faEdit} size="2x"/>
-              <span>Edit lyrics</span>
-            </button>
+            { editing ? (
+              <button onClick={() => {
+                setEditing(false);
+              }} class="in-progress">
+                <FontAwesomeIcon icon={faSave} size="2x"/>
+                <span>Save lyrics</span>
+              </button>
+            ) : (
+              <button onClick={() => {
+                setEditing(!editing);
+              }}>
+                <FontAwesomeIcon icon={faEdit} size="2x"/>
+                <span>Edit lyrics</span>
+              </button>
+            )}
           </div>
         </div>
-        <div
-          class="lyrics"
-          dangerouslySetInnerHTML={{__html: removeFormats(lyrics)}}
-        /></>
+        { editing ? (
+          <textarea class="lyricsEditor" onKeyDown={(e) => {
+            if (e.key === "Tab") {
+              e.preventDefault();
+              e.target.value += "\t";
+            }
+          }} defaultValue={lyrics}/>
+        ) : (
+          <div
+            class="lyrics"
+            dangerouslySetInnerHTML={{__html: removeFormats(lyrics)}}
+          />
+        )}
+        </>
       )}
     </div>
   );

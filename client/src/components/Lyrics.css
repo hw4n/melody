@@ -41,6 +41,8 @@
 .lyricsHeaderRight button {
   height: 100%;
   text-transform: capitalize;
+  display: flex;
+  align-items: center;
 }
 
 .lyricsHeaderRight span {
@@ -57,6 +59,22 @@
   /* firefox */
   scrollbar-color: #d1d1d1 #4a4a4a;
   scrollbar-width: thin;
+}
+
+.lyricsEditor {
+  resize: none;
+  height: 100%;
+  padding: 10px;
+  font-size: 1.1rem;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.lyricsEditor:focus {
+  outline: none;
+}
+
+.lyricsEditor::selection {
+  background-color: yellow;
 }
 
 ::selection {
