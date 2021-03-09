@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import './Lyrics.css';
@@ -9,6 +9,8 @@ function Lyrics(props) {
   const [loading, setLoading] = useState(true);
   const [lyrics, setLyrics] = useState('');
   const [editing, setEditing] = useState(false);
+
+  const textareaRef = useRef();
 
   useEffect(() => {
     setLyrics('');
@@ -44,7 +46,20 @@ function Lyrics(props) {
           <div class="lyricsHeaderRight">
             { editing ? (
               <button onClick={() => {
-                setEditing(false);
+                const newLyrics = textareaRef.current.value;
+                fetch("/lyrics", {
+                  method: "POST",
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    lyrics: newLyrics,
+                  }),
+                }).then(() => {
+                  setLyrics(newLyrics);
+                  setEditing(false);
+                });
               }} class="in-progress">
                 <FontAwesomeIcon icon={faSave} size="2x"/>
                 <span>Save lyrics</span>
@@ -65,7 +80,7 @@ function Lyrics(props) {
               e.preventDefault();
               e.target.value += "\t";
             }
-          }} defaultValue={lyrics}/>
+          }} defaultValue={lyrics} ref={textareaRef}/>
         ) : (
           <div
             class="lyrics"
