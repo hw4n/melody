@@ -1,5 +1,6 @@
 import { createReadStream } from 'fs';
 import dbMusic from '../models/Music';
+import { logGreen } from '../loaders/logger';
 
 const express = require('express');
 
@@ -50,6 +51,17 @@ router.get('/lyrics', (req, res) => {
     res.status(200).json({
       lyrics: music.lyrics || '',
     });
+  });
+});
+
+router.post('/lyrics', (req, res) => {
+  dbMusic.findOneAndUpdate({
+    _id: global.PLAYING.id,
+  }, {
+    lyrics: req.body.lyrics,
+  }).then((music) => {
+    logGreen(`Lyrics updated for ${music.title}(${music.id})`);
+    res.sendStatus(200);
   });
 });
 

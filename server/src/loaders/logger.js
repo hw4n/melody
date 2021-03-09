@@ -3,6 +3,10 @@ function timestamp() {
   return `[${d.toLocaleDateString()} ${d.toLocaleTimeString()}]`;
 }
 
+export function logGreen(string) {
+  console.log('\x1b[32m%s\x1b[0m', `${timestamp()} ${string}`);
+}
+
 export function logCyan(string) {
   console.log('\x1b[36m%s\x1b[0m', `${timestamp()} ${string}`);
 }
