@@ -1,6 +1,6 @@
 import './App.css';
 import io from "socket.io-client";
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Loader from "./components/Loader";
 import Flash from "./components/Flash";
 import Lyrics from "./components/Lyrics";
@@ -22,7 +22,6 @@ function App() {
   const [playing, setPlaying] = useState({});
   const [isPlaying, setIsPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
-  const [volume, setVolume] = useState(0.5);
   const [updateTime, setUpdateTime] = useState(Date.now());
   const [searching, setSearching] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -128,97 +127,6 @@ function App() {
   }, [playing, priority, queue, socketId]);
 
   useEffect(() => {
-    if (muted && volume > 0) {
-      setVolume(-volume);
-      volumeRef.current.value = 0;
-    } else if (!muted && volume < 0) {
-      volumeRef.current.value = -volume;
-      setVolume(-volume);
-    }
-
-    if (volume <= 0) {
-      audioRef.current.volume = 0;
-    } else {
-      audioRef.current.volume = volume;
-    }
-  }, [muted, volume])
-
-  useEffect(() => {
-    function playMusic() {
-      const AppleDevice = /(iPad|iPhone|iPod|Mac)/g.test(navigator.userAgent);
-      if (AppleDevice) {
-        audioRef.current.load();
-        audioRef.current.pause();
-      }
-      let playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          audioRef.current.currentTime = (new Date() - new Date(playbackStart)) / 1000;
-        }).catch((e) => {});
-      }
-    }
-
-    if (isPlaying) {
-      let currentTime = (new Date() - new Date(playbackStart)) / 1000;
-      if (currentTime < 0) {
-        setTimeout(() => {
-          playMusic();
-        }, (new Date() - new Date(playbackStart)) * -1);
-      } else {
-        playMusic();
-      }
-      document.title = `♪ Playing ${playing.title}`;
-    } else {
-      document.title = DEFAULT_TITLE;
-    }
-
-    if ('mediaSession' in navigator) {
-      const { title, artist, album } = playing
-
-      navigator.mediaSession.metadata = new window.MediaMetadata({
-        title: title,
-        artist: artist,
-        album: album,
-        artwork: [
-          { src: `/96.png?${updateTime}`,  sizes: '96x96',   type: 'image/png' },
-          { src: `/128.png?${updateTime}`, sizes: '128x128', type: 'image/png' },
-          { src: `/192.png?${updateTime}`, sizes: '192x192', type: 'image/png' },
-          { src: `/256.png?${updateTime}`, sizes: '256x256', type: 'image/png' },
-          { src: `/384.png?${updateTime}`, sizes: '384x384', type: 'image/png' },
-          { src: `/512.png?${updateTime}`, sizes: '512x512', type: 'image/png' },
-        ]
-      });
-
-      navigator.mediaSession.setPositionState({
-        duration: 0,
-        playbackRate: audioRef.current.playbackRate,
-        position: 0
-      });
-
-      const actionHandlers = [
-        ['play',          () => {
-          setIsPlaying(true);
-          navigator.mediaSession.playbackState = "playing";
-        }],
-        ['pause',         () => {
-          setIsPlaying(false);
-          navigator.mediaSession.playbackState = "paused";
-        }],
-        ['previoustrack', () => { /* ... */ }],
-        ['nexttrack',     () => { /* ... */ }]
-      ];
-
-      for (const [action, handler] of actionHandlers) {
-        try {
-          navigator.mediaSession.setActionHandler(action, handler);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-  }, [isPlaying, playbackStart, playing, updateTime])
-
-  useEffect(() => {
     if (searching) {
       function stringToSearchString(string) {
         return string.replace(/\s/g, "").toLowerCase();
@@ -250,8 +158,54 @@ function App() {
     }
   }, [priority, queue, searchKeyword, searching])
 
-  const audioRef = useRef();
-  const volumeRef = useRef();
+  useEffect(() => {
+    if ('mediaSession' in navigator) {
+      const { title, artist, album } = playing
+
+      navigator.mediaSession.metadata = new window.MediaMetadata({
+        title: title,
+        artist: artist,
+        album: album,
+        artwork: [
+          { src: `/96.png?${updateTime}`,  sizes: '96x96',   type: 'image/png' },
+          { src: `/128.png?${updateTime}`, sizes: '128x128', type: 'image/png' },
+          { src: `/192.png?${updateTime}`, sizes: '192x192', type: 'image/png' },
+          { src: `/256.png?${updateTime}`, sizes: '256x256', type: 'image/png' },
+          { src: `/384.png?${updateTime}`, sizes: '384x384', type: 'image/png' },
+          { src: `/512.png?${updateTime}`, sizes: '512x512', type: 'image/png' },
+        ]
+      });
+
+      const actionHandlers = [
+        ['play',          () => {
+          setIsPlaying(true);
+          navigator.mediaSession.playbackState = "playing";
+        }],
+        ['pause',         () => {
+          setIsPlaying(false);
+          navigator.mediaSession.playbackState = "paused";
+        }],
+        ['previoustrack', () => { /* ... */ }],
+        ['nexttrack',     () => { /* ... */ }]
+      ];
+
+      for (const [action, handler] of actionHandlers) {
+        try {
+          navigator.mediaSession.setActionHandler(action, handler);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  }, [playing, updateTime]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      document.title = `♪ Playing ${playing.title}`;
+    } else {
+      document.title = DEFAULT_TITLE;
+    }
+  }, [isPlaying, playing.title]);
 
   function requestQueueing(e) {
     socket.emit("priority", e.currentTarget.id);
@@ -294,10 +248,6 @@ function App() {
         setLyricMode={setLyricMode}
         muted={muted}
         setMuted={setMuted}
-        volume={volume}
-        setVolume={setVolume}
-        audioRef={audioRef}
-        volumeRef={volumeRef}
         updateTime={updateTime}
         playbackStart={playbackStart}
         totalUsers={totalUsers}

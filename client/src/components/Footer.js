@@ -1,3 +1,4 @@
+import { useEffect, useState, useRef } from 'react';
 import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faFileAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProgressBar from "./ProgressBar";
@@ -11,14 +12,54 @@ function Footer(props) {
     setLyricMode,
     muted,
     setMuted,
-    volume,
-    setVolume,
-    audioRef,
-    volumeRef,
     updateTime,
     playbackStart,
     totalUsers
   } = props;
+
+  const [volume, setVolume] = useState(0.5);
+
+  const audioRef = useRef();
+  const volumeRef = useRef();
+
+  useEffect(() => {
+    if (muted && volume > 0) {
+      setVolume(-volume);
+      volumeRef.current.value = 0;
+    } else if (!muted && volume < 0) {
+      volumeRef.current.value = -volume;
+      setVolume(-volume);
+    }
+  }, [muted, volume]);
+
+  useEffect(() => {
+    if (volume <= 0) {
+      audioRef.current.volume = 0;
+    } else {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
+
+  useEffect(() => {
+    function playMusic() {
+      audioRef.current.play().then(() => {
+        audioRef.current.currentTime = (new Date() - new Date(playbackStart)) / 1000;
+      }).catch((e) => {
+        console.log(e);
+      });
+    }
+
+    if (isPlaying && audioRef.current.paused) {
+      let currentTime = (new Date() - new Date(playbackStart)) / 1000;
+      if (currentTime < 0) {
+        setTimeout(() => {
+          playMusic();
+        }, (new Date() - new Date(playbackStart)) * -1);
+      } else {
+        playMusic();
+      }
+    }
+  }, [isPlaying, playbackStart]);
 
   return (
     <footer>
@@ -75,9 +116,7 @@ function Footer(props) {
           <div id="volumeControl">
             <input type="range" min="0" max="1" step="0.01" defaultValue="0.5" ref={volumeRef} onChange={e => {
               setVolume(e.target.value);
-              if (e.target.value > 0) {
-                setMuted(false);
-              }
+              setMuted(e.target.value <= 0)
             }}/>
           </div>
         </div>
