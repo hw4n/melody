@@ -15,20 +15,21 @@ function Lyrics(props) {
     fetch('/lyrics')
       .then((res) => res.json())
       .then((data) => {
-        let lyricsToAppend = 'No lyrics yet';
         if (data.lyrics) {
-          lyricsToAppend = data.lyrics;
+          setLyrics(() => data.lyrics);
         }
-        setLyrics(lyrics => lyrics + lyricsToAppend);
         setLoading(false);
       });
   }, [title]);
 
-  function removeFormats(string) {
-    return string
-      .replace(/\[\d+\]/g, "")
-      .replace(/ +href=\S+"/g, "")
-      .replace(/<del>.+<\/del>/g, "");
+  function createLyrics(string) {
+    if (string.length) {
+      return string
+        .replace(/\[\d+\]/g, "")
+        .replace(/ +href=\S+"/g, "")
+        .replace(/<del>.+<\/del>/g, "");
+    }
+    return "No lyrics yet, add the lyrics!";
   }
 
   return (
@@ -68,7 +69,7 @@ function Lyrics(props) {
         ) : (
           <div
             class="lyrics"
-            dangerouslySetInnerHTML={{__html: removeFormats(lyrics)}}
+            dangerouslySetInnerHTML={{__html: createLyrics(lyrics)}}
           />
         )}
         </>
