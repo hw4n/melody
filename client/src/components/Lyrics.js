@@ -24,6 +24,23 @@ function Lyrics(props) {
       });
   }, [title]);
 
+  useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      if (e.target.tagName === "TEXTAREA") {
+        return;
+      }
+      switch (e.key) {
+        case "e":
+        case "E":
+          e.preventDefault();
+          setEditing(true);
+          break;
+        default:
+          break;
+      }
+    });
+  });
+
   function createLyrics(string) {
     if (string.length) {
       return string
@@ -32,6 +49,23 @@ function Lyrics(props) {
         .replace(/<del>.+<\/del>/g, "");
     }
     return "No lyrics yet, add the lyrics!";
+  }
+
+  function saveLyrics() {
+    const newLyrics = textareaRef.current.value;
+    fetch("/lyrics", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        lyrics: newLyrics,
+      }),
+    }).then(() => {
+      setLyrics(newLyrics);
+      setEditing(false);
+    });
   }
 
   return (
@@ -45,22 +79,7 @@ function Lyrics(props) {
           <div class="lyricsHeaderMiddle">{title}</div>
           <div class="lyricsHeaderRight">
             { editing ? (
-              <button onClick={() => {
-                const newLyrics = textareaRef.current.value;
-                fetch("/lyrics", {
-                  method: "POST",
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    lyrics: newLyrics,
-                  }),
-                }).then(() => {
-                  setLyrics(newLyrics);
-                  setEditing(false);
-                });
-              }} class="in-progress">
+              <button onClick={saveLyrics} class="in-progress">
                 <FontAwesomeIcon icon={faSave} size="2x"/>
                 <span>Save lyrics</span>
               </button>
@@ -80,7 +99,15 @@ function Lyrics(props) {
               e.preventDefault();
               e.target.value += "\t";
             }
-          }} defaultValue={lyrics} ref={textareaRef}/>
+            if (e.key === "Escape") {
+              setEditing(false);
+            }
+            if (e.ctrlKey && (e.key === "s" || e.key === "S")) {
+              e.preventDefault();
+              saveLyrics();
+              setEditing(false);
+            }
+          }} defaultValue={lyrics} ref={textareaRef} autoFocus/>
         ) : (
           <div
             class="lyrics"
