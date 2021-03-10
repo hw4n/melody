@@ -31,6 +31,7 @@ function App() {
   const [playbackStart, setPlaybackStart] = useState();
   const [totalUsers, setTotalUsers] = useState(1);
   const [lyricMode, setLyricMode] = useState(false);
+  const [lyricScroll, setLyricScroll] = useState(0);
 
   useEffect(() => {
     document.addEventListener("keydown", (e) => {
@@ -119,6 +120,7 @@ function App() {
       setQueue(newQueue);
       setUpdateTime(Date.now());
       setPlaybackStart(next.start);
+      setLyricScroll(0);
     });
 
     socket.off('total_users');
@@ -223,6 +225,8 @@ function App() {
       { lyricMode ? (
         <Lyrics
           playing={playing}
+          lyricScroll={lyricScroll}
+          setLyricScroll={setLyricScroll}
         />
       ) : (
         <></>

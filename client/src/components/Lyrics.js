@@ -6,10 +6,12 @@ import Loader from './Loader';
 
 function Lyrics(props) {
   const { title } = props.playing;
+  const { lyricScroll, setLyricScroll } = props;
   const [loading, setLoading] = useState(true);
   const [lyrics, setLyrics] = useState('');
   const [editing, setEditing] = useState(false);
 
+  const lyricsRef = useRef();
   const textareaRef = useRef();
 
   useEffect(() => {
@@ -23,6 +25,14 @@ function Lyrics(props) {
         setLoading(false);
       });
   }, [title]);
+
+  useEffect(() => {
+    if (lyrics && !loading) {
+      lyricsRef.current.scrollTop = lyricScroll;
+    }
+  // intentional, lyricScroll should not invoke this hook
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, lyrics]);
 
   useEffect(() => {
     document.addEventListener("keydown", (e) => {
@@ -111,6 +121,10 @@ function Lyrics(props) {
         ) : (
           <div
             class="lyrics"
+            ref={lyricsRef}
+            onScroll={(e) => {
+              setLyricScroll(e.target.scrollTop);
+            }}
             dangerouslySetInnerHTML={{__html: createLyrics(lyrics)}}
           />
         )}
