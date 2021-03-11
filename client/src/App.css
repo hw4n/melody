@@ -445,14 +445,28 @@ how to remove the virtical space around the range input in IE*/
   .song .duration {
     display: none;
   }
-  footer .controlPanelRight {
+  footer .volumeControlWrap {
+    width: 50%;
+  }
+  footer .controlPanelRight #volumeControl {
     display: none;
   }
   footer .currentMusic {
-    width: 50%;
+    width: 40%;
   }
   footer .controller {
-    width: 50%;
+    width: 40%;
+  }
+  footer .controlPanelRight {
+    width: 20%;
+  }
+  /* refer to ./components/Lyrics.css */
+  .lyricsHeaderWrap .lyricsHeaderRight {
+    display: none;
+  }
+  .lyricsHeaderMiddle,
+  .lyricsWrap .lyrics {
+    font-size: 3vw;
   }
 }
 
@@ -487,14 +501,17 @@ how to remove the virtical space around the range input in IE*/
     color: #afafaf;
     pointer-events: none;
   }
-  footer .controlPanelRight {
+  .volumeControlWrap button:nth-of-type(2) {
     display: none;
   }
   footer .currentMusic {
-    width: 60%;
+    width: 50%;
   }
   footer .controller {
-    width: 40%;
+    width: 25%;
+  }
+  footer .controlPanelRight {
+    width: 25%;
   }
   .tip {
     font-size: 70%;

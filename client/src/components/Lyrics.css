@@ -21,6 +21,7 @@
   height: 5%;
   font-size: 1.5rem;
   display: flex;
+  align-items: center;
   border-bottom: 1px solid white;
   padding: 1rem 0;
 }
