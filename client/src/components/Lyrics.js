@@ -61,6 +61,8 @@ function Lyrics(props) {
       return string
         .replace(/\[\d+\]/g, "")
         .replace(/ +href=\S+"/g, "")
+        .replace(/font-family:/g, "")
+        .replace(/font-size:/g, "")
         .replace(/<del>.+<\/del>/g, "");
     }
     return "No lyrics yet, add the lyrics!";
