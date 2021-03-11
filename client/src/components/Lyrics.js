@@ -34,21 +34,26 @@ function Lyrics(props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, lyrics]);
 
+  function handleLyricsKeydown(e) {
+    if (e.target.tagName === "TEXTAREA") {
+      return;
+    }
+    switch (e.key) {
+      case "e":
+      case "E":
+        e.preventDefault();
+        setEditing(true);
+        break;
+      default:
+        break;
+    }
+  }
+
   useEffect(() => {
-    document.addEventListener("keydown", (e) => {
-      if (e.target.tagName === "TEXTAREA") {
-        return;
-      }
-      switch (e.key) {
-        case "e":
-        case "E":
-          e.preventDefault();
-          setEditing(true);
-          break;
-        default:
-          break;
-      }
-    });
+    document.addEventListener("keydown", handleLyricsKeydown);
+    return () => {
+      document.removeEventListener("keydown", handleLyricsKeydown);
+    }
   });
 
   function createLyrics(string) {
@@ -89,7 +94,10 @@ function Lyrics(props) {
           <div class="lyricsHeaderMiddle">{title}</div>
           <div class="lyricsHeaderRight">
             { editing ? (
-              <button onClick={saveLyrics} class="in-progress">
+              <button onClick={() => {
+                saveLyrics();
+                setEditing(false);
+              }} class="in-progress">
                 <FontAwesomeIcon icon={faSave} size="2x"/>
                 <span>Save lyrics</span>
               </button>
