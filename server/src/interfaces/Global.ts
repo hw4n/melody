@@ -7,6 +7,7 @@ interface Global {
   MUSICS: IMusic[],
   SOCKET: Socket,
   SOCKETS: string[],
+  PLAYING_START: number,
   NEXT_TIMEOUT: number,
 }
 
