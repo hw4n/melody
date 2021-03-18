@@ -103,7 +103,7 @@ function MusicList(props) {
           return (
             <div className="song" key={song.id} id={song.id} onDoubleClick={handleDoubleClick}>
               <div className="title dotOverflow">
-                <span className="clickable" onClick={handleKeywordClick}>{song.title}</span>
+                <span>{song.title}</span>
               </div>
               <div className="artist dotOverflow">
                 <span className="clickable" onClick={handleKeywordClick}>{song.artist}</span>
