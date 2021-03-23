@@ -6,6 +6,8 @@ function emitTotalUsers() {
 }
 
 export default function addSocketListeners(io) {
+  // To prevent adding listeners more than once
+  io.removeAllListeners('connection');
   io.on('connection', (socket) => {
     global.SOCKETS.push(socket.id);
     logCyan(`${socket.id} connected, ${socket.handshake.headers['user-agent']}`);

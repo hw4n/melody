@@ -85,7 +85,6 @@ async function loadMusicFiles(filePathArray: Array<String>) {
   }
 
   logWhite(`${filePathArray.length} music found from local`);
-  await kuroshiro.init(new KuromojiAnalyzer());
   return new Promise<Array<IMusic>>((resolve) => {
     dbMusic.find({}, (err, dbMusics) => {
       logWhite(`${dbMusics.length} music found from DB`);
@@ -134,11 +133,19 @@ async function getFiles(dir) {
   return files.reduce((a, f) => a.concat(f), []).filter((f) => f.endsWith('.mp3'));
 }
 
+function firstInit() {
+  kuroshiro.init(new KuromojiAnalyzer());
+}
+
 exports.initMusic = () => {
   if (!fs.existsSync(mp3Directory)) {
     fs.mkdirSync('./mp3');
     logRed('No music directory! Please put mp3 files in the directory : ./mp3');
     process.exit(-1);
+  }
+
+  if (!global.PLAYING_START) {
+    firstInit();
   }
 
   getFiles(mp3Directory).then(loadMusicFiles).then(startPlaying);
