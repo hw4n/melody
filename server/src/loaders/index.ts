@@ -1,7 +1,7 @@
 import Global from '../interfaces/Global';
 import { shuffleGlobalMusic, playMusic } from '../services/music';
 import addSocketListeners from '../services/socket';
-import { logWhite } from './logger';
+import { logRed, logWhite } from './logger';
 import dbMusic, { IMusic } from '../models/Music';
 import diff from '../services/diff';
 import initReadline from '../services/console';
@@ -79,6 +79,11 @@ async function analyzeMusic(filepath): Promise<IMusic> {
 }
 
 async function loadMusicFiles(filePathArray: Array<String>) {
+  if (filePathArray.length === 0) {
+    logRed('No musics found! Please put mp3 files in the directory : ./mp3');
+    process.exit(-1);
+  }
+
   logWhite(`${filePathArray.length} music found from local`);
   await kuroshiro.init(new KuromojiAnalyzer());
   return new Promise<Array<IMusic>>((resolve) => {
@@ -107,6 +112,12 @@ async function loadMusicFiles(filePathArray: Array<String>) {
 function startPlaying(musics: Array<IMusic>) {
   global.MUSICS.push(...musics);
   shuffleGlobalMusic();
+
+  if (!fs.existsSync('./cover')) {
+    fs.mkdirSync('./cover');
+    logWhite('Created directory ./cover because it did not exist');
+  }
+
   playMusic();
   addSocketListeners(global.SOCKET);
 }
@@ -124,5 +135,11 @@ async function getFiles(dir) {
 }
 
 exports.initMusic = () => {
+  if (!fs.existsSync(mp3Directory)) {
+    fs.mkdirSync('./mp3');
+    logRed('No music directory! Please put mp3 files in the directory : ./mp3');
+    process.exit(-1);
+  }
+
   getFiles(mp3Directory).then(loadMusicFiles).then(startPlaying);
 };
