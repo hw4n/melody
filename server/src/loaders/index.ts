@@ -78,32 +78,53 @@ async function analyzeMusic(filepath): Promise<IMusic> {
   });
 }
 
+async function analyzeMusics(filepaths: Array<String>) {
+  return Promise.all(filepaths.map((filepath) => analyzeMusic(filepath)));
+}
+
+async function insertMusics(musics: Array<IMusic>) {
+  return new Promise<Array<IMusic>>((resolve) => {
+    logWhite(`Inserting ${musics.length} music into DB`);
+    dbMusic.insertMany(musics).then(resolve);
+  });
+}
+
+async function processDbLocalDiff(filePathArray: Array<String>) {
+  return new Promise<Array<String>>((resolve) => {
+    dbMusic.find({}).then((dbMusics) => {
+      logWhite(`${dbMusics.length} / ${filePathArray.length} music found from DB / local files`);
+
+      const dbSet = new Set(dbMusics.map((music) => music.filepath));
+      const localSet = new Set(filePathArray);
+      const dbOnly = diff(dbSet, localSet);
+      const localOnly = diff(localSet, dbSet);
+
+      logWhite(`${dbOnly.length} / ${localOnly.length} music only available in DB / local files`);
+
+      analyzeMusics(localOnly).then(insertMusics).then(() => {
+        resolve(dbOnly);
+      });
+    });
+  });
+}
+
+async function findEveryMusicAndFilter(pathsToExclude: Array<String>): Promise<Array<IMusic>> {
+  return new Promise<Array<IMusic>>((resolve) => {
+    dbMusic.find({}).then((musics) => {
+      resolve(musics.filter((music) => !pathsToExclude.includes(music.filepath)));
+    });
+  });
+}
+
 async function loadMusicFiles(filePathArray: Array<String>) {
   if (filePathArray.length === 0) {
     logRed('No musics found! Please put mp3 files in the directory : ./mp3');
     process.exit(-1);
   }
 
-  logWhite(`${filePathArray.length} music found from local`);
   return new Promise<Array<IMusic>>((resolve) => {
-    dbMusic.find({}, (err, dbMusics) => {
-      logWhite(`${dbMusics.length} music found from DB`);
-      const dbSet = new Set(dbMusics.map((music) => music.filepath));
-      const localSet = new Set(filePathArray);
-      const dbOnly = diff(dbSet, localSet);
-      logWhite(`${dbOnly.length} music not found from local files`);
-      const localOnly = diff(localSet, dbSet);
-      logWhite(`${localOnly.length} music not found from DB and will insert`);
-      Promise.all(localOnly.map((filepath) => analyzeMusic(filepath)))
-        .then((processedMusic) => {
-          dbMusic.insertMany(processedMusic).then(() => {
-            logWhite(`Inserted ${localOnly.length} music to DB`);
-            dbMusic.find({}, (error, musics) => {
-              logWhite(`Will exclude ${dbOnly.length} music from playlist`);
-              resolve(musics.filter((music) => !dbOnly.includes(music.filepath)));
-            });
-          });
-        });
+    processDbLocalDiff(filePathArray).then((dbOnly: Array<String>) => {
+      findEveryMusicAndFilter(dbOnly).then(resolve);
     });
   });
 }
