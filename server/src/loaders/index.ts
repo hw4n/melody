@@ -1,3 +1,5 @@
+import { basename } from 'path';
+
 import Global from '../interfaces/Global';
 import { shuffleGlobalMusic, playMusic } from '../services/music';
 import addSocketListeners from '../services/socket';
@@ -44,17 +46,11 @@ async function analyzeMusic(filepath): Promise<IMusic> {
   return new Promise((resolve) => {
     ffprobe(filepath).then((data) => {
       const { duration, size, bit_rate: bitrate } = data.format;
-      let { title, album, artist } = data.format.tags;
-      if (title === undefined) {
-        title = filepath.substr(0, filepath.lastIndexOf('.'));
-      }
-
-      if (album === undefined) {
-        album = '-';
-      }
-      if (artist === undefined) {
-        artist = 'Various Artists';
-      }
+      const {
+        title = basename(filepath, 'mp3'),
+        album = '-',
+        artist = 'Various Artists',
+      } = data.format.tags;
 
       Promise.all([toRomaji(title), toRomaji(artist)])
         .then((romaji) => {
@@ -123,9 +119,7 @@ async function loadMusicFiles(filePathArray: Array<String>) {
   }
 
   return new Promise<Array<IMusic>>((resolve) => {
-    processDbLocalDiff(filePathArray).then((dbOnly: Array<String>) => {
-      findEveryMusicAndFilter(dbOnly).then(resolve);
-    });
+    processDbLocalDiff(filePathArray).then(findEveryMusicAndFilter).then(resolve);
   });
 }
 
