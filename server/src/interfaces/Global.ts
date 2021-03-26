@@ -8,7 +8,7 @@ interface Global {
   SOCKET: Socket,
   SOCKETS: string[],
   PLAYING_START: number,
-  NEXT_TIMEOUT: number,
+  NEXT_TIMEOUT: ReturnType<typeof setTimeout>,
 }
 
 export default Global;

@@ -1,5 +1,6 @@
 import getCoverArt from './cover';
 import Global from '../interfaces/Global';
+import { IMusic } from '../models/Music';
 
 declare let global: Global;
 
@@ -25,14 +26,22 @@ function fetchMusic() {
   };
 }
 
+function pushCurrentMusicAndPlay(music: IMusic) {
+  global.MUSICS.push(music);
+  // eslint-disable-next-line no-use-before-define
+  playMusic();
+}
+
+function setNextMusicTimeout(music: IMusic, ms: number): ReturnType<typeof setTimeout> {
+  return setTimeout(pushCurrentMusicAndPlay, ms, music);
+}
+
 export function playMusic() {
   const { music, FROM_QUEUE } = fetchMusic();
 
-  global.NEXT_TIMEOUT = Number(setTimeout(() => {
-    global.MUSICS.push(music);
-    playMusic();
-  }, (music.duration + 3) * 1000));
-  global.PLAYING_START = Number(new Date()) + 1500;
+  const timeoutMS = (music.duration + 6) * 1000;
+  global.NEXT_TIMEOUT = setNextMusicTimeout(music, timeoutMS);
+  global.PLAYING_START = Number(new Date()) + 3000;
 
   getCoverArt(music.filepath).then(() => {
     global.PLAYING = music;
