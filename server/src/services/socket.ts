@@ -1,14 +1,19 @@
+import { Socket } from 'socket.io';
+
 import { logCyan, logWhite } from '../loaders/logger';
 import { minimizeMusicObject, minimizeMusicArray } from './minimize';
+import Global from '../interfaces/Global';
+
+declare let global: Global;
 
 function emitTotalUsers() {
   global.SOCKET.emit('total_users', global.SOCKETS.length);
 }
 
-export default function addSocketListeners(io) {
+export default function addSocketListeners(io: Socket) {
   // To prevent adding listeners more than once
   io.removeAllListeners('connection');
-  io.on('connection', (socket) => {
+  io.on('connection', (socket: Socket) => {
     global.SOCKETS.push(socket.id);
     logCyan(`${socket.id} connected, ${socket.handshake.headers['user-agent']}`);
     socket.emit('init', {
@@ -24,7 +29,7 @@ export default function addSocketListeners(io) {
         const song = global.MUSICS[i];
         if (song.id === musicId) {
           global.QUEUE.push(global.MUSICS.splice(i, 1)[0]);
-          io.sockets.emit('priority', song.id);
+          io.emit('priority', song.id);
           break;
         }
       }
