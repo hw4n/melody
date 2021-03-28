@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@dropb/ffprobe": "^1.5.0",
+    "@types/fluent-ffmpeg": "^2.1.16",
     "@typescript-eslint/eslint-plugin": "^4.11.2-alpha.0",
     "@typescript-eslint/parser": "^4.11.1",
     "dotenv": "^8.2.0",

@@ -1,7 +1,7 @@
-const ffmpeg = require('fluent-ffmpeg');
+import ffmpeg from 'fluent-ffmpeg';
 
 export default function getCoverArt(filePath) {
-  return new Promise((resolve) => {
+  return new Promise<void>((resolve) => {
     ffmpeg(filePath)
       .output('./cover/96.png')
       .size('96x96')
