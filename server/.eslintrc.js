@@ -17,6 +17,7 @@ module.exports = {
   rules: {
     'import/extensions': 'off',
     'linebreak-style': ['error', (process.platform === 'win32' ? 'windows' : 'unix')],
+    'no-console': ['error', { allow: ['log'] }],
   },
   settings: {
     'import/resolver': {
