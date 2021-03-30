@@ -70,59 +70,61 @@ function Footer(props) {
       ) : (
         <audio ref={audioRef} src="" preload="none"/>
       )}
-      <div className="currentMusic">
-        {playing ? (
-          <>
-            <img className="coverArt" src={`/96.png?${updateTime}`} alt="album cover artwork"/>
-            <div className="currentMusicText">
-              <div className="currentTitle dotOverflow">{playing.title}</div>
-              <div className="currentArtist dotOverflow">{playing.artist}</div>
-            </div>
-          </>
-        ) : (
-          <></>
-        )}
-      </div>
-      <div className="controller">
-        <div className="playButtonWrap">
-          <button onClick={() => {
-            setIsPlaying(!isPlaying);
-          }}>
-            {!isPlaying ? (
-              <FontAwesomeIcon icon={faPlayCircle} size="2x"/>
-            ) : (
-              <FontAwesomeIcon icon={faStopCircle} size="2x"/>
-            )}
-          </button>
+      <ProgressBar duration={playing.duration} playbackStart={playbackStart} displayTime={false} noRadius={true}/>
+      <div className="footerContainer">
+        <div className="currentMusic">
+          {playing ? (
+            <>
+              <img className="coverArt" src={`/96.png?${updateTime}`} alt="album cover artwork"/>
+              <div className="currentMusicText">
+                <div className="currentTitle dotOverflow">{playing.title}</div>
+                <div className="currentArtist dotOverflow">{playing.artist}</div>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
-        <ProgressBar duration={playing.duration} playbackStart={playbackStart}/>
-      </div>
-      <div class="controlPanelRight">
-        <div className="volumeControlWrap">
-          <button onClick={() => {
-            setLyricMode(!lyricMode);
-          }} class={lyricMode ? "active" : ""}>
-            <FontAwesomeIcon icon={faFileAlt} size="2x"/>
-          </button>
-          <button onClick={() => {
-            setMuted(!muted);
-          }} class={muted ? "disabled" : ""}>
-            {volume > 0 ? (
-              <FontAwesomeIcon icon={faVolumeDown} size="2x"/>
-            ) : (
-              <FontAwesomeIcon icon={faVolumeMute} size="2x"/>
-            )}
-          </button>
-          <div id="volumeControl">
-            <input type="range" min="0" max="1" step="0.01" defaultValue="0.5" ref={volumeRef} onChange={e => {
-              setVolume(e.target.value);
-              setMuted(e.target.value <= 0)
-            }}/>
+        <div className="controller">
+          <div className="playButtonWrap">
+            <button onClick={() => {
+              setIsPlaying(!isPlaying);
+            }}>
+              {!isPlaying ? (
+                <FontAwesomeIcon icon={faPlayCircle} size="2x"/>
+              ) : (
+                <FontAwesomeIcon icon={faStopCircle} size="2x"/>
+              )}
+            </button>
           </div>
         </div>
-        <div class="totalUsersWrap">
-          <FontAwesomeIcon icon={faUsers}/>
-          <div class="total_users">{totalUsers}</div>
+        <div class="controlPanelRight">
+          <div className="volumeControlWrap">
+            <button onClick={() => {
+              setLyricMode(!lyricMode);
+            }} class={lyricMode ? "active" : ""}>
+              <FontAwesomeIcon icon={faFileAlt} size="2x"/>
+            </button>
+            <button onClick={() => {
+              setMuted(!muted);
+            }} class={muted ? "disabled" : ""}>
+              {volume > 0 ? (
+                <FontAwesomeIcon icon={faVolumeDown} size="2x"/>
+              ) : (
+                <FontAwesomeIcon icon={faVolumeMute} size="2x"/>
+              )}
+            </button>
+            <div id="volumeControl">
+              <input type="range" min="0" max="1" step="0.01" defaultValue="0.5" ref={volumeRef} onChange={e => {
+                setVolume(e.target.value);
+                setMuted(e.target.value <= 0)
+              }}/>
+            </div>
+          </div>
+          <div class="totalUsersWrap">
+            <FontAwesomeIcon icon={faUsers}/>
+            <div class="total_users">{totalUsers}</div>
+          </div>
         </div>
       </div>
     </footer>

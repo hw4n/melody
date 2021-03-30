@@ -8,7 +8,7 @@ function secondsToTimestring(x) {
 }
 
 function ProgressBar(props) {
-  const { playbackStart, duration } = props;
+  const { playbackStart, duration, displayTime=true, noRadius=false } = props;
   const [ currentTime, setCurrentTime ] = useState(new Date());
 
   useEffect(() => {
@@ -28,11 +28,19 @@ function ProgressBar(props) {
 
   return (
     <div class="progressWrap">
-      <div class="time current">{secondsToTimestring(currentProgress)}</div>
-      <div class="progressBar">
-        <div class="progressBarCurrent" style={{width: `${progressPercent}%`}}></div>
+      { displayTime ? (
+        <div class="time current">{secondsToTimestring(currentProgress)}</div>
+      ) : (
+        <></>
+      )}
+      <div class={noRadius ? "progressBar noRadius" : "progressBar"}>
+        <div class={noRadius ? "progressBarCurrent noRadius" : "progressBarCurrent"} style={{width: `${progressPercent}%`}}></div>
       </div>
-      <div class="time end">{secondsToTimestring(duration)}</div>
+      { displayTime ? (
+        <div class="time end">{secondsToTimestring(duration)}</div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
