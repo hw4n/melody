@@ -190,14 +190,11 @@ footer:focus {
 .footerContainer {
   display: flex;
   width: 100%;
+  justify-content: space-between;
 }
 
-.footerContainer div {
-  width: 35%;
-}
-
-footer .controller {
-  width: 30%;
+.footerContainer .currentMusic {
+  width: 100%;
 }
 
 .currentMusic {
@@ -232,16 +229,10 @@ footer .controller {
 }
 
 .controller {
-  height: 100%;
+  width: 30%;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: space-evenly;
-}
-
-.controller .playButtonWrap {
-  width: 100%;
-  display: flex;
-  justify-content: center;
 }
 
 button {
@@ -263,15 +254,8 @@ button.disabled {
   color: #F20505;
 }
 
-.controlPanelRight {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .volumeControlWrap {
-  width: 100%;
+  width: 50%;
   height: 100%;
   display: flex;
   justify-content: space-around;
@@ -295,6 +279,10 @@ button.disabled {
   align-items: center;
   text-align: center;
   color: #00d668;
+}
+
+.total_users {
+  padding-left: 10px;
 }
 
 /* a lot of range input stuff */
@@ -450,20 +438,8 @@ how to remove the virtical space around the range input in IE*/
   .song .duration {
     display: none;
   }
-  footer .volumeControlWrap {
-    width: 50%;
-  }
-  footer .controlPanelRight #volumeControl {
+  .footerContainer .volumeControlWrap {
     display: none;
-  }
-  footer .currentMusic {
-    width: 40%;
-  }
-  footer .controller {
-    width: 40%;
-  }
-  footer .controlPanelRight {
-    width: 20%;
   }
   /* refer to ./components/Lyrics.css */
   .lyricsHeaderWrap .lyricsHeaderRight {
@@ -506,18 +482,6 @@ how to remove the virtical space around the range input in IE*/
     color: #afafaf;
     pointer-events: none;
   }
-  .volumeControlWrap button:nth-of-type(2) {
-    display: none;
-  }
-  footer .currentMusic {
-    width: 50%;
-  }
-  footer .controller {
-    width: 25%;
-  }
-  footer .controlPanelRight {
-    width: 25%;
-  }
   .tip {
     font-size: 2vw;
   }
@@ -526,5 +490,11 @@ how to remove the virtical space around the range input in IE*/
   }
   .songListHeader h3 span {
     display: block;
+  }
+}
+
+@media screen and (max-width: 280px) {
+  .footerContainer .totalUsersWrap {
+    display: none;
   }
 }

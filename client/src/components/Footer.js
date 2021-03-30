@@ -86,25 +86,24 @@ function Footer(props) {
           )}
         </div>
         <div className="controller">
-          <div className="playButtonWrap">
-            <button onClick={() => {
-              setIsPlaying(!isPlaying);
-            }}>
-              {!isPlaying ? (
-                <FontAwesomeIcon icon={faPlayCircle} size="2x"/>
-              ) : (
-                <FontAwesomeIcon icon={faStopCircle} size="2x"/>
-              )}
-            </button>
-          </div>
-        </div>
-        <div class="controlPanelRight">
-          <div className="volumeControlWrap">
-            <button onClick={() => {
-              setLyricMode(!lyricMode);
+          {/* play button */}
+          <button onClick={() => {
+            setIsPlaying(!isPlaying);
+          }}>
+            {!isPlaying ? (
+              <FontAwesomeIcon icon={faPlayCircle} size="2x"/>
+            ) : (
+              <FontAwesomeIcon icon={faStopCircle} size="2x"/>
+            )}
+          </button>
+          {/* lyric button */}
+          <button onClick={() => {
+            setLyricMode(!lyricMode);
             }} class={lyricMode ? "active" : ""}>
-              <FontAwesomeIcon icon={faFileAlt} size="2x"/>
-            </button>
+            <FontAwesomeIcon icon={faFileAlt} size="2x"/>
+          </button>
+          {/* mute button and volume range input */}
+          <div className="volumeControlWrap">
             <button onClick={() => {
               setMuted(!muted);
             }} class={muted ? "disabled" : ""}>
