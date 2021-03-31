@@ -16,6 +16,7 @@ body {
 
 .container {
   padding: 0 20px;
+  padding-bottom: 70px;
   overflow: auto;
   max-height: calc(100vh - 71px);
   /* firefox */
