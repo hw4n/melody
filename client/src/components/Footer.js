@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faFileAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProgressBar from "./ProgressBar";
+import { isMobileDevice } from "../helper/check";
 
 function Footer(props) {
   const {
@@ -109,7 +110,7 @@ function Footer(props) {
             <FontAwesomeIcon icon={faFileAlt} size="2x"/>
           </button>
           {/* mute button and volume range input */}
-          <div className="volumeControlWrap">
+          <div className="volumeControlWrap" style={{display: isMobileDevice() ? "none" : ""}}>
             <button onClick={() => {
               setMuted(!muted);
             }} class={muted ? "disabled" : ""}>
