@@ -8,15 +8,15 @@ function secondsToTimestring(x) {
 }
 
 function ProgressBar(props) {
-  const { playbackStart, duration, displayTime=true, noRadius=false } = props;
+  const { playbackStart, duration, displayTime=true, noRadius=false, updateMS=1000 } = props;
   const [ currentTime, setCurrentTime ] = useState(new Date());
 
   useEffect(() => {
-    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
+    const interval = setInterval(() => setCurrentTime(new Date()), updateMS);
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [updateMS]);
 
   let currentProgress = (currentTime - playbackStart) / 1000;
   const progressPercent = currentProgress / duration * 100;

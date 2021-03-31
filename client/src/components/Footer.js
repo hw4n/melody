@@ -70,7 +70,13 @@ function Footer(props) {
       ) : (
         <audio ref={audioRef} src="" preload="none"/>
       )}
-      <ProgressBar duration={playing.duration} playbackStart={playbackStart} displayTime={false} noRadius={true}/>
+      <ProgressBar
+        duration={playing.duration}
+        playbackStart={playbackStart}
+        displayTime={false}
+        noRadius={true}
+        updateMS={250}
+      />
       <div className="footerContainer">
         <div className="currentMusic">
           {playing ? (
