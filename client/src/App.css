@@ -171,6 +171,7 @@ li {
 
 footer {
   position: fixed;
+  z-index: 98;
   bottom: 0;
   width: 100%;
   height: 75px;
@@ -193,11 +194,8 @@ footer:focus {
   justify-content: space-between;
 }
 
-.footerContainer .currentMusic {
-  width: 100%;
-}
-
 .currentMusic {
+  width: 70%;
   height: 70px;
   display: flex;
 }
