@@ -22,6 +22,7 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="#key-features">Key Features</a></li>
       </ul>
     </li>
     <li>
@@ -48,6 +49,26 @@ This project's main objective is to be able to enjoy mp3 file with others, in th
 
 * [Node.js](https://nodejs.org)
 * [Socket.io](https://socket.io)
+
+### Key Features
+
+Simply put, it's an endless radio station made of your mp3 files.
+
+Please check another repository [ody](https://github.com/hw4n/ody) for frontend features!
+
+* Radio station
+  * Just keeps going even if noone's listening.
+* Enqueuing music by request
+* Synchronized music position
+* Extracting cover image and metadata from mp3 file
+  * Romaji converting music title and artist for Japanese
+* Saving and comparing metadata on a mongoDB database
+* Get/Update lyrics from the database
+* Console commands
+  * Force skipping music
+  * Reloading music without restarting the server
+
+...and small features that I did not write
 
 <!-- GETTING STARTED -->
 ## Getting Started
