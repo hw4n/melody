@@ -22,5 +22,9 @@
   "devDependencies": {
     "eslint": "^7.16.0",
     "eslint-plugin-import": "^2.22.1"
+  },
+  "scripts": {
+    "start": "tsc && node built/index.js",
+    "build": "tsc"
   }
 }
