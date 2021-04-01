@@ -22,6 +22,7 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="#key-features">Key Features</a></li>
       </ul>
     </li>
     <li>
@@ -52,6 +53,32 @@ This project's main objective is to be able to enjoy mp3 file with others, in th
 
 * [ReactJS](https://reactjs.org)
 * [Socket.io](https://socket.io)
+
+### Key Features
+
+Simply put, it's an endless radio station made of your mp3 files.
+
+Please check another repository [mel](https://github.com/hw4n/mel) for backend features!
+
+* Enqueuing music
+* Synchronized music position
+* Responsive design for both PC and mobile
+* Mediasession support with cover image and metadata
+* Reading and editing lyrics with HTML
+* Features for searching music
+  * Sorting title to ascending/descending order
+  * Searching through music title/artist/album
+  * Searching through romaji title/artist for Japanese
+* Keyboard shortcuts
+  * ``L`` toggles lyric mode
+    * ``E`` inside lyric mode enables edit mode
+      * ``Ctrl + S`` saves lyrics and returns to lyric mode
+      * ``ESC`` does not save lyrics and returns to lyric mode
+    * ``ESC`` exits lyric mode
+  * ``M`` toggles mute
+  * ``Space`` toggles play/stop
+
+...and small features that I did not write
 
 <!-- GETTING STARTED -->
 ## Getting Started
