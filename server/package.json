@@ -24,7 +24,8 @@
     "eslint-plugin-import": "^2.22.1"
   },
   "scripts": {
-    "start": "tsc && node built/index.js",
-    "build": "tsc"
+    "start": "yarn build && node built/index.js",
+    "build": "tsc",
+    "update": "git pull && yarn start"
   }
 }
