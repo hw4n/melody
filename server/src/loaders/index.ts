@@ -124,7 +124,7 @@ async function loadMusicFiles(filePathArray: Array<String>) {
 }
 
 function startPlaying(musics: Array<IMusic>) {
-  global.MUSICS.push(...musics);
+  global.MUSICS = musics;
   shuffleGlobalMusic();
 
   if (!fs.existsSync('./cover')) {
