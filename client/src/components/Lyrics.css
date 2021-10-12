@@ -1,0 +1,83 @@
+.lyricsWrap {
+  width: 100%;
+  height: calc(100vh - 71px);
+  position: absolute;
+  z-index: 98;
+
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  background-color: rgba(26, 26, 26, 0.99);
+}
+
+.lyricsWrap:focus {
+  outline: none;
+}
+
+.lyricsHeaderWrap {
+  width: 100%;
+  height: 5%;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid white;
+  padding: 1rem 0;
+}
+
+.lyricsHeaderWrap div {
+  width: 20%;
+}
+
+.lyricsHeaderWrap .lyricsHeaderMiddle {
+  width: 60%;
+}
+
+.lyricsHeaderRight {
+  display: flex;
+  justify-content: center;
+}
+
+.lyricsHeaderRight button {
+  height: 100%;
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+}
+
+.lyricsHeaderRight span {
+  font-size: 1.2rem;
+  margin-left: 5px;
+}
+
+.lyrics {
+  color: white;
+  font-size: 1.5rem;
+  overflow-y: scroll;
+  user-select: text;
+  padding: 1rem 0;
+  /* firefox */
+  scrollbar-color: #d1d1d1 #4a4a4a;
+  scrollbar-width: thin;
+}
+
+.lyricsEditor {
+  resize: none;
+  height: 100%;
+  padding: 10px;
+  font-size: 1.1rem;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.lyricsEditor:focus {
+  outline: none;
+}
+
+.lyricsEditor::selection {
+  background-color: yellow;
+}
+
+::selection {
+  color: black;
+  background-color: white;
+}
