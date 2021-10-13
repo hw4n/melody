@@ -148,8 +148,8 @@ async function getFiles(dir) {
   return files.reduce((a, f) => a.concat(f), []).filter((f) => f.endsWith('.mp3'));
 }
 
-function firstInit() {
-  kuroshiro.init(new KuromojiAnalyzer());
+async function firstInit() {
+  await kuroshiro.init(new KuromojiAnalyzer());
 }
 
 exports.initMusic = () => {
@@ -160,8 +160,10 @@ exports.initMusic = () => {
   }
 
   if (!global.PLAYING_START) {
-    firstInit();
+    firstInit().then(() => {
+      getFiles(mp3Directory).then(loadMusicFiles).then(startPlaying);
+    });
+  } else {
+    getFiles(mp3Directory).then(loadMusicFiles).then(startPlaying);
   }
-
-  getFiles(mp3Directory).then(loadMusicFiles).then(startPlaying);
 };
