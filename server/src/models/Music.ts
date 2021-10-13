@@ -13,6 +13,7 @@ export interface IMusic extends Document {
     artist?: string;
   };
   lyrics?: string;
+  synced?: boolean;
 }
 
 const musicSchema: Schema = new Schema({
@@ -54,6 +55,9 @@ const musicSchema: Schema = new Schema({
   },
   lyrics: {
     type: String,
+  },
+  synced: {
+    type: Boolean,
   },
 });
 
