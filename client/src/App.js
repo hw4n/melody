@@ -216,7 +216,7 @@ function App() {
 
   return (
     <div className="App">
-      { queue.length ? (
+      { playing ? (
         <></>
       ) : (
         <Loader/>
