@@ -7,10 +7,21 @@ import { secondsToStamp } from "./helper/timestamp.js";
 const ioHook = require('iohook');
 
 const lyrics = fs.readFileSync('lyric_source', 'utf8').split("\n").map(x => x.trim()).filter(x => x.length > 0);
+// empty lyric_output
+fs.writeFileSync("lyric_output", '');
 
 const startTime = new Date();
 
-const audic = new Audic('01. M@STERPIECE (M@STER VERSION).mp3');
+// i don't know if there are 2+ mp3 files
+let filename = '';
+for (const file of fs.readdirSync('./')) {
+  if (file.includes(".mp3")) {
+    filename = file;
+    break;
+  }
+}
+
+const audic = new Audic(filename);
 await audic.play();
 
 ioHook.on('keydown', (event) => {
