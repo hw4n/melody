@@ -61,6 +61,19 @@
   scrollbar-width: thin;
 }
 
+.lyricsDisplay {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.focused.lyrics {
+  font-size: 2rem;
+  padding: 0;
+  overflow: hidden;
+}
+
 .lyricsEditor {
   resize: none;
   height: 100%;
