@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Loader from "./components/Loader";
 import Flash from "./components/Flash";
 import Lyrics from "./components/Lyrics";
+import SyncedLyrics from "./components/SyncedLyrics";
 import EntirePlaylist from "./components/EntirePlaylist";
 import Footer from "./components/Footer";
 
@@ -223,11 +224,20 @@ function App() {
       )}
       <Flash/>
       { lyricMode ? (
-        <Lyrics
-          playing={playing}
-          lyricScroll={lyricScroll}
-          setLyricScroll={setLyricScroll}
-        />
+        playing.synced ? (
+          <SyncedLyrics
+            playing={playing}
+            playbackStart={playbackStart}
+            lyricScroll={lyricScroll}
+            setLyricScroll={setLyricScroll}
+          />
+        ) : (
+          <Lyrics
+            playing={playing}
+            lyricScroll={lyricScroll}
+            setLyricScroll={setLyricScroll}
+          />
+        )
       ) : (
         <></>
       )}
