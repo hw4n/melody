@@ -51,6 +51,7 @@ router.get('/lyrics', (req, res) => {
   dbMusic.findById(global.PLAYING.id).then((music) => {
     res.status(200).json({
       lyrics: music.lyrics || '',
+      synced: music.synced || false,
     });
   });
 });
