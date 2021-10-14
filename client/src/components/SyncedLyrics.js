@@ -3,6 +3,7 @@ import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import './Lyrics.css';
 import Loader from './Loader';
+import LyricEditor from './LyricEditor';
 
 function SyncedLyrics(props) {
   const { title } = props.playing;
@@ -146,20 +147,7 @@ function SyncedLyrics(props) {
           </div>
         </div>
         { editing ? (
-          <textarea class="lyricsEditor" onKeyDown={(e) => {
-            if (e.key === "Tab") {
-              e.preventDefault();
-              e.target.value += "\t";
-            }
-            if (e.key === "Escape") {
-              setEditing(false);
-            }
-            if (e.ctrlKey && (e.key === "s" || e.key === "S")) {
-              e.preventDefault();
-              saveLyrics();
-              setEditing(false);
-            }
-          }} defaultValue={lyrics} ref={textareaRef} autoFocus/>
+          <LyricEditor setEditing={setEditing} saveLyrics={saveLyrics} lyrics={lyrics} textareaRef={textareaRef}/>
         ) : (
           <div className="lyricsDisplay">
             {lyricBlock.split("\n").map(x => {
