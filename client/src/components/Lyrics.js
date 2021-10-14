@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import './Lyrics.css';
 import Loader from './Loader';
@@ -11,6 +12,7 @@ function Lyrics(props) {
   const [loading, setLoading] = useState(true);
   const [lyrics, setLyrics] = useState('');
   const [editing, setEditing] = useState(false);
+  const [synced, setSynced] = useState(false);
 
   const lyricsRef = useRef();
   const textareaRef = useRef();
@@ -79,6 +81,7 @@ function Lyrics(props) {
       },
       body: JSON.stringify({
         lyrics: newLyrics,
+        synced: synced,
       }),
     }).then(() => {
       setLyrics(newLyrics);
@@ -97,13 +100,25 @@ function Lyrics(props) {
           <div class="lyricsHeaderMiddle">{title}</div>
           <div class="lyricsHeaderRight">
             { editing ? (
-              <button onClick={() => {
-                saveLyrics();
-                setEditing(false);
-              }} class="in-progress">
-                <FontAwesomeIcon icon={faSave} size="2x"/>
-                <span>Save lyrics</span>
-              </button>
+              <>
+                <button onClick={() => {
+                  setSynced(!synced);
+                }} class="in-progress">
+                  { synced ? (
+                    <FontAwesomeIcon icon={faCheckSquare} size="2x"/>
+                  ) : (
+                    <FontAwesomeIcon icon={faSquare} size="2x"/>
+                  )}
+                  <span>Synced Lyric</span>
+                </button>
+                <button onClick={() => {
+                  saveLyrics();
+                  setEditing(false);
+                }} class="in-progress">
+                  <FontAwesomeIcon icon={faSave} size="2x"/>
+                  <span>Save lyrics</span>
+                </button>
+              </>
             ) : (
               <button onClick={() => {
                 setEditing(!editing);
