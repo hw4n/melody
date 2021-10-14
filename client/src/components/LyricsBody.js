@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'
+import { useSpring, animated } from 'react-spring';
 
 function LyricsBody(props) {
   const { lyrics, playbackStart, synced, lyricsRef, setLyricScroll, createLyrics } = props;
 
   const [lyricTimeout, setLyricTimeout] = useState([]);
   const [lyricBlock, setLyricBlock] = useState("");
+
+  const [showLyrics, setShowLyrics] = useState(false);
 
   function hmsToSecond(hms) {
     let seconds = 0
@@ -19,6 +22,7 @@ function LyricsBody(props) {
 
   function findLyric(delay = 0) {
     let block = '';
+    setShowLyrics(true);
 
     return setTimeout(() => {
       while (lyricsArray) {
@@ -32,6 +36,12 @@ function LyricsBody(props) {
           let secondsPosition = (new Date() - playbackStart) / 1000;
           if (lyricTime > secondsPosition) {
             setLyricBlock(block);
+
+            // Hide the lyrics 10% in time before the next one
+            setTimeout(() => {
+              setShowLyrics(false);
+            }, (lyricTime - secondsPosition) * 0.9 * 1000);
+
             lyricTimeout.push(findLyric(lyricTime - secondsPosition));
             setLyricTimeout(lyricTimeout);
             break;
@@ -58,12 +68,16 @@ function LyricsBody(props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [synced, lyrics, playbackStart]);
 
+  const styles = useSpring({ opacity: showLyrics ? 1 : 0, marginTop: showLyrics ? 0 : -50 });
+
   return (
     synced ? (
       <div className="lyricsDisplay">
-        {lyricBlock.split("\n").map(x => {
-          return <div className="focused lyrics">{x}</div>
-        })}
+        <animated.div className="lyricsLineWrap" style={styles}>
+          {lyricBlock.split("\n").map(x => {
+            return <div className="focused lyrics">{x}</div>
+          })}
+        </animated.div>
       </div>
     ) : (
       <div
