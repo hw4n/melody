@@ -127,6 +127,16 @@ function App() {
     socket.on('total_users', (total_users) => {
       setTotalUsers(total_users);
     });
+
+    socket.off('renew_lyric');
+    socket.on('renew_lyric', () => {
+      // refresh Lyric component if present
+      // without this if statement, Lyric component will popup on every client
+      if (lyricMode) {
+        setLyricMode(false);
+        setLyricMode(true);
+      }
+    });
   }, [playing, priority, queue, socketId]);
 
   useEffect(() => {
