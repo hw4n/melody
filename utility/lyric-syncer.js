@@ -28,14 +28,17 @@ ioHook.on('keydown', (event) => {
   let block = "";
 
   switch (event.keycode) {
+    // switch sliding!
+    case 4: // 3, append 3 lines from source
+      block += lyrics.shift() + '\n';
+    case 3: // 2, append 2 lines from source
+      block += lyrics.shift() + '\n';
     case 2: // 1, append 1 line from source
       block += lyrics.shift() + '\n';
       break;
-    case 4: // 3, append 3 lines from source
-      block += lyrics.shift() + '\n';
-      block += lyrics.shift() + '\n';
-      block += lyrics.shift() + '\n';
-      break;
+    case 11: // 0, exit script
+      fs.appendFileSync('lyric_output', secondsToStamp(9999));
+      process.exit(0);
   }
 
   const secondsFromStart = (new Date() - startTime) / 1000;
