@@ -1,6 +1,7 @@
 import { createReadStream } from 'fs';
 import dbMusic from '../models/Music';
 import { logGreen } from '../loaders/logger';
+import { broadcastLyricChange } from '../services/socket';
 
 const express = require('express');
 
@@ -59,9 +60,14 @@ router.post('/lyrics', (req, res) => {
     _id: global.PLAYING.id,
   }, {
     lyrics: req.body.lyrics,
+    synced: req.body.synced,
   }).then((music) => {
     logGreen(`Lyrics updated for ${music.title}(${music.id})`);
     res.sendStatus(200);
+    broadcastLyricChange({
+      lyrics: music.lyrics,
+      synced: music.synced,
+    });
   });
 });
 

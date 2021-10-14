@@ -48,3 +48,7 @@ export default function addSocketListeners(io: Socket) {
   });
   logWhite('Added socket listeners');
 }
+
+export function broadcastLyricChange(newLyric: { lyrics: string, synced: boolean }) {
+  global.SOCKET.emit('renew_lyric', newLyric);
+}
