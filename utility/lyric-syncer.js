@@ -10,8 +10,6 @@ const lyrics = fs.readFileSync('lyric_source', 'utf8').split("\n").map(x => x.tr
 // empty lyric_output
 fs.writeFileSync("lyric_output", '');
 
-const startTime = new Date();
-
 // i don't know if there are 2+ mp3 files
 let filename = '';
 for (const file of fs.readdirSync('./')) {
@@ -23,6 +21,8 @@ for (const file of fs.readdirSync('./')) {
 
 const audic = new Audic(filename);
 await audic.play();
+
+const startTime = new Date();
 
 ioHook.on('keydown', (event) => {
   let block = "";
