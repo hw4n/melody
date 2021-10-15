@@ -36,19 +36,20 @@ function setNextMusicTimeout(music: IMusic, ms: number): ReturnType<typeof setTi
   return setTimeout(pushCurrentMusicAndPlay, ms, music);
 }
 
-export function playMusic() {
+export async function playMusic() {
   const { music, FROM_QUEUE } = fetchMusic();
 
   const timeoutMS = (music.duration + 6) * 1000;
   global.NEXT_TIMEOUT = setNextMusicTimeout(music, timeoutMS);
   global.PLAYING_START = Number(new Date()) + 3000;
 
-  getCoverArt(music.filepath).then(() => {
+  await getCoverArt(music.filepath).then(() => {
     global.PLAYING = music;
     global.SOCKET.emit('playNext', {
       FROM_QUEUE,
       id: music.id,
       start: global.PLAYING_START,
     });
+    return Promise.resolve();
   });
 }

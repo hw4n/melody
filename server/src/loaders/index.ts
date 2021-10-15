@@ -2,7 +2,7 @@ import { basename } from 'path';
 
 import Global from '../interfaces/Global';
 import { shuffleGlobalMusic, playMusic } from '../services/music';
-import addSocketListeners from '../services/socket';
+import { initializeSocket } from '../services/socket';
 import { logRed, logWhite } from './logger';
 import dbMusic, { IMusic } from '../models/Music';
 import diff from '../services/diff';
@@ -104,12 +104,12 @@ async function processDbLocalDiff(filePathArray: Array<String>) {
   });
 }
 
-async function findEveryMusicAndFilter(pathsToExclude: Array<String>): Promise<Array<IMusic>> {
-  return new Promise<Array<IMusic>>((resolve) => {
-    dbMusic.find({}).then((musics) => {
-      resolve(musics.filter((music) => !pathsToExclude.includes(music.filepath)));
+async function findEveryMusicAndFilter(pathsToExclude: Array<String>): Promise<IMusic[]> {
+  return dbMusic.find({})
+    .then((musics) => {
+      logWhite('Excluding musics from DB that does not exist locally');
+      return Promise.resolve(musics.filter((music) => !pathsToExclude.includes(music.filepath)));
     });
-  });
 }
 
 async function loadMusicFiles(filePathArray: Array<String>) {
@@ -118,13 +118,20 @@ async function loadMusicFiles(filePathArray: Array<String>) {
     process.exit(-1);
   }
 
-  return new Promise<Array<IMusic>>((resolve) => {
-    processDbLocalDiff(filePathArray).then(findEveryMusicAndFilter).then(resolve);
-  });
+  return processDbLocalDiff(filePathArray)
+    .then(findEveryMusicAndFilter)
+    .then((musics) => {
+      logWhite('Emptying global music object and queue array');
+      global.PLAYING = null;
+      global.QUEUE = [];
+
+      logWhite(`Refilling global music array with ${musics.length} music`);
+      global.MUSICS = musics;
+      return Promise.resolve();
+    });
 }
 
-function startPlaying(musics: Array<IMusic>) {
-  global.MUSICS = musics;
+async function startPlaying() {
   shuffleGlobalMusic();
 
   if (!fs.existsSync('./cover')) {
@@ -132,8 +139,7 @@ function startPlaying(musics: Array<IMusic>) {
     logWhite('Created directory ./cover because it did not exist');
   }
 
-  playMusic();
-  addSocketListeners(global.SOCKET);
+  return playMusic().then(() => Promise.resolve());
 }
 
 const readdir = promisify(fs.readdir);
@@ -161,9 +167,9 @@ exports.initMusic = () => {
 
   if (!global.PLAYING_START) {
     firstInit().then(() => {
-      getFiles(mp3Directory).then(loadMusicFiles).then(startPlaying);
+      getFiles(mp3Directory).then(loadMusicFiles).then(startPlaying).then(initializeSocket);
     });
   } else {
-    getFiles(mp3Directory).then(loadMusicFiles).then(startPlaying);
+    getFiles(mp3Directory).then(loadMusicFiles).then(startPlaying).then(initializeSocket);
   }
 };
