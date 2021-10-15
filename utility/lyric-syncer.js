@@ -6,6 +6,8 @@ import fs from 'fs';
 import { secondsToStamp } from "./helper/timestamp.js";
 const ioHook = require('iohook');
 
+import { summarizeCommonMetadata } from "./helper/metadata.js";
+
 const lyrics = fs.readFileSync('lyric_source', 'utf8').split("\n").map(x => x.trim()).filter(x => x.length > 0);
 // empty lyric_output
 fs.writeFileSync("lyric_output", '');
@@ -18,6 +20,10 @@ for (const file of fs.readdirSync('./')) {
     break;
   }
 }
+
+summarizeCommonMetadata(filename).then(summarized => {
+  fs.appendFileSync('lyric_output', summarized);
+});
 
 const audic = new Audic(filename);
 await audic.play();

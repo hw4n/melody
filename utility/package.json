@@ -5,7 +5,8 @@
   "license": "MIT",
   "dependencies": {
     "audic": "^3.0.0",
-    "iohook": "~0.6.6"
+    "iohook": "~0.6.6",
+    "music-metadata": "^7.11.4"
   },
   "type": "module"
 }
