@@ -28,5 +28,6 @@
     "start": "tsc-watch --onSuccess \"node built/index.js\"",
     "build": "tsc",
     "update": "git pull && yarn build"
-  }
+  },
+  "packageManager": "yarn@3.0.2"
 }
