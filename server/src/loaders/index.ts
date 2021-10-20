@@ -3,10 +3,11 @@ import { basename } from 'path';
 import Global from '../interfaces/Global';
 import { shuffleGlobalMusic, playMusic } from '../services/music';
 import { initializeSocket } from '../services/socket';
-import { logRed, logWhite } from './logger';
+import { logGreen, logRed, logWhite } from './logger';
 import dbMusic, { IMusic } from '../models/Music';
 import diff from '../services/diff';
 import initReadline from '../services/console';
+import { sameMusicHasLyrics } from '../services/db';
 
 initReadline();
 
@@ -112,6 +113,26 @@ async function findEveryMusicAndFilter(pathsToExclude: Array<String>): Promise<I
     });
 }
 
+async function applyLyricsIfPresentInDB(musics: Array<IMusic>) {
+  await Promise.all(
+    musics.map(async (music) => {
+      // skip when lyrics are already available
+      if (music.lyrics) {
+        return music;
+      }
+      const [foundLyric, lyricData] = await sameMusicHasLyrics(music);
+      if (foundLyric) {
+        dbMusic.findByIdAndUpdate({ _id: music.id }, lyricData)
+          .then((updatedMusic) => {
+            logGreen(`Applied lyrics to ${music.title} (${music.id} -> ${updatedMusic.id})`);
+          });
+      }
+      return music;
+    }),
+  );
+  return musics;
+}
+
 async function loadMusicFiles(filePathArray: Array<String>) {
   if (filePathArray.length === 0) {
     logRed('No musics found! Please put mp3 files in the directory : ./mp3');
@@ -120,6 +141,7 @@ async function loadMusicFiles(filePathArray: Array<String>) {
 
   return processDbLocalDiff(filePathArray)
     .then(findEveryMusicAndFilter)
+    .then(applyLyricsIfPresentInDB)
     .then((musics) => {
       logWhite('Emptying global music object and queue array');
       global.PLAYING = null;
