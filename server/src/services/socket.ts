@@ -10,8 +10,8 @@ function emitTotalUsers() {
   global.SOCKET.emit('total_users', global.SOCKETS.length);
 }
 
-export function broadcastInit() {
-  global.SOCKET.emit('init', {
+export function emitInit(socket: Socket) {
+  socket.emit('init', {
     priority: minimizeMusicArray(global.QUEUE),
     queue: minimizeMusicArray(global.MUSICS),
     playing: minimizeMusicObject(global.PLAYING),
@@ -26,7 +26,7 @@ export function addSocketListeners(io: Socket = global.SOCKET) {
   io.on('connection', (socket: Socket) => {
     global.SOCKETS.push(socket.id);
     logCyan(`${socket.id} connected, ${socket.handshake.headers['user-agent']}`);
-    broadcastInit();
+    emitInit(socket);
     emitTotalUsers();
     socket.on('priority', (musicId) => {
       for (let i = 0; i < global.MUSICS.length; i += 1) {
@@ -59,5 +59,5 @@ export function broadcastLyricChange(newLyric: { lyrics: string, synced: boolean
 
 export function initializeSocket() {
   addSocketListeners();
-  broadcastInit();
+  emitInit(global.SOCKET);
 }
