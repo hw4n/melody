@@ -27,6 +27,6 @@
   "scripts": {
     "start": "tsc-watch --onSuccess \"node built/index.js\"",
     "build": "tsc",
-    "update": "git pull && yarn start"
+    "update": "git pull && yarn build"
   }
 }
