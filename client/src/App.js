@@ -226,7 +226,7 @@ function App() {
 
   return (
     <div className="App">
-      <Loader ready={playing}/>
+      <Loader ready={queue.length ? true : playing}/>
       <Flash/>
       { lyricMode ? (
         <Lyrics
