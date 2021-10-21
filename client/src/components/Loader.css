@@ -1,7 +1,7 @@
 .loader {
-  height: 100vh;
+  height: 100%;
   width: 100%;
-  display: flex;
+  display: grid;
   align-items: center;
   justify-content: center;
 
@@ -14,38 +14,134 @@
   background-color: transparent;
 }
 
-.lds-ripple {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
+.cls-1 {
+  fill: #00d668;
 }
 
-.lds-ripple div {
-  position: absolute;
-  border: 4px solid #fff;
-  opacity: 1;
-  border-radius: 50%;
-  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+.cls-1, .cls-2, .cls-3, .cls-4, .cls-5 {
+  fill-rule: evenodd;
 }
 
-.lds-ripple div:nth-child(2) {
-  animation-delay: -0.5s;
+.cls-2 {
+  fill: #ff9f1c;
 }
 
-@keyframes lds-ripple {
+.cls-3 {
+  fill: #fece01;
+}
+
+.cls-4 {
+  fill: #0470fe;
+}
+
+.cls-5 {
+  fill: #fe4ea3;
+}
+
+svg {
+  height: 25vh;
+}
+
+@keyframes animatePath {
   0% {
-    top: 36px;
-    left: 36px;
-    width: 0;
-    height: 0;
-    opacity: 1;
+    opacity: 0;
+    fill: #181818;
+    transform: translateY(-15px);
   }
   100% {
-    top: 0px;
-    left: 0px;
-    width: 72px;
-    height: 72px;
-    opacity: 0;
+    opacity: 1;
   }
+}
+
+@keyframes animatePathLine {
+  0% {
+    transform: translate(20px, -20px);
+  }
+  100% {}
+}
+
+/* here i really don't know correct answer */
+/* it might be better to use inline styling */
+path#main_star {
+  animation: animatePath -.9s linear 1s infinite alternate;
+}
+.complete #main_star {
+  animation: animatePath -.9s linear 1s forwards alternate;
+}
+
+path#line_1 {
+  animation: animatePath -.8s linear 1s infinite alternate,
+             animateLine -1s linear 1s infinite alternate;
+}
+.complete #line_1 {
+  animation: animatePath -.8s linear 1s forwards alternate,
+             animateLine -1s linear 1s forwards alternate;
+}
+
+path#line_2 {
+  animation: animatePath -.7s linear 1s infinite alternate,
+             animateLine -.7s linear 1s infinite alternate;
+}
+.complete #line_2 {
+  animation: animatePath -.7s linear 1s forwards alternate,
+             animateLine -.7s linear 1s forwards alternate;
+}
+
+path#line_3 {
+  animation: animatePath -.6s linear 1s infinite alternate,
+             animateLine -.4s linear 1s infinite alternate;
+}
+.complete #line_3 {
+  animation: animatePath -.6s linear 1s forwards alternate,
+             animateLine -.4s linear 1s forwards alternate;
+}
+
+path#note_like_thing {
+  animation: animatePath -.5s linear 1s infinite alternate;
+}
+.complete #note_like_thing {
+  animation: animatePath -.5s linear 1s forwards alternate;
+}
+
+path#note_1 {
+  animation: animatePath -.4s linear 1s infinite alternate;
+}
+.complete #note_1 {
+  animation: animatePath -.3s linear 1s forwards alternate;
+}
+
+path#note_2 {
+  animation: animatePath -.3s linear 1s infinite alternate;
+}
+.complete #note_2 {
+  animation: animatePath -.3s linear 1s forwards alternate;
+}
+
+path#note_3 {
+  animation: animatePath -.2s linear 1s infinite alternate;
+}
+.complete #note_3 {
+  animation: animatePath -.2s linear 1s forwards alternate;
+}
+
+#note_4 {
+  animation: animatePath -.1s linear 1s infinite alternate;
+}
+.complete #note_4 {
+  animation: animatePath -.1s linear 1s forwards alternate;
+}
+
+@keyframes animateFadeOut {
+  0% {
+
+  }
+  100% {
+    opacity: 0;
+    display: none;
+    z-index: -100;
+  }
+}
+
+.loader.hide {
+  animation: animateFadeOut .3s linear forwards;
 }

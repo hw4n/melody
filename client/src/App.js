@@ -226,11 +226,7 @@ function App() {
 
   return (
     <div className="App">
-      { playing ? (
-        <></>
-      ) : (
-        <Loader/>
-      )}
+      <Loader ready={playing}/>
       <Flash/>
       { lyricMode ? (
         <Lyrics

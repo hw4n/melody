@@ -92,7 +92,7 @@ function Lyrics(props) {
   return (
     <div class="lyricsWrap">
       { loading ? (
-        <Loader transparent={true}/>
+        <Loader/>
       ) : (
         <>
         <LyricsHeader {... {title, editing, synced, setSynced, saveLyrics, setEditing}}/>
