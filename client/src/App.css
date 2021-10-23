@@ -445,7 +445,8 @@ how to remove the virtical space around the range input in IE*/
     display: none;
   }
   .lyricsHeaderMiddle,
-  .lyricsWrap .lyrics {
+  .lyricsWrap .lyrics,
+  .lyricsLineWrap .focused.lyrics {
     font-size: 3vw;
   }
 }
@@ -489,6 +490,16 @@ how to remove the virtical space around the range input in IE*/
   }
   .songListHeader h3 span {
     display: block;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .lyricsHeaderMiddle {
+    font-size: .75em;
+  }
+  .lyricsWrap .lyrics,
+  .lyricsLineWrap .focused.lyrics {
+    font-size: 1em;
   }
 }
 
