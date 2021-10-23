@@ -464,6 +464,7 @@ how to remove the virtical space around the range input in IE*/
   .song .tip {
     display: flex;
     justify-content: center;
+    font-size: 2.5vw;
   }
   .song div {
     padding: 0;
