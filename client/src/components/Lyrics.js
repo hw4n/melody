@@ -8,7 +8,8 @@ import LyricsBody from './LyricsBody';
 function Lyrics(props) {
   const { title } = props.playing;
   const { playbackStart, lyricScroll, setLyricScroll } = props;
-  const [loading, setLoading] = useState(true);
+  const [ready, setReady] = useState(false);
+  const [loaderMounted, setLoaderMounted] = useState(true);
   const [lyrics, setLyrics] = useState('');
   const [editing, setEditing] = useState(false);
   const [synced, setSynced] = useState(false);
@@ -18,6 +19,8 @@ function Lyrics(props) {
 
   useEffect(() => {
     setLyrics('');
+    setReady(false);
+    setLoaderMounted(true);
     fetch('/lyrics')
       .then((res) => res.json())
       .then((data) => {
@@ -25,17 +28,17 @@ function Lyrics(props) {
           setLyrics(() => data.lyrics);
         }
         setSynced(data.synced);
-        setLoading(false);
+        setReady(true);
       });
   }, [title]);
 
   useEffect(() => {
-    if (!synced && lyrics && !loading) {
+    if (!synced && lyrics && ready) {
       lyricsRef.current.scrollTop = lyricScroll;
     }
   // intentional, lyricScroll should not invoke this hook
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, lyrics]);
+  }, [ready, lyrics]);
 
   function handleLyricsKeydown(e) {
     if (e.target.tagName === "TEXTAREA") {
@@ -91,17 +94,14 @@ function Lyrics(props) {
 
   return (
     <div class="lyricsWrap">
-      { loading ? (
-        <Loader/>
+      { loaderMounted ? (
+        <Loader ready={ready} unmounter={setLoaderMounted}/>
+      ) : <></> }
+      <LyricsHeader {... {title, editing, synced, setSynced, saveLyrics, setEditing}}/>
+      { editing ? (
+        <LyricEditor setEditing={setEditing} saveLyrics={saveLyrics} lyrics={lyrics} textareaRef={textareaRef}/>
       ) : (
-        <>
-        <LyricsHeader {... {title, editing, synced, setSynced, saveLyrics, setEditing}}/>
-        { editing ? (
-          <LyricEditor setEditing={setEditing} saveLyrics={saveLyrics} lyrics={lyrics} textareaRef={textareaRef}/>
-        ) : (
-          <LyricsBody {... { lyrics, playbackStart, synced, lyricsRef, setLyricScroll, createLyrics }}/>
-        )}
-        </>
+        <LyricsBody {... { lyrics, playbackStart, synced, lyricsRef, setLyricScroll, createLyrics }}/>
       )}
     </div>
   );

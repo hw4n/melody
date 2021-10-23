@@ -17,6 +17,7 @@ const DEFAULT_TITLE = process.env.TITLE || "Melody";
 const socket = io.connect(SOCKET_URI);
 
 function App() {
+  const [loaderMounted, setLoaderMounted] = useState(true);
   const [priority, setPriority] = useState([]);
   const [queue, setQueue] = useState([]);
   const [playing, setPlaying] = useState({});
@@ -226,7 +227,9 @@ function App() {
 
   return (
     <div className="App">
-      <Loader ready={queue.length ? true : playing}/>
+      { loaderMounted ? (
+        <Loader ready={queue.length ? true : playing} unmounter={setLoaderMounted}/>
+      ) : <></> }
       <Flash/>
       { lyricMode ? (
         <Lyrics

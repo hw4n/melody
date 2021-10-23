@@ -2,12 +2,18 @@ import { useState } from 'react';
 import './Loader.css';
 
 function Loader(props) {
-  const { ready } = props;
+  const { ready, unmounter } = props;
   const [ hide, setHide ] = useState(false);
 
   if (ready) {
     setTimeout(() => {
       setHide(true);
+    }, 1000);
+  }
+
+  if (hide) {
+    setTimeout(() => {
+      unmounter(false);
     }, 1000);
   }
 
