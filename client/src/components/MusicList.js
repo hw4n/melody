@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { faClock } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faCheck, faSync, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ConditionalIcon from './ConditionalIcon';
 
 function MusicList(props) {
   const { searching, listTitle, customClassName, musicArray: originalMusicArray, message, handleDoubleClick: parentHandleDoubleClick, searchSetters } = props;
@@ -96,6 +97,7 @@ function MusicList(props) {
         }}>title {titleSort === 0 ? "-" : titleSort === 1 ? "↑" : "↓"}</div>
         <div>artist</div>
         <div>album</div>
+        <div>lyrics</div>
         <div><FontAwesomeIcon icon={faClock}/></div>
       </div>
       <div className={customClassName}>
@@ -110,6 +112,9 @@ function MusicList(props) {
               </div>
               <div className="album dotOverflow">
                 <span className="clickable" onClick={handleKeywordClick}>{song.album}</span>
+              </div>
+              <div className="lyricsAvailability dotOverflow">
+                <ConditionalIcon condition={song.lyrics} onTrue={song.synced ? faSync : faCheck} onFalse={faTimes} />
               </div>
               <div className="duration dotOverflow">{secondsToTimestring(song.duration)}</div>
             </div>

@@ -65,8 +65,9 @@ body {
   text-decoration: underline;
 }
 
+.columnIndicator div:nth-last-child(2), 
 .columnIndicator div:last-of-type {
-  width: 10%;
+  width: 5%;
   text-align: right;
 }
 
@@ -137,8 +138,10 @@ li {
   width: 30%;
 }
 
+.song .lyricsAvailability,
 .song .duration {
-  width: 10%;
+  width: 5%;
+  text-align: center;
 }
 
 .song .clickable:hover {
@@ -421,7 +424,8 @@ how to remove the virtical space around the range input in IE*/
 
 @media screen and (max-width: 992px) {
   .columnIndicator div:nth-child(3),
-  .columnIndicator div:nth-child(4) {
+  .columnIndicator div:nth-child(4),
+  .columnIndicator div:nth-child(5) {
     display: none;
   }
   .columnIndicator div:first-of-type,
@@ -434,6 +438,7 @@ how to remove the virtical space around the range input in IE*/
     width: 50%;
   }
   .song .album,
+  .song .lyricsAvailability,
   .song .duration {
     display: none;
   }

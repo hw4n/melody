@@ -8,6 +8,7 @@ export function minimizeMusicObject(music: IMusic) {
     artist,
     id,
     romaji,
+    lyrics,
     synced,
   } = music;
   return {
@@ -17,6 +18,7 @@ export function minimizeMusicObject(music: IMusic) {
     artist,
     id,
     romaji,
+    lyrics: Boolean(lyrics),
     synced,
   };
 }
