@@ -1,5 +1,7 @@
 // write about socket's action / reducer
 
+import { enqueue, playNext } from '../../helper/music';
+
 const SOCKET_CONNECT = "SOCKET/CONNECT";
 const SOCKET_INIT = "SOCKET/INIT";
 const SOCKET_PRIORITY = "SOCKET/PRIORITY";
@@ -25,7 +27,7 @@ export default function reducer(state = INIT_STATE, action) {
     case SOCKET_PRIORITY:
       // enqueue a music from queue array to priority array.
       // music with id of action.musicId should be enqueued.
-      return state;
+      return enqueue(state, action);
     case SOCKET_PLAY_NEXT:
       // push current playing music to queue array,
       // dequeue a music from priority or queue array,
@@ -35,7 +37,7 @@ export default function reducer(state = INIT_STATE, action) {
       //   id: "616977015d619401b017bae9"​
       //   start: 1635168306577
       // }
-      return state;
+      return playNext(state, action);
     case SOCKET_TOTAL_USERS:
       // set total users count
       // action.total_users: Number
