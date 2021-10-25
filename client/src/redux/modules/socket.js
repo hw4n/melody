@@ -41,7 +41,7 @@ export default function reducer(state = INIT_STATE, action) {
     case SOCKET_TOTAL_USERS:
       // set total users count
       // action.total_users: Number
-      return state;
+      return {...state, total_users: action.total_users};
     case SOCKET_RENEW_LYRICS:
       // if lyric mode is on,
       // set lyric mode off and on
