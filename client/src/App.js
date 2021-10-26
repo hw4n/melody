@@ -36,7 +36,7 @@ function App() {
           dispatch({type: "APP/TOGGLE_LYRIC_MODE"});
           break;
         case "Escape":
-          // setLyricMode(false);
+          dispatch({type: "APP/SET_LYRIC_MODE", setTo: false});
           break;
         default:
           break;
