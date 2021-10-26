@@ -1,12 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
 import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faFileAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ProgressBar from "./ProgressBar";
 import { isMobileDevice } from "../helper/check";
-import store from '../redux/store';
 
 function Footer() {
+  const dispatch = useDispatch();
+
   const {
     playing,
     start,
@@ -89,7 +90,7 @@ function Footer() {
         <div className="controller">
           {/* play button */}
           <button onClick={() => {
-            store.dispatch({type: "APP/TOGGLE_PLAYING", isPlaying: !isPlaying});
+            dispatch({type: "APP/TOGGLE_PLAYING", isPlaying: !isPlaying});
           }}>
             {!isPlaying ? (
               <FontAwesomeIcon icon={faPlayCircle} size="2x"/>
@@ -99,14 +100,14 @@ function Footer() {
           </button>
           {/* lyric button */}
           <button onClick={() => {
-            store.dispatch({type: "APP/TOGGLE_LYRIC_MODE", isLyricMode: !isLyricMode});
+            dispatch({type: "APP/TOGGLE_LYRIC_MODE", isLyricMode: !isLyricMode});
             }} class={isLyricMode ? "active" : ""}>
             <FontAwesomeIcon icon={faFileAlt} size="2x"/>
           </button>
           {/* mute button and volume range input */}
           <div className="volumeControlWrap" style={{display: isMobileDevice() ? "none" : ""}}>
             <button onClick={() => {
-              store.dispatch({type: "APP/TOGGLE_MUTED", isMuted: !isMuted});
+              dispatch({type: "APP/TOGGLE_MUTED", isMuted: !isMuted});
             }} class={isMuted ? "disabled" : ""}>
               {volume > 0 ? (
                 <FontAwesomeIcon icon={faVolumeDown} size="2x"/>
@@ -118,9 +119,9 @@ function Footer() {
               <input type="range" min="0" max="1" step="0.01" defaultValue="0.5" ref={volumeRef} onChange={e => {
                 setVolume(e.target.value);
                 if (e.target.value <= 0) {
-                  store.dispatch({type: "APP/TOGGLE_MUTED", isMuted: true});
+                  dispatch({type: "APP/TOGGLE_MUTED", isMuted: true});
                 } else if (isMuted) {
-                  store.dispatch({type: "APP/TOGGLE_MUTED", isMuted: false});
+                  dispatch({type: "APP/TOGGLE_MUTED", isMuted: false});
                 }
               }}/>
             </div>
