@@ -4,14 +4,16 @@ import Loader from './Loader';
 import LyricEditor from './LyricEditor';
 import LyricsHeader from './LyricsHeader';
 import LyricsBody from './LyricsBody';
+import { useDispatch, useSelector } from 'react-redux';
 
-function Lyrics(props) {
-  const { title } = props.playing;
-  const { playbackStart, lyricScroll, setLyricScroll } = props;
+function Lyrics() {
+  const dispatch = useDispatch();
+  const { start } = useSelector(store => store.socket);
+  const { lyricScrollPosition, isEditingLyric } = useSelector(store => store.app);
+
   const [ready, setReady] = useState(false);
   const [loaderMounted, setLoaderMounted] = useState(true);
   const [lyrics, setLyrics] = useState('');
-  const [editing, setEditing] = useState(false);
   const [synced, setSynced] = useState(false);
 
   const lyricsRef = useRef();
@@ -30,11 +32,11 @@ function Lyrics(props) {
         setSynced(data.synced);
         setReady(true);
       });
-  }, [title]);
+  }, [start]);
 
   useEffect(() => {
     if (!synced && lyrics && ready) {
-      lyricsRef.current.scrollTop = lyricScroll;
+      lyricsRef.current.scrollTop = lyricScrollPosition;
     }
   // intentional, lyricScroll should not invoke this hook
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -48,7 +50,7 @@ function Lyrics(props) {
       case "e":
       case "E":
         e.preventDefault();
-        setEditing(true);
+        dispatch({type: "APP/SET_LYRIC_EDITING", setTo: true});
         break;
       default:
         break;
@@ -88,7 +90,7 @@ function Lyrics(props) {
       }),
     }).then(() => {
       setLyrics(newLyrics);
-      setEditing(false);
+      dispatch({type: "APP/SET_LYRIC_EDITING", setTo: false});
     });
   }
 
@@ -97,11 +99,11 @@ function Lyrics(props) {
       { loaderMounted ? (
         <Loader ready={ready} unmounter={setLoaderMounted}/>
       ) : <></> }
-      <LyricsHeader {... {title, editing, synced, setSynced, saveLyrics, setEditing}}/>
-      { editing ? (
-        <LyricEditor setEditing={setEditing} saveLyrics={saveLyrics} lyrics={lyrics} textareaRef={textareaRef}/>
+      <LyricsHeader {... {synced, setSynced, saveLyrics}}/>
+      { isEditingLyric ? (
+        <LyricEditor saveLyrics={saveLyrics} lyrics={lyrics} textareaRef={textareaRef}/>
       ) : (
-        <LyricsBody {... { lyrics, playbackStart, synced, lyricsRef, setLyricScroll, createLyrics }}/>
+        <LyricsBody {... { lyrics, start, synced, lyricsRef, createLyrics }}/>
       )}
     </div>
   );

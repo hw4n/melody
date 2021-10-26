@@ -1,22 +1,16 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux';
 import { useSpring, animated } from 'react-spring';
+import { hmsToSecond } from '../helper/format';
 
 function LyricsBody(props) {
-  const { lyrics, playbackStart, synced, lyricsRef, setLyricScroll, createLyrics } = props;
+  const dispatch = useDispatch();
+  const { lyrics, start, synced, lyricsRef, createLyrics } = props;
 
   const [lyricTimeout, setLyricTimeout] = useState([]);
   const [lyricBlock, setLyricBlock] = useState("");
 
   const [showLyrics, setShowLyrics] = useState(false);
-
-  function hmsToSecond(hms) {
-    let seconds = 0
-    const [h, m, s] = hms.split(":");
-    seconds += h ? Number(h) * 3600 : 0;
-    seconds += m ? Number(m) * 60 : 0;
-    seconds += s ? Number(s) : 0;
-    return seconds;
-  }
 
   const lyricsArray = lyrics.split("\n");
 
@@ -33,7 +27,7 @@ function LyricsBody(props) {
   
         if (/\[\d*:\d*:\d+\.{0,1}\d*]/.exec(line)) {
           const lyricTime = hmsToSecond(line.slice(1, line.length-1));
-          let secondsPosition = (new Date() - playbackStart) / 1000;
+          let secondsPosition = (new Date() - start) / 1000;
           if (lyricTime > secondsPosition) {
             setLyricBlock(block);
 
@@ -66,7 +60,7 @@ function LyricsBody(props) {
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [synced, lyrics, playbackStart]);
+  }, [synced, lyrics, start]);
 
   const styles = useSpring({ opacity: showLyrics ? 1 : 0, marginTop: showLyrics ? 0 : -50 });
 
@@ -84,7 +78,8 @@ function LyricsBody(props) {
         class="lyrics"
         ref={lyricsRef}
         onScroll={(e) => {
-          setLyricScroll(e.target.scrollTop);
+          const position = e.target.scrollTop;
+          dispatch({type: "APP/SET_LYRIC_SCROLL_POSITION", position});
         }}
         dangerouslySetInnerHTML={{__html: createLyrics(lyrics)}}
       />

@@ -11,3 +11,12 @@ export function secondsToTimestring(x) {
     return `${h}:${m}:${s}`;
   }
 }
+
+export function hmsToSecond(hms) {
+  let seconds = 0
+  const [h, m, s] = hms.split(":");
+  seconds += h ? Number(h) * 3600 : 0;
+  seconds += m ? Number(m) * 60 : 0;
+  seconds += s ? Number(s) : 0;
+  return seconds;
+}

@@ -14,7 +14,6 @@ function App() {
   const [loaderMounted, setLoaderMounted] = useState(true);
   const { playing, queue, start } = useSelector(store => store.socket);
   const { isPlaying, isLyricMode } = useSelector(store => store.app);
-  const [lyricScroll, setLyricScroll] = useState(0);
 
   useEffect(() => {
     document.addEventListener("keydown", (e) => {
@@ -99,15 +98,7 @@ function App() {
         <Loader ready={queue.length ? true : playing} unmounter={setLoaderMounted}/>
       ) : <></> }
       <Flash/>
-      { isLyricMode ? (
-        <Lyrics
-          playing={playing}
-          lyricScroll={lyricScroll}
-          setLyricScroll={setLyricScroll}
-        />
-      ) : (
-        <></>
-      )}
+      { isLyricMode ? <Lyrics/> : <></> }
       <div className="container">
         <EntirePlaylist/>
       </div>

@@ -3,6 +3,9 @@ const APP_TOGGLE_PLAYING = "APP/TOGGLE_PLAYING";
 const APP_SEARCH = "APP/SEARCH";
 const APP_SET_LYRIC_MODE = "APP/SET_LYRIC_MODE";
 const APP_TOGGLE_LYRIC_MODE = "APP/TOGGLE_LYRIC_MODE";
+const APP_SET_LYRIC_SCROLL_POSITION = "APP/SET_LYRIC_SCROLL_POSITION";
+const APP_SET_LYRIC_EDITING = "APP/SET_LYRIC_EDITING";
+const APP_TOGGLE_LYRIC_EDITING = "APP/TOGGLE_LYRIC_EDITING";
 const APP_TOGGLE_MUTED = "APP/TOGGLE_MUTED";
 
 const INIT_STATE = {
@@ -11,6 +14,8 @@ const INIT_STATE = {
   searchingKeyword: "",
   isLyricMode: false,
   isMuted: false,
+  lyricScrollPosition: 0,
+  isEditingLyric: false,
 }
 
 export default function reducer(state = INIT_STATE, action) {
@@ -28,6 +33,12 @@ export default function reducer(state = INIT_STATE, action) {
       return {...state, isLyricMode: action.setTo};
     case APP_TOGGLE_LYRIC_MODE:
       return {...state, isLyricMode: !state.isLyricMode};
+    case APP_SET_LYRIC_EDITING:
+      return {...state, isEditingLyric: action.setTo};
+    case APP_TOGGLE_LYRIC_EDITING:
+      return {...state, isEditingLyric: !state.isEditingLyric};
+    case APP_SET_LYRIC_SCROLL_POSITION:
+      return {...state, lyricScrollPosition: action.position};
     case APP_TOGGLE_MUTED:
       return {...state, isMuted: !state.isMuted};
     default:

@@ -7,3 +7,7 @@ export function setSearch(searchingKeyword) {
 export function resetSearch() {
   store.dispatch({type: "APP/SEARCH", isSearching: false, searchingKeyword: ""});
 }
+
+export function setEditing(bool) {
+  store.dispatch({type: "APP/SET_LYRIC_EDITING", setTo: bool});
+}
