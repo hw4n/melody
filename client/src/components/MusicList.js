@@ -34,7 +34,9 @@ function MusicList(props) {
     if (titleSort === 0) {
       // set arrays back to originals
       setMusicArray(originalMusicArray);
-      setFilteredMusicArray(filterMusicArrayByKeyword(originalMusicArray, searchingKeyword));
+      if (isSearching && searchingKeyword) {
+        setFilteredMusicArray(filterMusicArrayByKeyword(originalMusicArray, searchingKeyword));
+      }
     } else if (titleSort === 1) {
       setMusicArray(sortMusicsAsc);
       setFilteredMusicArray(sortMusicsAsc);
@@ -42,7 +44,7 @@ function MusicList(props) {
       setMusicArray(sortMusicsDesc);
       setFilteredMusicArray(sortMusicsDesc);
     }
-  }, [originalMusicArray, searchingKeyword, titleSort]);
+  }, [isSearching, originalMusicArray, searchingKeyword, titleSort]);
 
   return (
     <>
