@@ -1,61 +1,48 @@
 import { useState, useEffect } from 'react';
-import { faClock, faCheck, faSync, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ConditionalIcon from './ConditionalIcon';
 import { useSelector } from 'react-redux';
-import { requestQueueing } from '../helper/socket';
-import { setSearch } from '../helper/app';
 import { filterMusicArrayByKeyword, sortMusicsAsc, sortMusicsDesc, totalRuntime } from '../helper/music';
-import { secondsToTimestring } from '../helper/format';
+import Music from './Music';
 
 function MusicList(props) {
   const { isSearching, searchingKeyword } = useSelector(store => store.app);
-  const { listTitle, customClassName, musicArray: originalMusicArray = [], message } = props;
+  const { listTitle, customClassName, musicArray: originalMusicArray, message } = props;
   
   const [titleSort, setTitleSort] = useState(0);
   const [musicArray, setMusicArray] = useState([]);
+  const [filteredMusicArray, setFilteredMusicArray] = useState([]);
 
-  // enqueue double-clicked music with id
-  function handleDoubleClick(e) {
-    if (e.target.classList.contains("clickable")) {
-      return;
-    }
-    const musicId = e.target.parentNode.id;
-    requestQueueing(musicId);
-  }
-
-  // start searching with clicked value
-  function handleKeywordClick(e) {
-    const keyword = e.currentTarget.innerText;
-    setSearch(keyword);
-  }
-
-  // set music array for displaying with original music array
+  // set music array with original music array
   useEffect(() => {
-    setMusicArray([...originalMusicArray]);
+    setMusicArray(originalMusicArray);
   }, [originalMusicArray]);
 
-  // filter and set music array by search keyword
-  // if not searching set it back to original
   useEffect(() => {
+    // if not searching set back to originals
     if (!isSearching) {
       setMusicArray(originalMusicArray);
+      setFilteredMusicArray([]);
       return;
     }
-    setMusicArray(filterMusicArrayByKeyword(musicArray, searchingKeyword));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSearching, searchingKeyword]);
+    // filter by keyword and set filtered array
+    setFilteredMusicArray(filterMusicArrayByKeyword(originalMusicArray, searchingKeyword));
+  }, [isSearching, originalMusicArray, searchingKeyword]);
 
   // in what order the musicArray should be displayed?
   useEffect(() => {
     if (titleSort === 0) {
+      // set arrays back to originals
       setMusicArray(originalMusicArray);
+      setFilteredMusicArray(filterMusicArrayByKeyword(originalMusicArray, searchingKeyword));
     } else if (titleSort === 1) {
       setMusicArray(sortMusicsAsc);
+      setFilteredMusicArray(sortMusicsAsc);
     } else {
       setMusicArray(sortMusicsDesc);
+      setFilteredMusicArray(sortMusicsDesc);
     }
-  }, [originalMusicArray, titleSort]);
+  }, [originalMusicArray, searchingKeyword, titleSort]);
 
   return (
     <>
@@ -82,25 +69,16 @@ function MusicList(props) {
         <div><FontAwesomeIcon icon={faClock}/></div>
       </div>
       <div className={customClassName}>
-        {musicArray.map(song => {
-          return (
-            <div className="song" key={song.id} id={song.id} onDoubleClick={handleDoubleClick}>
-              <div className="title dotOverflow">
-                <span>{song.title}</span>
-              </div>
-              <div className="artist dotOverflow">
-                <span className="clickable" onClick={handleKeywordClick}>{song.artist}</span>
-              </div>
-              <div className="album dotOverflow">
-                <span className="clickable" onClick={handleKeywordClick}>{song.album}</span>
-              </div>
-              <div className="lyricsAvailability dotOverflow">
-                <ConditionalIcon condition={song.lyrics} onTrue={song.synced ? faSync : faCheck} onFalse={faTimes} />
-              </div>
-              <div className="duration dotOverflow">{secondsToTimestring(song.duration)}</div>
-            </div>
-          )
-        })}
+        {/* branch by app is searching or not */}
+        { !isSearching ? (
+          musicArray.map(music => {
+            return <Music music={music}/>
+          })
+        ) : (
+          filteredMusicArray.map(music => {
+            return <Music music={music}/>
+          })
+        )}
         {message ? (
           <div className="song">
             <div className="tip dotOverflow">
