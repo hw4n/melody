@@ -17,8 +17,8 @@
   border-radius: 3px;
   margin-top: 7px;
 
-  color: black;
-  background-color: #00ffdd;
+  color: var(--primary-background-color);
+  background-color: var(--information-color);
   opacity: 0.9;
   min-height: 42px;
 }
@@ -28,7 +28,7 @@
 }
 
 .flash svg:hover {
-  color: white;
+  color: var(--primary-text-color);
 }
 
 .flash svg:last-of-type {

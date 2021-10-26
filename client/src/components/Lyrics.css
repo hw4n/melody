@@ -8,7 +8,7 @@
   flex-direction: column;
   text-align: center;
 
-  background-color: rgba(26, 26, 26, 0.99);
+  background-color: var(--primary-background-color);
 }
 
 .lyricsWrap:focus {
@@ -21,7 +21,7 @@
   font-size: 1.5rem;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid var(--primary-text-color);
   padding: 1rem 0;
 }
 
@@ -51,14 +51,12 @@
 }
 
 .lyrics {
-  color: white;
+  color: var(--primary-text-color);
   font-size: 1.5rem;
   overflow-y: scroll;
   user-select: text;
   padding: 1rem 0;
-  /* firefox */
-  scrollbar-color: #d1d1d1 #4a4a4a;
-  scrollbar-width: thin;
+  height: 100%;
 }
 
 .lyricsDisplay {
@@ -80,7 +78,7 @@
   height: 100%;
   padding: 10px;
   font-size: 1.1rem;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--primary-text-color);
 }
 
 .lyricsEditor:focus {
@@ -88,10 +86,10 @@
 }
 
 .lyricsEditor::selection {
-  background-color: yellow;
+  background-color: var(--highlight-color);
 }
 
 ::selection {
-  color: black;
-  background-color: white;
+  color: var(--primary-background-color);
+  background-color: var(--primary-text-color);
 }

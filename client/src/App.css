@@ -1,5 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&family=Noto+Sans+KR&display=swap');
 
+:root {
+  --primary-color: #00d668;
+  --secondary-color: #ff9f1c;
+  --primary-text-color: #ffffff;
+  --secondary-text-color: #b3b3b3;
+  --primary-background-color: #181818;
+  --secondary-background-color: #282828;
+  --tertiary-background-color: #404040;
+  --warning-color: #F20505;
+  --highlight-color: #fece01;
+  --information-color: #00ffdd;
+}
+
 * {
   font-family: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
 }
@@ -9,8 +22,8 @@
 }
 
 body {
-  background-color: #181818;
-  color: white;
+  background-color: var(--primary-background-color);
+  color: var(--primary-text-color);
   user-select: none;
 }
 
@@ -19,9 +32,6 @@ body {
   margin-bottom: 75px;
   overflow: auto;
   max-height: calc(100vh - 75px);
-  /* firefox */
-  scrollbar-color: #d1d1d1 #4a4a4a;
-  scrollbar-width: thin;
 }
 
 .songListHeader:first-of-type {
@@ -42,7 +52,7 @@ body {
   padding-bottom: 3px;
   margin-bottom: 0;
   margin-top: 30px;
-  border-bottom: 1px solid #282828;
+  border-bottom: 1px solid var(--secondary-background-color);
 }
 
 .columnIndicator {
@@ -57,7 +67,7 @@ body {
   width: 30%;
   padding: 0 20px;
   text-transform: uppercase;
-  color: #b3b3b3;
+  color: var(--secondary-text-color);
 }
 
 .columnIndicator div.clickable:hover {
@@ -65,7 +75,11 @@ body {
   text-decoration: underline;
 }
 
-.columnIndicator div:nth-last-child(2), 
+.columnIndicator div:nth-last-child(2) {
+  width: 5%;
+  text-align: center;
+}
+
 .columnIndicator div:last-of-type {
   width: 5%;
   text-align: right;
@@ -81,7 +95,7 @@ li {
   align-items: center;
   justify-content: space-between;
   padding: 0 10px;
-  color: #757575;
+  color: var(--secondary-text-color);
   border-radius: 3px;
   margin-top: 30px;
 }
@@ -92,12 +106,12 @@ li {
   background-color: transparent;
   border: none;
   padding: 10px 10px;
-  color: white;
+  color: var(--primary-text-color);
 }
 
 .search:hover,
 .search:hover input {
-  color: white;
+  color: var(--primary-text-color);
 }
 
 .search input:focus {
@@ -105,16 +119,16 @@ li {
 }
 
 .search:focus-within {
-  background-color: #404040;
+  background-color: var(--tertiary-background-color);
 }
 
 .searching,
 .in-progress {
-  color: #ff9f1c;
+  color: var(--secondary-color);
 }
 
 .song {
-  border-bottom: 1px solid #282828;
+  border-bottom: 1px solid var(--secondary-background-color);
   padding: 5px 0;
   /* padding-top: 3px; */
   height: 30px;
@@ -125,7 +139,7 @@ li {
 }
 
 .song:hover {
-  background-color: #282828;
+  background-color: var(--secondary-background-color);
 }
 
 .song div {
@@ -150,7 +164,7 @@ li {
 }
 
 .tip {
-  color: #b3b3b3;
+  color: var(--secondary-text-color);
 }
 
 .played {
@@ -166,11 +180,11 @@ li {
 
 .song .duration {
   text-align: right;
-  color: #afafaf;
+  color: var(--secondary-text-color);
 }
 
 .playing {
-  color: #00d668;
+  color: var(--primary-color);
 }
 
 footer {
@@ -178,13 +192,11 @@ footer {
   bottom: 0;
   width: 100%;
   height: 75px;
-  background-color: #282828;
+  background-color: var(--secondary-background-color);
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
-  border-top: 1px solid #121212;
 }
 
 footer:focus {
@@ -225,7 +237,7 @@ footer:focus {
 
 .currentArtist {
   margin-bottom: auto;
-  color: #a6a6a6;
+  color: var(--secondary-text-color);
   font-size: 75%;
 }
 
@@ -243,16 +255,16 @@ button {
   cursor: pointer;
   overflow: hidden;
   outline: none;
-  color: white;
+  color: var(--primary-text-color);
 }
 
 button:hover,
 button.active {
-  color: #00d668;
+  color: var(--primary-color);
 }
 
 button.disabled {
-  color: #F20505;
+  color: var(--warning-color);
 }
 
 .volumeControlWrap {
@@ -279,7 +291,7 @@ button.disabled {
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: #00d668;
+  color: var(--primary-color);
 }
 
 .total_users {
@@ -289,7 +301,7 @@ button.disabled {
 /* a lot of range input stuff */
 
 #volumeControl:hover input[type=range]::-webkit-slider-thumb {
-  background: #00d668;
+  background: var(--primary-color);
 }
 
 input[type=range] {
@@ -302,7 +314,7 @@ input[type=range]:focus {
   outline: none;
 }
 input[type=range]::-webkit-slider-runnable-track {
-  background: rgba(64, 64, 64, 0.78);
+  background: var(--tertiary-background-color);
   border: 0;
   border-radius: 15px;
   width: 100%;
@@ -313,17 +325,17 @@ input[type=range]::-webkit-slider-thumb {
   margin-top: -3.5px;
   width: 15px;
   height: 15px;
-  background: #ffffff;
+  background: var(--primary-text-color);
   border: 0;
   border-radius: 15px;
   cursor: pointer;
   -webkit-appearance: none;
 }
 input[type=range]:focus::-webkit-slider-runnable-track {
-  background: #434343;
+  background: var(--tertiary-background-color);
 }
 input[type=range]::-moz-range-track {
-  background: rgba(64, 64, 64, 0.78);
+  background: var(--tertiary-background-color);
   border: 0;
   border-radius: 15px;
   width: 100%;
@@ -333,7 +345,7 @@ input[type=range]::-moz-range-track {
 input[type=range]::-moz-range-thumb {
   width: 15px;
   height: 15px;
-  background: #ffffff;
+  background: var(--primary-text-color);
   border: 0;
   border-radius: 15px;
   cursor: pointer;
@@ -348,19 +360,19 @@ input[type=range]::-ms-track {
   cursor: pointer;
 }
 input[type=range]::-ms-fill-lower {
-  background: #3d3d3d;
+  background: var(--tertiary-background-color);
   border: 0;
   border-radius: 30px;
 }
 input[type=range]::-ms-fill-upper {
-  background: rgba(64, 64, 64, 0.78);
+  background: var(--tertiary-background-color);
   border: 0;
   border-radius: 30px;
 }
 input[type=range]::-ms-thumb {
   width: 15px;
   height: 15px;
-  background: #ffffff;
+  background: var(--primary-text-color);
   border: 0;
   border-radius: 15px;
   cursor: pointer;
@@ -368,10 +380,10 @@ input[type=range]::-ms-thumb {
   /*Needed to keep the Edge thumb centred*/
 }
 input[type=range]:focus::-ms-fill-lower {
-  background: rgba(64, 64, 64, 0.78);
+  background: var(--tertiary-background-color);
 }
 input[type=range]:focus::-ms-fill-upper {
-  background: #434343;
+  background: var(--tertiary-background-color);
 }
 /*TODO: Use one of the selectors from https://stackoverflow.com/a/20541859/7077589 and figure out
 how to remove the virtical space around the range input in IE*/
@@ -381,42 +393,6 @@ how to remove the virtical space around the range input in IE*/
     margin: 0;
     /*Edge starts the margin from the thumb, not the track as other browsers do*/
   }
-}
-
-/* bunch of scrollbar stuff */
-
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-button {
-  width: 0px;
-  height: 0px;
-}
-::-webkit-scrollbar-thumb {
-  background: #d1d1d1;
-  border: 0px none #ffffff;
-  border-radius: 0px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #ffffff;
-}
-::-webkit-scrollbar-thumb:active {
-  background: #dedede;
-}
-::-webkit-scrollbar-track {
-  background: #4a4a4a;
-  border: 0px none #ffffff;
-  border-radius: 0px;
-}
-::-webkit-scrollbar-track:hover {
-  background: #666666;
-}
-::-webkit-scrollbar-track:active {
-  background: #333333;
-}
-::-webkit-scrollbar-corner {
-  background: transparent;
 }
 
 /* media queries */
@@ -484,7 +460,7 @@ how to remove the virtical space around the range input in IE*/
   .song .artist,
   .song .album {
     font-size: 80%;
-    color: #afafaf;
+    color: var(--secondary-text-color);
     pointer-events: none;
   }
   .tip {

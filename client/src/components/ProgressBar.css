@@ -8,13 +8,13 @@
   font-size: 75%;
   width: 50px;
   text-align: center;
-  color: #b3b3b3;
+  color: var(--secondary-text-color);
 }
 
 .progressBar {
   height: 5px;
   width: 100%;
-  background: #404040;
+  background: var(--tertiary-background-color);
   border-radius: 5px;
   /* without below bar goes beyond */
   overflow: hidden;
@@ -24,7 +24,7 @@
   height: 5px;
   /* dynamically set width */
   width: 0%;
-  background: #b3b3b3;
+  background: var(--secondary-text-color);
   border-radius: 5px;
 }
 
