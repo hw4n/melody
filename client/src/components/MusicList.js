@@ -2,84 +2,65 @@ import { useState, useEffect } from 'react';
 import { faClock, faCheck, faSync, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ConditionalIcon from './ConditionalIcon';
+import { useSelector } from 'react-redux';
+import { requestQueueing } from '../helper/socket';
+import { setSearch } from '../helper/app';
+import { filterMusicArrayByKeyword, sortMusicsAsc, sortMusicsDesc, totalRuntime } from '../helper/music';
+import { secondsToTimestring } from '../helper/format';
 
 function MusicList(props) {
-  const { searching, listTitle, customClassName, musicArray: originalMusicArray, message, handleDoubleClick: parentHandleDoubleClick, searchSetters } = props;
+  const { isSearching, searchingKeyword } = useSelector(store => store.app);
+  const { listTitle, customClassName, musicArray: originalMusicArray = [], message } = props;
+  
   const [titleSort, setTitleSort] = useState(0);
-  const [originalOrder, setOriginalOrder] = useState();
   const [musicArray, setMusicArray] = useState([]);
 
+  // enqueue double-clicked music with id
   function handleDoubleClick(e) {
     if (e.target.classList.contains("clickable")) {
       return;
     }
-
-    if (parentHandleDoubleClick !== undefined) {
-      parentHandleDoubleClick(e);
-    }
+    const musicId = e.target.parentNode.id;
+    requestQueueing(musicId);
   }
 
+  // start searching with clicked value
   function handleKeywordClick(e) {
-    searchSetters.setSearching(true);
-    searchSetters.setSearchKeyword(e.currentTarget.innerText);
+    const keyword = e.currentTarget.innerText;
+    setSearch(keyword);
   }
 
-  function sortMusicsToOriginal(array) {
-    return array.slice().sort((a, b) => originalOrder.indexOf(a.id) - originalOrder.indexOf(b.id));
-  }
-
-  function sortMusicsAsc(array) {
-    return array.slice().sort((a, b) => a.title[0].charCodeAt() - b.title[0].charCodeAt());
-  }
-
-  function sortMusicsDesc(array) {
-    return array.slice().sort((a, b) => b.title[0].charCodeAt() - a.title[0].charCodeAt());
-  }
-
-  function secondsToTimestring(x) {
-    // if total length is less than a hour
-    if (x < 3600) {
-      const m = Math.floor(x / 60);
-      const s = Math.floor(x % 60).toString().padStart(2, "0");
-      return `${m}:${s}`;
-    } else {
-      const h = Math.floor(x / 3600);
-      const m = Math.floor(x % 3600 / 60).toString().padStart(2, "0");
-      const s = Math.floor(x % 3600 % 60).toString().padStart(2, "0");
-      return `${h}:${m}:${s}`;
-    }
-  }
-
-  function totalMinSec() {
-    if (musicArray.length) {
-      const totalLength = musicArray.reduce((acc, music) => {
-        return acc + Number(music.duration);
-      }, 0);
-      return secondsToTimestring(totalLength);
-    }
-  }
-
+  // set music array for displaying with original music array
   useEffect(() => {
-    setOriginalOrder(originalMusicArray.map(music => music.id));
-    setMusicArray(originalMusicArray.slice());
+    setMusicArray([...originalMusicArray]);
   }, [originalMusicArray]);
 
+  // filter and set music array by search keyword
+  // if not searching set it back to original
+  useEffect(() => {
+    if (!isSearching) {
+      setMusicArray(originalMusicArray);
+      return;
+    }
+    setMusicArray(filterMusicArrayByKeyword(musicArray, searchingKeyword));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSearching, searchingKeyword]);
+
+  // in what order the musicArray should be displayed?
   useEffect(() => {
     if (titleSort === 0) {
-      setMusicArray(musicArray => sortMusicsToOriginal(musicArray));
-    }
-    else if (titleSort === 1) {
-      setMusicArray(musicArray => sortMusicsAsc(musicArray));
+      setMusicArray(originalMusicArray);
+    } else if (titleSort === 1) {
+      setMusicArray(sortMusicsAsc);
     } else {
-      setMusicArray(musicArray => sortMusicsDesc(musicArray));
+      setMusicArray(sortMusicsDesc);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [originalOrder, titleSort]);
+  }, [originalMusicArray, titleSort]);
 
   return (
     <>
       <div className="songListHeader divider">
-      {searching ? (
+      {isSearching ? (
         <>
           <h3><span className="searching">search result </span>{listTitle}</h3>
           <h3 className="searching">{musicArray.length} found</h3>
@@ -87,7 +68,7 @@ function MusicList(props) {
       ): (
         <>
           <h3>{listTitle}</h3>
-          <h3>{totalMinSec()}</h3>
+          <h3>{totalRuntime(musicArray)}</h3>
         </>
       )}
       </div>

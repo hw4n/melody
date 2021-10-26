@@ -10,7 +10,7 @@ let SOCKET_URI = "/"
 if (process.env.NODE_ENV === "development") {
   SOCKET_URI = "http://localhost:3333";
 }
-const socket = io.connect(SOCKET_URI);
+export const socket = io.connect(SOCKET_URI);
 
 socket.on('init', (data) => {
   store.dispatch({type: "SOCKET/CONNECT", socketId: socket.id});

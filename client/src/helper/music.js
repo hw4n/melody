@@ -1,3 +1,5 @@
+import { secondsToTimestring } from "./format";
+
 function getIndexByMusicId(array, musicId) {
   let foundIdx = -1;
   array.every((music, idx) => {
@@ -51,4 +53,47 @@ export function playNext(state, action) {
   }
 
   return newState;
+}
+
+function stringToSearchString(string) {
+  return string.replace(/\s/g, "").toLowerCase();
+}
+
+function musicHasSearchKeyword(music, searchKeyword) {
+  const keyword = stringToSearchString(searchKeyword);
+  let { title, artist, album, romaji } = music;
+  let { title: titleRomaji, artist: artistRomaji } = romaji;
+  title = stringToSearchString(title);
+  artist = stringToSearchString(artist);
+  album = stringToSearchString(album);
+  titleRomaji = stringToSearchString(titleRomaji);
+  artistRomaji = stringToSearchString(artistRomaji);
+  return (
+    title.includes(keyword)
+    || artist.includes(keyword)
+    || album.includes(keyword)
+    || titleRomaji.includes(keyword)
+    || artistRomaji.includes(keyword)
+  );
+}
+
+export function filterMusicArrayByKeyword(array, keyword) {
+  return array.filter(music => musicHasSearchKeyword(music, keyword));
+}
+
+export function sortMusicsAsc(array) {
+  return [...array].sort((a, b) => a.title[0].charCodeAt() - b.title[0].charCodeAt());
+}
+
+export function sortMusicsDesc(array) {
+  return [...array].sort((a, b) => b.title[0].charCodeAt() - a.title[0].charCodeAt());
+}
+
+export function totalRuntime(array) {
+  if (array.length) {
+    const totalLength = array.reduce((acc, music) => {
+      return acc + Number(music.duration);
+    }, 0);
+    return secondsToTimestring(totalLength);
+  }
 }
