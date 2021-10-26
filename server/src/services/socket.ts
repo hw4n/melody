@@ -53,7 +53,7 @@ export function addSocketListeners(io: Socket = global.SOCKET) {
   logWhite('Added socket listeners');
 }
 
-export function broadcastLyricChange(newLyric: { lyrics: string, synced: boolean }) {
+export function broadcastLyricChange(newLyric: { lyrics: boolean, synced: boolean }) {
   global.SOCKET.emit('renew_lyric', newLyric);
 }
 

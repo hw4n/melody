@@ -57,17 +57,20 @@ router.get('/lyrics', (req, res) => {
 });
 
 router.post('/lyrics', (req, res) => {
+  const { lyrics, synced } = req.body;
   dbMusic.findOneAndUpdate({
     _id: global.PLAYING.id,
   }, {
-    lyrics: req.body.lyrics,
-    synced: req.body.synced,
+    lyrics,
+    synced,
   }).then((music) => {
     logGreen(`Lyrics updated for ${music.title}(${music.id})`);
     res.sendStatus(200);
+    global.PLAYING.lyrics = lyrics;
+    global.PLAYING.synced = synced;
     broadcastLyricChange({
-      lyrics: music.lyrics,
-      synced: music.synced,
+      lyrics: lyrics ? lyrics.length > 0 : false,
+      synced,
     });
   });
 });
