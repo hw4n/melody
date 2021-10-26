@@ -1,7 +1,8 @@
 import React from 'react'
+import { setEditing } from '../helper/app';
 
 function LyricEditor(props) {
-  const { setEditing, saveLyrics, lyrics, textareaRef } = props;
+  const { saveLyrics, lyrics, textareaRef } = props;
   return (
     <textarea class="lyricsEditor" onKeyDown={(e) => {
       if (e.key === "Tab") {
