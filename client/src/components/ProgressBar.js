@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './ProgressBar.css';
+import { useSelector } from 'react-redux';
 
 function secondsToTimestring(x) {
   const m = Math.floor(x / 60);
@@ -8,7 +9,8 @@ function secondsToTimestring(x) {
 }
 
 function ProgressBar(props) {
-  const { playbackStart, duration, displayTime=true, noRadius=false, updateMS=1000 } = props;
+  const { start, playing: {duration} = {} } = useSelector(store => store.socket);
+  const { displayTime=true, noRadius=false, updateMS=1000 } = props;
   const [ currentTime, setCurrentTime ] = useState(new Date());
 
   useEffect(() => {
@@ -18,7 +20,7 @@ function ProgressBar(props) {
     };
   }, [updateMS]);
 
-  let currentProgress = (currentTime - playbackStart) / 1000;
+  let currentProgress = (currentTime - start) / 1000;
   const progressPercent = currentProgress / duration * 100;
   if (progressPercent < 0) {
     currentProgress = 0;
