@@ -3,6 +3,6 @@ import socketReducer from './socket';
 import appReducer from './app';
 
 export default combineReducers({
-  socketReducer,
+  socket: socketReducer,
   app: appReducer
 });
