@@ -141,38 +141,6 @@ function App() {
   }, [playing, priority, queue, socketId]);
 
   useEffect(() => {
-    if (searching) {
-      function stringToSearchString(string) {
-        return string.replace(/\s/g, "").toLowerCase();
-      }
-
-      function musicHasSearchKeyword(music) {
-        const keyword = stringToSearchString(searchKeyword);
-        let { title, artist, album, romaji } = music;
-        let { title: titleRomaji, artist: artistRomaji } = romaji;
-        title = stringToSearchString(title);
-        artist = stringToSearchString(artist);
-        album = stringToSearchString(album);
-        titleRomaji = stringToSearchString(titleRomaji);
-        artistRomaji = stringToSearchString(artistRomaji);
-        return (
-          title.includes(keyword)
-          || artist.includes(keyword)
-          || album.includes(keyword)
-          || titleRomaji.includes(keyword)
-          || artistRomaji.includes(keyword)
-        );
-      }
-
-      const newSearchPriority = priority.slice().filter(musicHasSearchKeyword);
-      const newSearchQueue = queue.slice().filter(musicHasSearchKeyword);
-
-      setSearchPriority(newSearchPriority);
-      setSearchQueue(newSearchQueue);
-    }
-  }, [priority, queue, searchKeyword, searching])
-
-  useEffect(() => {
     if ('mediaSession' in navigator) {
       const { title, artist, album } = playing
 
@@ -221,10 +189,6 @@ function App() {
     }
   }, [isPlaying, playing.title]);
 
-  function requestQueueing(e) {
-    socket.emit("priority", e.currentTarget.id);
-  }
-
   return (
     <div className="App">
       { loaderMounted ? (
@@ -242,18 +206,7 @@ function App() {
         <></>
       )}
       <div className="container">
-        <EntirePlaylist
-          playing={playing}
-          priority={priority}
-          queue={queue}
-          searching={searching}
-          setSearching={setSearching}
-          searchKeyword={searchKeyword}
-          setSearchKeyword={setSearchKeyword}
-          searchPriority={searchPriority}
-          searchQueue={searchQueue}
-          requestQueueing={requestQueueing}
-        />
+        <EntirePlaylist/>
       </div>
       <Footer/>
     </div>
