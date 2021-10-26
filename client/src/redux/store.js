@@ -29,8 +29,8 @@ socket.on('total_users', (total_users) => {
   store.dispatch({type: "SOCKET/TOTAL_USERS", total_users});
 });
 
-socket.on('renew_lyric', () => {
-  store.dispatch({type: "SOCKET/RENEW_LYRICS"});
+socket.on('renew_lyric', (data) => {
+  store.dispatch({type: "SOCKET/RENEW_LYRICS", data});
 });
 
 export default store;

@@ -43,9 +43,10 @@ export default function reducer(state = INIT_STATE, action) {
       // action.total_users: Number
       return {...state, total_users: action.total_users};
     case SOCKET_RENEW_LYRICS:
-      // if lyric mode is on,
-      // set lyric mode off and on
-      return state;
+      const newState = {...state};
+      newState.playing.lyrics = action.data.lyrics;
+      newState.playing.synced = action.data.synced;
+      return newState;
     default:
       return state;
   }
