@@ -1,15 +1,14 @@
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSelector } from 'react-redux';
 import MusicList from "./MusicList";
+import { setSearch, resetSearch } from '../helper/app';
 
 function EntirePlaylist(props) {
+  const { playing, priority, queue } = useSelector(store => store.socket);
+  const { isSearching, searchingKeyword } = useSelector(store => store.app);
   const {
-    playing,
-    priority,
-    queue,
-    searching,
     setSearching,
-    searchKeyword,
     setSearchKeyword,
     searchPriority,
     searchQueue,
@@ -26,32 +25,25 @@ function EntirePlaylist(props) {
       />
       <div className="search">
         <FontAwesomeIcon icon={faSearch}/>
-        <input type="text" placeholder="Search for Title / Artist / Album" value={searchKeyword} onInput={(e) => {
+        <input type="text" placeholder="Search for Title / Artist / Album" value={searchingKeyword} onInput={(e) => {
           const currentValue = e.target.value;
           if (currentValue.trim() === "") {
-            setSearching(false);
-            setSearchKeyword("");
+            resetSearch();
             return;
           }
           if (currentValue.length > 0) {
-            setSearching(true);
-            setSearchKeyword(currentValue);
+            setSearch(currentValue);
           } else {
-            setSearching(false);
-            setSearchKeyword("");
+            resetSearch();
           }
         }}/>
-        { searchKeyword.length ? (
-          <FontAwesomeIcon icon={faTimes} onClick={(e) => {
-            e.currentTarget.parentNode.querySelector("input").value = "";
-            setSearching(false);
-            setSearchKeyword("");
-          }}/>
+        { searchingKeyword.length ? (
+          <FontAwesomeIcon icon={faTimes} onClick={resetSearch}/>
         ) : (
           <></>
         )}
       </div>
-      { searching ? (
+      { isSearching ? (
         <>
           <MusicList
             searching={true}
