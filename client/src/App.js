@@ -6,7 +6,7 @@ import Lyrics from "./components/Lyrics";
 import EntirePlaylist from "./components/EntirePlaylist";
 import Footer from "./components/Footer";
 import { useSelector } from 'react-redux';
-import { setDocumentTitle, setKeydownListeners, setMediaSession } from './helper/app';
+import { setDocumentTitle, setKeydownListeners, setMediaSession, setUnloadEvent } from './helper/app';
 
 const DEFAULT_TITLE = process.env.TITLE || "Melody";
 
@@ -17,6 +17,7 @@ function App() {
 
   useEffect(() => {
     setKeydownListeners(document);
+    setUnloadEvent(window);
   }, []);
 
   // change document.title to current music title

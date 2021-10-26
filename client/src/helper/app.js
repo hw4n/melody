@@ -1,4 +1,4 @@
-import store from '../redux/store';
+import store, { socket } from '../redux/store';
 
 export function setSearch(searchingKeyword) {
   store.dispatch({type: "APP/SEARCH", isSearching: true, searchingKeyword});
@@ -84,4 +84,11 @@ export function setKeydownListeners(document) {
         break;
     }
   });
+}
+
+// disconnect socket connection before unloading page
+export function setUnloadEvent() {
+  window.onbeforeunload = () => {
+    socket.disconnect(true);
+  };
 }
