@@ -52,7 +52,7 @@ function MusicList(props) {
       {isSearching ? (
         <>
           <h3><span className="searching">search result </span>{listTitle}</h3>
-          <h3 className="searching">{musicArray.length} found</h3>
+          <h3 className="searching">{filteredMusicArray.length} found</h3>
         </>
       ): (
         <>
