@@ -1,37 +1,19 @@
 import './App.css';
-import io from "socket.io-client";
 import { useEffect, useState } from 'react';
 import Loader from "./components/Loader";
 import Flash from "./components/Flash";
 import Lyrics from "./components/Lyrics";
 import EntirePlaylist from "./components/EntirePlaylist";
 import Footer from "./components/Footer";
-
-let SOCKET_URI = "/"
-if (process.env.NODE_ENV === "development") {
-  SOCKET_URI = "http://localhost:3333";
-}
+import { useDispatch, useSelector } from 'react-redux';
 
 const DEFAULT_TITLE = process.env.TITLE || "Melody";
 
-const socket = io.connect(SOCKET_URI);
-
 function App() {
+  const dispatch = useDispatch();
   const [loaderMounted, setLoaderMounted] = useState(true);
-  const [priority, setPriority] = useState([]);
-  const [queue, setQueue] = useState([]);
-  const [playing, setPlaying] = useState({});
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [muted, setMuted] = useState(false);
-  const [updateTime, setUpdateTime] = useState(Date.now());
-  const [searching, setSearching] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [searchPriority, setSearchPriority] = useState([]);
-  const [searchQueue, setSearchQueue] = useState([]);
-  const [socketId, setSocketId] = useState(undefined);
-  const [playbackStart, setPlaybackStart] = useState();
-  const [totalUsers, setTotalUsers] = useState(1);
-  const [lyricMode, setLyricMode] = useState(false);
+  const { playing, queue, start } = useSelector(store => store.socket);
+  const { isPlaying, isLyricMode } = useSelector(store => store.app);
   const [lyricScroll, setLyricScroll] = useState(0);
 
   useEffect(() => {
@@ -43,102 +25,24 @@ function App() {
       }
       switch (e.key) {
         case " ":
-          setIsPlaying(isPlaying => !isPlaying);
+          dispatch({type: "APP/TOGGLE_PLAYING"});
           break;
         case "m":
         case "M":
-          setMuted(muted => !muted);
+          dispatch({type: "APP/TOGGLE_MUTED"});
           break;
         case "l":
         case "L":
-          setLyricMode(lyricMode => !lyricMode);
+          dispatch({type: "APP/TOGGLE_LYRIC_MODE"});
           break;
         case "Escape":
-          setLyricMode(false);
+          // setLyricMode(false);
           break;
         default:
           break;
       }
     });
   }, []);
-
-  useEffect(() => {
-    if (socketId === undefined) {
-      setSocketId(socket.id);
-    }
-
-    socket.off('init');
-    socket.on('init', (msg) => {
-      setPriority(msg.priority);
-      setQueue(msg.queue);
-      setPlaying(msg.playing);
-      setUpdateTime(Date.now());
-      setPlaybackStart(msg.start);
-      setTotalUsers(msg.total_users);
-    });
-
-    socket.off('priority');
-    socket.on('priority', musicId => {
-      const newQueue = [...queue];
-      const newPriority = [...priority];
-      for (let i = 0; i < newQueue.length; i++) {
-        const music = newQueue[i];
-        if (music.id === musicId) {
-          const musicToPush = newQueue.splice(i, 1)[0];
-          newPriority.push(musicToPush);
-          setQueue(newQueue);
-          setPriority(newPriority);
-          break;
-        }
-      }
-    });
-
-    socket.off('playNext');
-    socket.on('playNext', (next) => {
-      const newQueue = [...queue, playing];
-      const newPriority = [...priority];
-      if (next.FROM_QUEUE === "priority") {
-        for (let i = 0; i < newPriority.length; i++) {
-          const music = newPriority[i];
-          if (music.id === next.id) {
-            const musicToSet = newPriority.splice(i, 1)[0];
-            setPlaying(musicToSet);
-            setPriority(newPriority);
-            break;
-          }
-        }
-      } else {
-        for (let i = 0; i < newQueue.length; i++) {
-          const music = newQueue[i];
-          if (music.id === next.id) {
-            const musicToSet = newQueue.splice(i, 1)[0];
-            setPlaying(musicToSet);
-            setQueue(newQueue);
-            break;
-          }
-        }
-      }
-      setQueue(newQueue);
-      setUpdateTime(Date.now());
-      setPlaybackStart(next.start);
-      setLyricScroll(0);
-    });
-
-    socket.off('total_users');
-    socket.on('total_users', (total_users) => {
-      setTotalUsers(total_users);
-    });
-
-    socket.off('renew_lyric');
-    socket.on('renew_lyric', () => {
-      // refresh Lyric component if present
-      // without this if statement, Lyric component will popup on every client
-      if (lyricMode) {
-        setLyricMode(false);
-        setLyricMode(true);
-      }
-    });
-  }, [playing, priority, queue, socketId]);
 
   useEffect(() => {
     if ('mediaSession' in navigator) {
@@ -149,22 +53,22 @@ function App() {
         artist: artist,
         album: album,
         artwork: [
-          { src: `/96.png?${updateTime}`,  sizes: '96x96',   type: 'image/png' },
-          { src: `/128.png?${updateTime}`, sizes: '128x128', type: 'image/png' },
-          { src: `/192.png?${updateTime}`, sizes: '192x192', type: 'image/png' },
-          { src: `/256.png?${updateTime}`, sizes: '256x256', type: 'image/png' },
-          { src: `/384.png?${updateTime}`, sizes: '384x384', type: 'image/png' },
-          { src: `/512.png?${updateTime}`, sizes: '512x512', type: 'image/png' },
+          { src: `/96.png?${start}`,  sizes: '96x96',   type: 'image/png' },
+          { src: `/128.png?${start}`, sizes: '128x128', type: 'image/png' },
+          { src: `/192.png?${start}`, sizes: '192x192', type: 'image/png' },
+          { src: `/256.png?${start}`, sizes: '256x256', type: 'image/png' },
+          { src: `/384.png?${start}`, sizes: '384x384', type: 'image/png' },
+          { src: `/512.png?${start}`, sizes: '512x512', type: 'image/png' },
         ]
       });
 
       const actionHandlers = [
         ['play',          () => {
-          setIsPlaying(true);
+          dispatch({type: "APP/TOGGLE_PLAYING"});
           navigator.mediaSession.playbackState = "playing";
         }],
         ['pause',         () => {
-          setIsPlaying(false);
+          dispatch({type: "APP/TOGGLE_PLAYING"});
           navigator.mediaSession.playbackState = "paused";
         }],
         ['previoustrack', () => { /* ... */ }],
@@ -179,7 +83,7 @@ function App() {
         }
       }
     }
-  }, [playing, updateTime]);
+  }, [start]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -195,10 +99,9 @@ function App() {
         <Loader ready={queue.length ? true : playing} unmounter={setLoaderMounted}/>
       ) : <></> }
       <Flash/>
-      { lyricMode ? (
+      { isLyricMode ? (
         <Lyrics
           playing={playing}
-          playbackStart={playbackStart}
           lyricScroll={lyricScroll}
           setLyricScroll={setLyricScroll}
         />
