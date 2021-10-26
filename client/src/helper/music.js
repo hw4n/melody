@@ -45,6 +45,7 @@ export function playNext(state, action) {
   // set new priority / queue array
   if (FROM_QUEUE === "priority") {
     newState.priority = fromQueue;
+    newState.queue = newQueue;
   } else {
     newState.queue = fromQueue;
   }
