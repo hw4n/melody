@@ -35,7 +35,7 @@ function Lyrics() {
   }, [start]);
 
   useEffect(() => {
-    if (!synced && lyrics && ready) {
+    if (lyricsRef.current && !synced && lyrics && ready) {
       lyricsRef.current.scrollTop = lyricScrollPosition;
     }
   // intentional, lyricScroll should not invoke this hook
