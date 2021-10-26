@@ -1,22 +1,22 @@
 import { useEffect, useState, useRef } from 'react';
 import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faFileAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSelector } from 'react-redux';
 import ProgressBar from "./ProgressBar";
 import { isMobileDevice } from "../helper/check";
+import store from '../redux/store';
 
-function Footer(props) {
+function Footer() {
   const {
     playing,
+    start,
+    total_users: totalUsers
+  } = useSelector(store => store.socket);
+  const {
     isPlaying,
-    setIsPlaying,
-    lyricMode,
-    setLyricMode,
-    muted,
-    setMuted,
-    updateTime,
-    playbackStart,
-    totalUsers
-  } = props;
+    isLyricMode,
+    isMuted
+  } = useSelector(store => store.app);
 
   const [volume, setVolume] = useState(0.5);
 
@@ -24,14 +24,14 @@ function Footer(props) {
   const volumeRef = useRef();
 
   useEffect(() => {
-    if (muted && volume > 0) {
+    if (isMuted && volume > 0) {
       setVolume(-volume);
       volumeRef.current.value = 0;
-    } else if (!muted && volume < 0) {
+    } else if (!isMuted && volume < 0) {
       volumeRef.current.value = -volume;
       setVolume(-volume);
     }
-  }, [muted, volume]);
+  }, [isMuted, volume]);
 
   useEffect(() => {
     if (volume <= 0) {
@@ -44,36 +44,36 @@ function Footer(props) {
   useEffect(() => {
     function playMusic() {
       audioRef.current.play().then(() => {
-        audioRef.current.currentTime = (new Date() - new Date(playbackStart)) / 1000;
+        audioRef.current.currentTime = (new Date() - new Date(start)) / 1000;
       }).catch((e) => {
         console.log(e);
       });
     }
 
     if (isPlaying && audioRef.current.paused) {
-      let currentTime = (new Date() - new Date(playbackStart)) / 1000;
+      let currentTime = (new Date() - new Date(start)) / 1000;
       if (currentTime < 0) {
         setTimeout(() => {
           playMusic();
-        }, (new Date() - new Date(playbackStart)) * -1);
+        }, (new Date() - new Date(start)) * -1);
       } else {
         playMusic();
       }
     }
-  }, [isPlaying, playbackStart]);
+  }, [isPlaying, start]);
 
   return (
     <footer>
       {isPlaying ? (
-        <audio ref={audioRef} src={`/stream?${updateTime}`}>
-          <source src={`/stream?${updateTime}`} type="audio/mpeg"/>
+        <audio ref={audioRef} src={`/stream?${start}`}>
+          <source src={`/stream?${start}`} type="audio/mpeg"/>
         </audio>
       ) : (
         <audio ref={audioRef} src="" preload="none"/>
       )}
       <ProgressBar
         duration={playing.duration}
-        playbackStart={playbackStart}
+        playbackStart={start}
         displayTime={false}
         noRadius={true}
         updateMS={250}
@@ -82,7 +82,7 @@ function Footer(props) {
         <div className="currentMusic">
           {playing ? (
             <>
-              <img className="coverArt" src={`/96.png?${updateTime}`} alt="album cover artwork"/>
+              <img className="coverArt" src={`/96.png?${start}`} alt="album cover artwork"/>
               <div className="currentMusicText">
                 <div className="currentTitle dotOverflow">{playing.title}</div>
                 <div className="currentArtist dotOverflow">{playing.artist}</div>
@@ -95,7 +95,7 @@ function Footer(props) {
         <div className="controller">
           {/* play button */}
           <button onClick={() => {
-            setIsPlaying(!isPlaying);
+            store.dispatch({type: "APP/TOGGLE_PLAYING", isPlaying: !isPlaying});
           }}>
             {!isPlaying ? (
               <FontAwesomeIcon icon={faPlayCircle} size="2x"/>
@@ -105,15 +105,15 @@ function Footer(props) {
           </button>
           {/* lyric button */}
           <button onClick={() => {
-            setLyricMode(!lyricMode);
-            }} class={lyricMode ? "active" : ""}>
+            store.dispatch({type: "APP/TOGGLE_LYRIC_MODE", isLyricMode: !isLyricMode});
+            }} class={isLyricMode ? "active" : ""}>
             <FontAwesomeIcon icon={faFileAlt} size="2x"/>
           </button>
           {/* mute button and volume range input */}
           <div className="volumeControlWrap" style={{display: isMobileDevice() ? "none" : ""}}>
             <button onClick={() => {
-              setMuted(!muted);
-            }} class={muted ? "disabled" : ""}>
+              store.dispatch({type: "APP/TOGGLE_MUTED", isMuted: !isMuted});
+            }} class={isMuted ? "disabled" : ""}>
               {volume > 0 ? (
                 <FontAwesomeIcon icon={faVolumeDown} size="2x"/>
               ) : (
@@ -123,7 +123,11 @@ function Footer(props) {
             <div id="volumeControl">
               <input type="range" min="0" max="1" step="0.01" defaultValue="0.5" ref={volumeRef} onChange={e => {
                 setVolume(e.target.value);
-                setMuted(e.target.value <= 0)
+                if (e.target.value <= 0) {
+                  store.dispatch({type: "APP/TOGGLE_MUTED", isMuted: true});
+                } else if (isMuted) {
+                  store.dispatch({type: "APP/TOGGLE_MUTED", isMuted: false});
+                }
               }}/>
             </div>
           </div>

@@ -255,18 +255,7 @@ function App() {
           requestQueueing={requestQueueing}
         />
       </div>
-      <Footer
-        playing={playing}
-        isPlaying={isPlaying}
-        setIsPlaying={setIsPlaying}
-        lyricMode={lyricMode}
-        setLyricMode={setLyricMode}
-        muted={muted}
-        setMuted={setMuted}
-        updateTime={updateTime}
-        playbackStart={playbackStart}
-        totalUsers={totalUsers}
-      />
+      <Footer/>
     </div>
   );
 }
