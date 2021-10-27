@@ -13,7 +13,7 @@ function Music(props) {
     if (e.target.classList.contains("clickable")) {
       return;
     }
-    const musicId = e.target.parentNode.id;
+    const musicId = e.target.closest('.music').id;
     requestQueueing(musicId);
   }
 
@@ -24,18 +24,13 @@ function Music(props) {
   }
 
   return (
-    <div className="song" key={music.id} id={music.id} onDoubleClick={handleDoubleClick}>
-      <div className="title dotOverflow">
-        <span>{music.title}</span>
-      </div>
-      <div className="artist dotOverflow">
-        <span className="clickable" onClick={handleKeywordClick}>{music.artist}</span>
+    <div className="music" key={music.id} id={music.id} onDoubleClick={handleDoubleClick}>
+      <div className="titleAndArtist">
+        <div className="title">{music.title}</div>
+        <div className="artist">{music.artist}</div>
       </div>
       <div className="album dotOverflow">
         <span className="clickable" onClick={handleKeywordClick}>{music.album}</span>
-      </div>
-      <div className="lyricsAvailability dotOverflow">
-        <ConditionalIcon condition={music.lyrics} onTrue={music.synced ? faSync : faCheck} onFalse={faTimes} />
       </div>
       <div className="duration dotOverflow">{secondsToTimestring(music.duration)}</div>
     </div>

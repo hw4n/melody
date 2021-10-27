@@ -3,6 +3,7 @@
 :root {
   --primary-color: #00d668;
   --secondary-color: #ff9f1c;
+  --secondary-darker-color: #c27a15;
   --primary-text-color: #ffffff;
   --secondary-text-color: #b3b3b3;
   --primary-background-color: #181818;
@@ -17,8 +18,9 @@
   font-family: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
 }
 
-.App {
-  max-height: 100vh;
+html, body {
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -28,8 +30,77 @@ body {
 }
 
 .container {
-  padding: 0 20px;
-  margin-bottom: 100px;
+  counter-reset: music-counter;
+  padding: 0 2em;
+  margin-bottom: calc(2rem + 75px);
+}
+
+.music {
+  height: 3.75em;
+  display: flex;
+  align-items: center;
+  /* justify-content: space-between; */
+  /* background-color: rgb(51, 82, 82); */
+  /* border-bottom: 1px solid var(--secondary-background-color); */
+}
+
+.music:hover {
+  background-color: var(--secondary-background-color);
+  border-radius: 6px;
+}
+
+.music::before {
+  counter-increment: music-counter;
+  content: counter(music-counter);
+
+  width: 3em;
+  text-align: center;
+  color: var(--secondary-text-color);
+
+  flex-shrink: 0;
+}
+
+.music .titleAndArtist {
+  width: 45%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: .5em;
+}
+
+.music .title {
+  line-height: 1em;
+}
+
+.music .artist {
+  font-size: 0.75em;
+  color: var(--secondary-text-color);
+}
+
+.music .album {
+  /* background-color: darkcyan; */
+  width: 45%;
+  padding-right: .5em;
+  
+}
+
+.music .duration {
+  /* background-color: darkcyan; */
+  width: 50px;
+  flex-grow: 1;
+  flex-shrink: 0;
+  /* padding-right: .5em; */
+  text-align: center;
+  color: var(--secondary-text-color);
+}
+
+.music div,
+.dotOverflow {
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .songListHeader:first-of-type {
@@ -39,7 +110,7 @@ body {
 
 .songListHeader {
   text-transform: capitalize;
-  display: flex;
+  display: none;
   justify-content: space-between;
 }
 
@@ -55,37 +126,42 @@ body {
 }
 
 .columnIndicator {
+  width: 100%;
   display: flex;
+  /* justify-content: space-between; */
 }
 
 .columnIndicator.divider {
-  margin-top: 4px;
+  margin-top: .1em;
 }
 
 .columnIndicator div {
-  width: 30%;
-  padding: 0 20px;
   text-transform: uppercase;
   color: var(--secondary-text-color);
 }
 
-.columnIndicator div.clickable:hover {
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.columnIndicator div:nth-last-child(2) {
-  width: 5%;
+.columnIndicator .number {
+  width: 3em;
+  /* padding-right: .5em; */
   text-align: center;
+  flex-shrink: 0;
 }
 
-.columnIndicator div:last-of-type {
-  width: 5%;
-  text-align: right;
+.columnIndicator .title {
+  width: 45%;
+  padding-right: .5em;
 }
 
-li {
-  list-style-type: none;
+.columnIndicator .album {
+  width: 45%;
+  padding-right: .5em;
+}
+
+.columnIndicator .duration {
+  width: 50px;
+  text-align: center;
+  flex-grow: 1;
+  flex-shrink: 0;
 }
 
 .search {
@@ -96,7 +172,7 @@ li {
   padding: 0 10px;
   color: var(--secondary-text-color);
   border-radius: 3px;
-  margin-top: 30px;
+  margin: 2em 0;
 }
 
 .search input {
@@ -118,7 +194,12 @@ li {
 }
 
 .search:focus-within {
+  color: var(--primary-text-color);
   background-color: var(--tertiary-background-color);
+}
+
+.search:focus-within input {
+  color: var(--primary-text-color);
 }
 
 .searching,
@@ -126,40 +207,26 @@ li {
   color: var(--secondary-color);
 }
 
-.song {
-  border-bottom: 1px solid var(--secondary-background-color);
-  padding: 5px 0;
-  /* padding-top: 3px; */
-  height: 30px;
-  line-height: 30px;
-
-  display: flex;
-  justify-content: space-around;
+.searching {
+  background-color: var(--secondary-color);
 }
 
-.song:hover {
-  background-color: var(--secondary-background-color);
+.searching,
+.searching input {
+  color: var(--primary-background-color);
 }
 
-.song div {
-  padding: 0 20px;
+.searching:hover {
+  background-color: var(--secondary-darker-color);
 }
 
-.song .title,
-.song .artist,
-.song .album {
-  width: 30%;
-}
-
-.song .lyricsAvailability,
-.song .duration {
-  width: 5%;
-  text-align: center;
-}
-
-.song .clickable:hover {
+.music .clickable:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+
+.musicList {
+  margin: 2em 0;
 }
 
 .tip {
@@ -170,19 +237,20 @@ li {
   margin-bottom: 30px;
 }
 
-.dotOverflow {
+/* .dotOverflow {
   overflow: hidden;
   display: inline-block;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
+} */
 
 .song .duration {
   text-align: right;
   color: var(--secondary-text-color);
 }
 
-.playing {
+.playing,
+.playing .music::before {
   color: var(--primary-color);
 }
 
@@ -391,97 +459,5 @@ how to remove the virtical space around the range input in IE*/
   input[type=range] {
     margin: 0;
     /*Edge starts the margin from the thumb, not the track as other browsers do*/
-  }
-}
-
-/* media queries */
-
-@media screen and (max-width: 992px) {
-  .columnIndicator div:nth-child(3),
-  .columnIndicator div:nth-child(4),
-  .columnIndicator div:nth-child(5) {
-    display: none;
-  }
-  .columnIndicator div:first-of-type,
-  .columnIndicator div:nth-child(2) {
-    width: 50%;
-  }
-  .song .title,
-  .song .artist {
-    display: inline-block;
-    width: 50%;
-  }
-  .song .album,
-  .song .lyricsAvailability,
-  .song .duration {
-    display: none;
-  }
-  .footerContainer .volumeControlWrap {
-    display: none;
-  }
-  /* refer to ./components/Lyrics.css */
-  .lyricsHeaderWrap .lyricsHeaderRight {
-    display: none;
-  }
-  .lyricsHeaderMiddle,
-  .lyricsWrap .lyrics,
-  .lyricsLineWrap .focused.lyrics {
-    font-size: 3vw;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .columnIndicator.divider {
-    display: none;
-  }
-  .song {
-    flex-direction: column;
-    height: 60px;
-    padding: 5px 20px;
-    line-height: normal;
-  }
-  .song .tip {
-    display: flex;
-    justify-content: center;
-    font-size: 2.5vw;
-  }
-  .song div {
-    padding: 0;
-  }
-  .song .title,
-  .song .artist,
-  .song .album {
-    display: block;
-    width: 100%;
-    display: flex;
-    align-items: center;
-  }
-  .song .artist,
-  .song .album {
-    font-size: 80%;
-    color: var(--secondary-text-color);
-    pointer-events: none;
-  }
-  .tip {
-    font-size: 2vw;
-  }
-  .songListHeader {
-    align-items: flex-end;
-  }
-  .songListHeader h3 span {
-    display: block;
-  }
-}
-
-@media screen and (max-width: 550px) {
-  .lyricsHeaderMiddle {
-    font-size: .75em;
-  }
-  .lyricsWrap .lyrics,
-  .lyricsLineWrap .focused.lyrics {
-    font-size: 1em;
-  }
-  .footerContainer .totalUsersWrap {
-    display: none;
   }
 }

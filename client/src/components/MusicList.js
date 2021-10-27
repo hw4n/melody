@@ -46,8 +46,12 @@ function MusicList(props) {
     }
   }, [isSearching, originalMusicArray, searchingKeyword, titleSort]);
 
+  if (originalMusicArray.length === 0 || (isSearching && filteredMusicArray.length === 0)) {
+    return <></>
+  }
+
   return (
-    <>
+    <div className="musicList">
       <div className="songListHeader divider">
       {isSearching ? (
         <>
@@ -62,13 +66,10 @@ function MusicList(props) {
       )}
       </div>
       <div className="columnIndicator divider">
-        <div className="clickable" onClick={() => {
-          setTitleSort(x => (x + 1) % 3);
-        }}>title {titleSort === 0 ? "-" : titleSort === 1 ? "↑" : "↓"}</div>
-        <div>artist</div>
-        <div>album</div>
-        <div>lyrics</div>
-        <div><FontAwesomeIcon icon={faClock}/></div>
+        <div className="number">#</div>
+        <div className="title">title</div>
+        <div className="album">album</div>
+        <div className="duration"><FontAwesomeIcon icon={faClock}/></div>
       </div>
       <div className={customClassName}>
         {/* branch by app is searching or not */}
@@ -81,15 +82,8 @@ function MusicList(props) {
             return <Music music={music}/>
           })
         )}
-        {message ? (
-          <div className="song">
-            <div className="tip dotOverflow">
-              {message}
-            </div>
-          </div>
-        ) : (<></>)}
       </div>
-    </>
+    </div>
   );
 }
 
