@@ -26,7 +26,7 @@ app.use(express.static('cover'));
 if (STAGE === 'live') {
   app.use(express.static('build'));
   app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../client/build/index.html'));
+    res.sendFile(path.join(__dirname, '../build/index.html'));
   });
 }
 server.listen(PORT, () => {
