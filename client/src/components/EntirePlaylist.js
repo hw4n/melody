@@ -9,7 +9,7 @@ function EntirePlaylist() {
   const { searchingKeyword } = useSelector(store => store.app);
 
   return (
-    <>
+    <div class="container">
       <MusicList
         listTitle="now playing"
         customClassName="playing"
@@ -48,7 +48,7 @@ function EntirePlaylist() {
             musicArray={queue}
           />
         </>
-    </>
+    </div>
   );
 }
 

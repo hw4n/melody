@@ -7,6 +7,7 @@ import EntirePlaylist from "./components/EntirePlaylist";
 import Footer from "./components/Footer";
 import { useSelector } from 'react-redux';
 import { setDocumentTitle, setKeydownListeners, setMediaSession, setUnloadEvent } from './helper/app';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 
 const DEFAULT_TITLE = process.env.TITLE || "Melody";
 
@@ -27,17 +28,22 @@ function App() {
   }, [isPlaying, playing.title]);
 
   return (
-    <div className="App">
+    <Router>
       { loaderMounted ? (
         <Loader ready={queue.length ? true : playing} unmounter={setLoaderMounted}/>
       ) : <></> }
       <Flash/>
-      { isLyricMode ? <Lyrics/> : <></> }
-      <div className="container">
-        <EntirePlaylist/>
-      </div>
+      { isLyricMode ? <Redirect to="/lyrics" /> : <Redirect to="/"/> }
+      <Switch>
+        <Route exact path="/lyrics">
+          <Lyrics/>
+        </Route>
+        <Route exact path="/">
+          <EntirePlaylist/>
+        </Route>
+      </Switch>
       <Footer/>
-    </div>
+    </Router>
   );
 }
 

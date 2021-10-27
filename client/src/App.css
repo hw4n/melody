@@ -29,13 +29,12 @@ body {
 
 .container {
   padding: 0 20px;
-  margin-bottom: 75px;
-  overflow: auto;
-  max-height: calc(100vh - 75px);
+  margin-bottom: 100px;
 }
 
 .songListHeader:first-of-type {
-  margin-top: 20px;
+  margin-top: 0;
+  padding-top: 20px;
 }
 
 .songListHeader {

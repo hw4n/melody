@@ -67,6 +67,7 @@ export function setKeydownListeners(document) {
     }
     switch (e.key) {
       case " ":
+        e.preventDefault();
         store.dispatch({type: "APP/TOGGLE_PLAYING"});
         break;
       case "m":
