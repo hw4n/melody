@@ -13,6 +13,7 @@ const io = require('socket.io')(server, {
   pingInterval: 1000 * 10,
   cors: { origin: '*' },
 });
+const path = require('path');
 
 global.SOCKET = io;
 
@@ -24,6 +25,9 @@ app.use('/api', apiRoutes);
 app.use(express.static('cover'));
 if (STAGE === 'live') {
   app.use(express.static('build'));
+  app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../client/build/index.html'));
+  });
 }
 server.listen(PORT, () => {
   logWhite(`Server listening at port ${PORT}`);
