@@ -1,8 +1,7 @@
 .lyricsWrap {
   width: 100%;
-  height: calc(100vh - 75px);
-  position: absolute;
-  z-index: 98;
+  /* height: calc(100vh - 75px); */
+  /* margin-bottom: 75px; */
 
   display: flex;
   flex-direction: column;
@@ -53,14 +52,14 @@
 .lyrics {
   color: var(--primary-text-color);
   font-size: 1.5rem;
-  overflow-y: scroll;
   user-select: text;
   padding: 1rem 0;
-  height: 100%;
+  margin-bottom: 75px;
 }
 
-.lyricsDisplay {
-  height: 100%;
+.lyrics.dynamic {
+  height: calc(100vh - 75px);
+  padding: 0;
   display: grid;
   align-items: center;
   justify-content: center;
@@ -68,6 +67,7 @@
 
 .focused.lyrics {
   font-size: 2rem;
+  margin: 0;
   padding: 0;
   overflow: hidden;
   user-select: none;

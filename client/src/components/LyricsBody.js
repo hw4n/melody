@@ -66,7 +66,7 @@ function LyricsBody(props) {
 
   return (
     synced ? (
-      <div className="lyricsDisplay">
+      <div className="lyrics dynamic">
         <animated.div className="lyricsLineWrap" style={styles}>
           {lyricBlock.split("\n").map(x => {
             return <div className="focused lyrics">{x}</div>
