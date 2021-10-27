@@ -25,11 +25,11 @@ function Footer() {
 
   useEffect(() => {
     if (isMuted && volume > 0) {
-      dispatch({type: "APP/SET_VOLUME", volume: volume});
+      dispatch({type: "APP/SET_VOLUME", volume: -volume});
       volumeRef.current.value = 0;
     } else if (!isMuted && volume < 0) {
       volumeRef.current.value = -volume;
-      dispatch({type: "APP/SET_VOLUME", volume: volume});
+      dispatch({type: "APP/SET_VOLUME", volume: -volume});
     }
   }, [isMuted, volume]);
 
@@ -116,7 +116,8 @@ function Footer() {
             </button>
             <div id="volumeControl">
               <input type="range" min="0" max="1" step="0.01" defaultValue={volume} ref={volumeRef} onChange={e => {
-                dispatch({type: "APP/SET_VOLUME", volume: e.target.value});
+                const newVolume = Number(e.target.value);
+                dispatch({type: "APP/SET_VOLUME", volume: newVolume});
                 if (e.target.value <= 0) {
                   dispatch({type: "APP/TOGGLE_MUTED", isMuted: true});
                 } else if (isMuted) {
