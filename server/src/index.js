@@ -20,7 +20,7 @@ const apiRoutes = require('./api');
 const loader = require('./loaders');
 
 const { PORT, STAGE } = process.env;
-app.use('/', apiRoutes);
+app.use('/api', apiRoutes);
 app.use(express.static('cover'));
 if (STAGE === 'live') {
   app.use(express.static('build'));

@@ -23,7 +23,7 @@ function Lyrics() {
     setLyrics('');
     setReady(false);
     setLoaderMounted(true);
-    fetch('/lyrics')
+    fetch('/api/lyrics')
       .then((res) => res.json())
       .then((data) => {
         if (data.lyrics) {
@@ -78,7 +78,7 @@ function Lyrics() {
 
   function saveLyrics() {
     const newLyrics = textareaRef.current.value;
-    fetch("/lyrics", {
+    fetch("/api/lyrics", {
       method: "POST",
       headers: {
         'Accept': 'application/json',

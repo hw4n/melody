@@ -66,8 +66,8 @@ function Footer() {
   return (
     <footer>
       {isPlaying ? (
-        <audio ref={audioRef} src={`/stream?${start}`}>
-          <source src={`/stream?${start}`} type="audio/mpeg"/>
+        <audio ref={audioRef} src={`/api/stream?${start}`}>
+          <source src={`/api/stream?${start}`} type="audio/mpeg"/>
         </audio>
       ) : (
         <audio ref={audioRef} src="" preload="none"/>
