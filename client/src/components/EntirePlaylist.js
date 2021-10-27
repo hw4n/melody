@@ -7,7 +7,7 @@ import Loader from './Loader';
 
 function EntirePlaylist() {
   const { playing, priority, queue } = useSelector(store => store.socket);
-  const { searchingKeyword } = useSelector(store => store.app);
+  const { isSearching, searchingKeyword } = useSelector(store => store.app);
 
   if (!priority && !queue) {
     return <Loader/>
@@ -19,7 +19,7 @@ function EntirePlaylist() {
         customClassName="playing"
         musicArray={[playing]}
       />
-      <div className="search">
+      <div className={"search " + (isSearching ? "searching" : "")}>
         <FontAwesomeIcon icon={faSearch}/>
         <input type="text" placeholder="Search for Title / Artist / Album" value={searchingKeyword} onInput={(e) => {
           const currentValue = e.target.value;
@@ -39,19 +39,16 @@ function EntirePlaylist() {
           <></>
         )}
       </div>
-        <>
-          <MusicList
-            listTitle="user queued list"
-            customClassName="priority"
-            musicArray={priority}
-            message="You can queue any music you want by double-clicking music!"
-          />
-          <MusicList
-            listTitle="next in queue"
-            customClassName="queue"
-            musicArray={queue}
-          />
-        </>
+        <MusicList
+          listTitle="user queued list"
+          customClassName="priority"
+          musicArray={priority}
+        />
+        <MusicList
+          listTitle="next in queue"
+          customClassName="queue"
+          musicArray={queue}
+        />
     </div>
   );
 }}
