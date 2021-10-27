@@ -60,6 +60,10 @@ function stringToSearchString(string) {
 }
 
 function musicHasSearchKeyword(music, searchKeyword) {
+  // check emptiness
+  if (Object.keys(music).length === 0) {
+    return;
+  }
   const keyword = stringToSearchString(searchKeyword);
   let { title, artist, album, romaji } = music;
   let { title: titleRomaji, artist: artistRomaji } = romaji;

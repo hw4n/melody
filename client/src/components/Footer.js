@@ -16,21 +16,20 @@ function Footer() {
   const {
     isPlaying,
     isLyricMode,
-    isMuted
+    isMuted,
+    volume,
   } = useSelector(store => store.app);
-
-  const [volume, setVolume] = useState(0.5);
 
   const audioRef = useRef();
   const volumeRef = useRef();
 
   useEffect(() => {
     if (isMuted && volume > 0) {
-      setVolume(-volume);
+      dispatch({type: "APP/SET_VOLUME", volume: volume});
       volumeRef.current.value = 0;
     } else if (!isMuted && volume < 0) {
       volumeRef.current.value = -volume;
-      setVolume(-volume);
+      dispatch({type: "APP/SET_VOLUME", volume: volume});
     }
   }, [isMuted, volume]);
 
@@ -116,8 +115,8 @@ function Footer() {
               )}
             </button>
             <div id="volumeControl">
-              <input type="range" min="0" max="1" step="0.01" defaultValue="0.5" ref={volumeRef} onChange={e => {
-                setVolume(e.target.value);
+              <input type="range" min="0" max="1" step="0.01" defaultValue={volume} ref={volumeRef} onChange={e => {
+                dispatch({type: "APP/SET_VOLUME", volume: e.target.value});
                 if (e.target.value <= 0) {
                   dispatch({type: "APP/TOGGLE_MUTED", isMuted: true});
                 } else if (isMuted) {

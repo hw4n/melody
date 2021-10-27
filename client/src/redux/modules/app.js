@@ -1,3 +1,5 @@
+import { loadState, saveState } from "../helper/localStorage";
+
 const APP_SET_PLAYING = "APP/SET_PLAYING";
 const APP_TOGGLE_PLAYING = "APP/TOGGLE_PLAYING";
 const APP_SEARCH = "APP/SEARCH";
@@ -7,6 +9,7 @@ const APP_SET_LYRIC_SCROLL_POSITION = "APP/SET_LYRIC_SCROLL_POSITION";
 const APP_SET_LYRIC_EDITING = "APP/SET_LYRIC_EDITING";
 const APP_TOGGLE_LYRIC_EDITING = "APP/TOGGLE_LYRIC_EDITING";
 const APP_TOGGLE_MUTED = "APP/TOGGLE_MUTED";
+const APP_SET_VOLUME = "APP/SET_VOLUME";
 
 const INIT_STATE = {
   isPlaying: false,
@@ -16,32 +19,58 @@ const INIT_STATE = {
   isMuted: false,
   lyricScrollPosition: 0,
   isEditingLyric: false,
+  volume: 0.5,
 }
 
+loadState(INIT_STATE);
+
 export default function reducer(state = INIT_STATE, action) {
+  let newState = {...state};
   switch (action.type) {
     case APP_SET_PLAYING:
-      return {...state, isPlaying: action.setTo};
+       newState.isPlaying = action.setTo;
+       break;
+
     case APP_TOGGLE_PLAYING:
-      return {...state, isPlaying: !state.isPlaying};
+      newState.isPlaying = !state.isPlaying;
+      break;
+
     case APP_SEARCH:
-      return {...state,
-        isSearching: action.searchingKeyword.length > 0,
-        searchingKeyword: action.searchingKeyword
-      };
+      newState.isSearching = action.searchingKeyword.length > 0;
+      newState.searchingKeyword = action.searchingKeyword;
+      break;
+
     case APP_SET_LYRIC_MODE:
-      return {...state, isLyricMode: action.setTo};
+      newState.isLyricMode = action.setTo;
+      break;
+
     case APP_TOGGLE_LYRIC_MODE:
-      return {...state, isLyricMode: !state.isLyricMode};
+      newState.isLyricMode = !state.isLyricMode;
+      break;
+
     case APP_SET_LYRIC_EDITING:
-      return {...state, isEditingLyric: action.setTo};
+      newState.isEditingLyric = action.setTo;
+      break;
+
     case APP_TOGGLE_LYRIC_EDITING:
-      return {...state, isEditingLyric: !state.isEditingLyric};
+      newState.isEditingLyric = !state.isEditingLyric;
+      break;
+
     case APP_SET_LYRIC_SCROLL_POSITION:
-      return {...state, lyricScrollPosition: action.position};
+      newState.lyricScrollPosition = action.position;
+      break;
+
+    case APP_SET_VOLUME:
+      newState.volume = action.volume;
+      break;
+
     case APP_TOGGLE_MUTED:
-      return {...state, isMuted: !state.isMuted};
+      newState.isMuted = !state.isMuted;
+      break;
+    
     default:
-      return state;
+      break;
   }
+  saveState(newState);
+  return newState;
 }

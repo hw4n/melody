@@ -3,11 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSelector } from 'react-redux';
 import MusicList from "./MusicList";
 import { setSearch, resetSearch } from '../helper/app';
+import Loader from './Loader';
 
 function EntirePlaylist() {
   const { playing, priority, queue } = useSelector(store => store.socket);
   const { searchingKeyword } = useSelector(store => store.app);
 
+  if (!priority && !queue) {
+    return <Loader/>
+  } else {
   return (
     <div class="container">
       <MusicList
@@ -50,6 +54,6 @@ function EntirePlaylist() {
         </>
     </div>
   );
-}
+}}
 
 export default EntirePlaylist;
