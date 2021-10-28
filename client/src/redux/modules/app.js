@@ -1,4 +1,4 @@
-import { loadState, saveState } from "../helper/localStorage";
+import { loadState } from "../helper/localStorage";
 
 const APP_SET_PLAYING = "APP/SET_PLAYING";
 const APP_TOGGLE_PLAYING = "APP/TOGGLE_PLAYING";
@@ -24,48 +24,38 @@ const INIT_STATE = {
 loadState(INIT_STATE);
 
 export default function reducer(state = INIT_STATE, action) {
-  let newState = {...state};
   switch (action.type) {
     case APP_SET_PLAYING:
-       newState.isPlaying = action.setTo;
-       break;
+      return {...state, isPlaying: action.setTo};
 
     case APP_TOGGLE_PLAYING:
-      newState.isPlaying = !state.isPlaying;
-      break;
+      return {...state, isPlaying: !state.isPlaying}
 
     case APP_SEARCH:
-      newState.isSearching = action.searchingKeyword.length > 0;
-      newState.searchingKeyword = action.searchingKeyword;
-      break;
+      return {...state,
+        isSearching: action.searchingKeyword.length > 0,
+        searchingKeyword: action.keyword
+      };
     
     case APP_SET_CURRENT_MODE:
-      newState.currentMode = action.setTo;
-      break;
+      return {...state, currentMode: action.setTo};
 
     case APP_SET_LYRIC_EDITING:
-      newState.isEditingLyric = action.setTo;
-      break;
+      return {...state, isEditingLyric: action.setTo};
 
     case APP_TOGGLE_LYRIC_EDITING:
-      newState.isEditingLyric = !state.isEditingLyric;
-      break;
+      return {...state, isEditingLyric: !state.isEditingLyric};
 
     case APP_SET_VOLUME:
-      newState.volume = action.volume;
-      break;
+      return {...state, volume: action.volume};
 
     case APP_TOGGLE_MUTED:
-      newState.isMuted = !state.isMuted;
-      break;
+      return {...state, isMuted: !state.isMuted};
 
     case APP_TOGGLE_LIGHT_THEME:
-      newState.isLightTheme = !state.isLightTheme;
-      break;
+      return {...state, isLightTheme: !state.isLightTheme};
     
     default:
-      break;
+      return {...state};
   }
-  saveState(newState);
-  return newState;
 }

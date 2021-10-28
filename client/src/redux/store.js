@@ -1,6 +1,7 @@
 import { createStore } from 'redux';
 import rootReducer from './modules/reducer';
 import io from 'socket.io-client';
+import { saveState } from './helper/localStorage';
 
 const store = createStore(rootReducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
@@ -31,6 +32,11 @@ socket.on('total_users', (total_users) => {
 
 socket.on('renew_lyric', (data) => {
   store.dispatch({type: "SOCKET/RENEW_LYRICS", data});
+});
+
+// save state to localStorage
+store.subscribe(() => {
+  saveState(store.getState().app);
 });
 
 export default store;
