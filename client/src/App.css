@@ -54,6 +54,7 @@ html, body {
   display: flex;
   align-items: center;
   transition: all .4s;
+  animation: insertion .4s;
 }
 
 .insertAnimation,
