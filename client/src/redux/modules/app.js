@@ -34,7 +34,7 @@ export default function reducer(state = INIT_STATE, action) {
     case APP_SEARCH:
       return {...state,
         isSearching: action.searchingKeyword.length > 0,
-        searchingKeyword: action.keyword
+        searchingKeyword: action.searchingKeyword
       };
     
     case APP_SET_CURRENT_MODE:
