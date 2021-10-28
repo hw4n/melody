@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { faPlayCircle, faStopCircle, faVolumeDown, faVolumeMute, faFileAlt, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faPause, faVolumeDown, faVolumeMute, faMicrophone, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from 'react-redux';
 import ProgressBar from "./ProgressBar";
@@ -92,16 +92,16 @@ function Footer() {
             dispatch({type: "APP/TOGGLE_PLAYING", isPlaying: !isPlaying});
           }}>
             {!isPlaying ? (
-              <FontAwesomeIcon icon={faPlayCircle} size="2x"/>
+              <FontAwesomeIcon icon={faPlay} size="lg"/>
             ) : (
-              <FontAwesomeIcon icon={faStopCircle} size="2x"/>
+              <FontAwesomeIcon icon={faPause} size="lg"/>
             )}
           </button>
           {/* lyric button */}
           <button onClick={() => {
             dispatch({type: "APP/TOGGLE_LYRIC_MODE", isLyricMode: !isLyricMode});
             }} class={isLyricMode ? "active" : ""}>
-            <FontAwesomeIcon icon={faFileAlt} size="2x"/>
+            <FontAwesomeIcon icon={faMicrophone} size="lg"/>
           </button>
           {/* mute button and volume range input */}
           <div className="volumeControlWrap" style={{display: isMobileDevice() ? "none" : ""}}>
@@ -109,9 +109,9 @@ function Footer() {
               dispatch({type: "APP/TOGGLE_MUTED", isMuted: !isMuted});
             }} class={isMuted ? "disabled" : ""}>
               {volume > 0 ? (
-                <FontAwesomeIcon icon={faVolumeDown} size="2x"/>
+                <FontAwesomeIcon icon={faVolumeDown} size="lg"/>
               ) : (
-                <FontAwesomeIcon icon={faVolumeMute} size="2x"/>
+                <FontAwesomeIcon icon={faVolumeMute} size="lg"/>
               )}
             </button>
             <div id="volumeControl">
