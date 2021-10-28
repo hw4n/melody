@@ -14,13 +14,10 @@
   --information-color: #00ffdd;
 }
 
-* {
-  font-family: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
-}
-
 html, body {
   margin: 0;
   padding: 0;
+  font-family: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
 }
 
 body {
@@ -39,9 +36,6 @@ body {
   height: 3.75em;
   display: flex;
   align-items: center;
-  /* justify-content: space-between; */
-  /* background-color: rgb(51, 82, 82); */
-  /* border-bottom: 1px solid var(--secondary-background-color); */
 }
 
 .music:hover {
@@ -69,70 +63,30 @@ body {
   padding-right: .5em;
 }
 
-.music .title {
-  line-height: 1em;
-}
-
 .music .artist {
   font-size: 0.75em;
   color: var(--secondary-text-color);
 }
 
 .music .album {
-  /* background-color: darkcyan; */
   width: 45%;
   padding-right: .5em;
   
 }
 
 .music .duration {
-  /* background-color: darkcyan; */
   width: 50px;
   flex-grow: 1;
   flex-shrink: 0;
-  /* padding-right: .5em; */
   text-align: center;
   color: var(--secondary-text-color);
-}
-
-.music div,
-.dotOverflow {
-  overflow: hidden;
-  display: inline-block;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.songListHeader:first-of-type {
-  margin-top: 0;
-  padding-top: 20px;
-}
-
-.songListHeader {
-  text-transform: capitalize;
-  display: none;
-  justify-content: space-between;
-}
-
-.songListHeader h3 {
-  margin: 0;
-}
-
-.divider {
-  padding-bottom: 3px;
-  margin-bottom: 0;
-  margin-top: 30px;
-  border-bottom: 1px solid var(--secondary-background-color);
 }
 
 .columnIndicator {
   width: 100%;
   display: flex;
-  /* justify-content: space-between; */
-}
-
-.columnIndicator.divider {
-  margin-top: .1em;
+  padding-bottom: .3em;
+  border-bottom: 1px solid var(--secondary-background-color);
 }
 
 .columnIndicator div {
@@ -142,7 +96,6 @@ body {
 
 .columnIndicator .number {
   width: 3em;
-  /* padding-right: .5em; */
   text-align: center;
   flex-shrink: 0;
 }
@@ -229,26 +182,6 @@ body {
   margin: 2em 0;
 }
 
-.tip {
-  color: var(--secondary-text-color);
-}
-
-.played {
-  margin-bottom: 30px;
-}
-
-/* .dotOverflow {
-  overflow: hidden;
-  display: inline-block;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-} */
-
-.song .duration {
-  text-align: right;
-  color: var(--secondary-text-color);
-}
-
 .playing,
 .playing .music::before {
   color: var(--primary-color);
@@ -288,13 +221,14 @@ footer:focus {
 
 .currentMusicText {
   width: 100%;
-  padding: 0 0 0 20px;
+  padding-left: 1em;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-.currentTitle, .currentArtist {
+.currentTitle,
+.currentArtist {
   width: 100%;
 }
 
@@ -309,10 +243,23 @@ footer:focus {
 }
 
 .controller {
+  justify-content: flex-end;
   width: 30%;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
+  display: grid;
+  grid-template-columns: 75px 75px 150px 75px;
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content: space-evenly; */
+}
+
+.controller button:hover,
+.controller div:hover {
+  background-color: var(--primary-background-color);
+}
+
+.controller button.active,
+.controller div.active {
+  background-color: var(--tertiary-background-color);
 }
 
 button {
@@ -335,10 +282,10 @@ button.disabled {
 }
 
 .volumeControlWrap {
-  width: 50%;
+  /* width: 50%; */
   height: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
 }
 
@@ -350,7 +297,8 @@ button.disabled {
 
 #volumeControl {
   display: flex;
-  width: 75%;
+  width: 65%;
+  margin-left: .3em;
 }
 
 .totalUsersWrap {
@@ -459,5 +407,53 @@ how to remove the virtical space around the range input in IE*/
   input[type=range] {
     margin: 0;
     /*Edge starts the margin from the thumb, not the track as other browsers do*/
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .columnIndicator .title,
+  .music .titleAndArtist {
+    width: 100%;
+  }
+
+  .columnIndicator .album,
+  .music .album {
+    display: none;
+  }
+
+  .controller {
+    grid-template-columns: repeat(3, 75px);
+  }
+
+  .volumeControlWrap {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0 .75em;
+  }
+
+  .columnIndicator .duration,
+  .music .duration {
+    display: none;
+  }
+
+  .musicList,
+  .search {
+    margin: 1.25em 0;
+  }
+
+  .currentMusicText {
+    padding-left: .5em;
+  }
+
+  .controller {
+    grid-template-columns: repeat(2, 75px);
+  }
+
+  .totalUsersWrap {
+    display: none;
   }
 }
