@@ -29,17 +29,17 @@ function ProgressBar(props) {
   }
 
   return (
-    <div class="progressWrap">
+    <div className="progressWrap">
       { displayTime ? (
-        <div class="time current">{secondsToTimestring(currentProgress)}</div>
+        <div className="time current">{secondsToTimestring(currentProgress)}</div>
       ) : (
         <></>
       )}
-      <div class={noRadius ? "progressBar noRadius" : "progressBar"}>
-        <div class={noRadius ? "progressBarCurrent noRadius" : "progressBarCurrent"} style={{width: `${progressPercent}%`}}></div>
+      <div className={noRadius ? "progressBar noRadius" : "progressBar"}>
+        <div className={noRadius ? "progressBarCurrent noRadius" : "progressBarCurrent"} style={{width: `${progressPercent}%`}}></div>
       </div>
       { displayTime ? (
-        <div class="time end">{secondsToTimestring(duration)}</div>
+        <div className="time end">{secondsToTimestring(duration)}</div>
       ) : (
         <></>
       )}
