@@ -29,10 +29,10 @@ function Music(props) {
         <div className="title">{music.title}</div>
         <div className="artist">{music.artist}</div>
       </div>
-      <div className="album dotOverflow">
+      <div className="album">
         <span className="clickable" onClick={handleKeywordClick}>{music.album}</span>
       </div>
-      <div className="duration dotOverflow">{secondsToTimestring(music.duration)}</div>
+      <div className="duration">{secondsToTimestring(music.duration)}</div>
     </div>
   )
 }

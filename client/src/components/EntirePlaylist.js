@@ -15,7 +15,6 @@ function EntirePlaylist() {
   return (
     <div class="container">
       <MusicList
-        listTitle="now playing"
         customClassName="playing"
         musicArray={[playing]}
       />
@@ -40,12 +39,10 @@ function EntirePlaylist() {
         )}
       </div>
         <MusicList
-          listTitle="user queued list"
           customClassName="priority"
           musicArray={priority}
         />
         <MusicList
-          listTitle="next in queue"
           customClassName="queue"
           musicArray={queue}
         />
