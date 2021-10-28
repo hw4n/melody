@@ -91,7 +91,7 @@ function Footer() {
           {/* play button */}
           <button onClick={() => {
             dispatch({type: "APP/TOGGLE_PLAYING", isPlaying: !isPlaying});
-          }}>
+          }} className={isPlaying ? "active" : ""}>
             {!isPlaying ? (
               <FontAwesomeIcon icon={faPlay} size="lg"/>
             ) : (
