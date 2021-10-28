@@ -13,7 +13,7 @@ function EntirePlaylist() {
     return <Loader/>
   } else {
   return (
-    <div class="container">
+    <div className="container">
       <MusicList
         customClassName="playing"
         musicArray={[playing]}

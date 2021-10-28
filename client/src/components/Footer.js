@@ -102,14 +102,14 @@ function Footer() {
           <button onClick={() => {
             const nextMode = (currentMode === mode.lyric) ? mode.default : mode.lyric;
             dispatch({type: "APP/SET_CURRENT_MODE", setTo: nextMode});
-          }} class={currentMode === mode.lyric ? "active" : ""}>
+          }} className={currentMode === mode.lyric ? "active" : ""}>
             <FontAwesomeIcon icon={faMicrophone} size="lg"/>
           </button>
           {/* mute button and volume range input */}
           <div className="volumeControlWrap" style={{display: isMobileDevice() ? "none" : ""}}>
             <button onClick={() => {
               dispatch({type: "APP/TOGGLE_MUTED", isMuted: !isMuted});
-            }} class={isMuted ? "disabled" : ""}>
+            }} className={isMuted ? "disabled" : ""}>
               {volume > 0 ? (
                 <FontAwesomeIcon icon={faVolumeDown} size="lg"/>
               ) : (
@@ -128,9 +128,9 @@ function Footer() {
               }}/>
             </div>
           </div>
-          <div class="totalUsersWrap">
+          <div className="totalUsersWrap">
             <FontAwesomeIcon icon={faUsers}/>
-            <div class="total_users">{totalUsers}</div>
+            <div className="total_users">{totalUsers}</div>
           </div>
           <button onClick={() => {
             const nextMode = (currentMode === mode.setting) ? mode.default : mode.setting;

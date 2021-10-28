@@ -7,10 +7,10 @@ function Flash() {
   const [flashMessages, setFlashMessages] = useState([]);
 
   return (
-    <div class="flashWrap">
+    <div className="flashWrap">
       {flashMessages.map(message => {
         return (
-          <div class="flash">
+          <div className="flash">
             <p>{message}</p>
             <FontAwesomeIcon icon={faTimes} onClick={(e) => {
               const flash = e.currentTarget.parentElement;
