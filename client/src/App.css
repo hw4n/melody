@@ -36,6 +36,32 @@ body {
   height: 3.75em;
   display: flex;
   align-items: center;
+  transition: all .4s;
+}
+
+.insertAnimation,
+.musicList .playing .music,
+.musicList .priority .music:last-child {
+  animation: insertion .4s;
+}
+
+.takeout {
+  animation: insertion .4s reverse;
+}
+
+.noAnimation .music {
+  animation: none;
+}
+
+@keyframes insertion {
+  from {
+    margin-left: -3em;
+    opacity: 0;
+  }
+  to {
+    margin-left: 0;
+    opacity: 1;
+  }
 }
 
 .music:hover {
