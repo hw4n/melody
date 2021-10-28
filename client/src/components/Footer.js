@@ -78,8 +78,8 @@ function Footer() {
             <>
               <img className="coverArt" src={`/96.png?${start}`} alt="album cover artwork"/>
               <div className="currentMusicText">
-                <div className="currentTitle dotOverflow">{playing.title}</div>
-                <div className="currentArtist dotOverflow">{playing.artist}</div>
+                <div className="currentTitle">{playing.title}</div>
+                <div className="currentArtist">{playing.artist}</div>
               </div>
             </>
           ) : (
