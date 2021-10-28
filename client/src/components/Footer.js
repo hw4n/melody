@@ -18,6 +18,7 @@ function Footer() {
     isLyricMode,
     isMuted,
     volume,
+    isSettingMode,
   } = useSelector(store => store.app);
 
   const audioRef = useRef();
@@ -130,7 +131,10 @@ function Footer() {
             <FontAwesomeIcon icon={faUsers}/>
             <div class="total_users">{totalUsers}</div>
           </div>
-          <button>
+          <button onClick={() => {
+            dispatch({type: "APP/SET_LYRIC_MODE", setTo: false});
+            dispatch({type: "APP/TOGGLE_SETTING_MODE"});
+          }} className={isSettingMode ? "active" : ""}>
             <FontAwesomeIcon icon={faCog} size="lg"/>
           </button>
         </div>

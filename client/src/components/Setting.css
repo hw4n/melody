@@ -1,0 +1,15 @@
+.settingWrap {
+  height: calc(100vh - 75px);
+  display: grid;
+  align-items: center;
+  font-size: 1.2em;
+}
+
+.settingWrap .property {
+  display: flex;
+  justify-content: center;
+}
+
+.settingWrap .property .description {
+  margin-right: .75em;
+}

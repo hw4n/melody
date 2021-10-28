@@ -15,22 +15,38 @@
   --main-font: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
 }
 
+.App[data-theme='light']  {
+  --primary-color: #ff0055;
+  --secondary-color: #cf5e31;
+  --secondary-darker-color: #d3b790;
+  --primary-text-color: #9c3838;
+  --secondary-text-color: #cc5b5b;
+  --primary-background-color: #fffafa;
+  --secondary-background-color: #ebd4cb;
+  --tertiary-background-color: #d39797;
+  --warning-color: #F20505;
+  --highlight-color: #fece01;
+  --information-color: #00ffdd;
+  --main-font: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
+}
+
 html, body {
   margin: 0;
   padding: 0;
   font-family: var(--main-font);
 }
 
-body {
+.App {
   background-color: var(--primary-background-color);
   color: var(--primary-text-color);
   user-select: none;
+  min-height: 100vh;
 }
 
 .container {
   counter-reset: music-counter;
   padding: 0 2em;
-  margin-bottom: calc(2rem + 75px);
+  padding-bottom: calc(2rem + 50px);
 }
 
 .music {
@@ -152,7 +168,6 @@ body {
   padding: 0 10px;
   color: var(--secondary-text-color);
   border-radius: 3px;
-  margin: 2em 0;
 }
 
 .search input {
@@ -206,7 +221,7 @@ body {
 }
 
 .musicList {
-  margin: 2em 0;
+  padding: 2em 0;
 }
 
 .playing,
