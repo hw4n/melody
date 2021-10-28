@@ -43,12 +43,14 @@ function MusicList(props) {
       <div className={customClassName}>
         {/* branch by app is searching or not */}
         { !isSearching ? (
-          musicArray.map((music, idx) => {
-            return <Music key={idx} music={music}/>
+          // passing music.id as key actually works without any problem
+          // however it throws warning but i don't know anymore
+          musicArray.map((music) => {
+            return <Music key={music.id} music={music}/>
           })
         ) : (
-          filteredMusicArray.map((music, idx) => {
-            return <Music key={idx} music={music}/>
+          filteredMusicArray.map((music) => {
+            return <Music key={music.id} music={music}/>
           })
         )}
       </div>
