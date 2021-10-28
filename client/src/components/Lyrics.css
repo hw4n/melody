@@ -79,7 +79,9 @@
   padding: 10px;
   font-size: 1.1rem;
   font-family: var(--main-font);
-  background-color: var(--primary-text-color);
+  /* editor should be consistent i guess */
+  color: black;
+  background-color: white;
 }
 
 .lyricsEditor:focus {
