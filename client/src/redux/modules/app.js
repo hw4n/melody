@@ -4,7 +4,6 @@ const APP_SET_PLAYING = "APP/SET_PLAYING";
 const APP_TOGGLE_PLAYING = "APP/TOGGLE_PLAYING";
 const APP_SEARCH = "APP/SEARCH";
 const APP_SET_CURRENT_MODE = "APP/SET_CURRENT_MODE";
-const APP_SET_LYRIC_SCROLL_POSITION = "APP/SET_LYRIC_SCROLL_POSITION";
 const APP_SET_LYRIC_EDITING = "APP/SET_LYRIC_EDITING";
 const APP_TOGGLE_LYRIC_EDITING = "APP/TOGGLE_LYRIC_EDITING";
 const APP_TOGGLE_MUTED = "APP/TOGGLE_MUTED";
@@ -17,7 +16,6 @@ const INIT_STATE = {
   searchingKeyword: "",
   currentMode: 0,
   isMuted: false,
-  lyricScrollPosition: 0,
   isEditingLyric: false,
   volume: 0.5,
   isLightTheme: false,
@@ -51,10 +49,6 @@ export default function reducer(state = INIT_STATE, action) {
 
     case APP_TOGGLE_LYRIC_EDITING:
       newState.isEditingLyric = !state.isEditingLyric;
-      break;
-
-    case APP_SET_LYRIC_SCROLL_POSITION:
-      newState.lyricScrollPosition = action.position;
       break;
 
     case APP_SET_VOLUME:

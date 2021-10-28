@@ -9,14 +9,13 @@ import { useDispatch, useSelector } from 'react-redux';
 function Lyrics() {
   const dispatch = useDispatch();
   const { start } = useSelector(store => store.socket);
-  const { lyricScrollPosition, isEditingLyric } = useSelector(store => store.app);
+  const { isEditingLyric } = useSelector(store => store.app);
 
   const [ready, setReady] = useState(false);
   const [loaderMounted, setLoaderMounted] = useState(true);
   const [lyrics, setLyrics] = useState('');
   const [synced, setSynced] = useState(false);
 
-  const lyricsRef = useRef();
   const textareaRef = useRef();
 
   useEffect(() => {
@@ -33,14 +32,6 @@ function Lyrics() {
         setReady(true);
       });
   }, [start]);
-
-  useEffect(() => {
-    if (lyricsRef.current && !synced && lyrics && ready) {
-      lyricsRef.current.scrollTop = lyricScrollPosition;
-    }
-  // intentional, lyricScroll should not invoke this hook
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, lyrics]);
 
   function handleLyricsKeydown(e) {
     if (e.target.tagName === "TEXTAREA") {
@@ -103,7 +94,7 @@ function Lyrics() {
       { isEditingLyric ? (
         <LyricEditor saveLyrics={saveLyrics} lyrics={lyrics} textareaRef={textareaRef}/>
       ) : (
-        <LyricsBody {... { lyrics, start, synced, lyricsRef, createLyrics }}/>
+        <LyricsBody {... { lyrics, start, synced, createLyrics }}/>
       )}
     </div>
   );
