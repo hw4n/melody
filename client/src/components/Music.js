@@ -28,7 +28,7 @@ function Music(props) {
   }
 
   return (
-    <div className="music" key={music.id} id={music.id} onDoubleClick={handleDoubleClick}>
+    <div className="music" id={music.id} onDoubleClick={handleDoubleClick}>
       <div className="titleAndArtist">
         <div className="title">{music.title}</div>
         <div className="artist">{music.artist}</div>
