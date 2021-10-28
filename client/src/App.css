@@ -273,7 +273,7 @@ footer:focus {
   justify-content: flex-end;
   width: 30%;
   display: grid;
-  grid-template-columns: 70px 70px 140px 70px;
+  grid-template-columns: 70px 70px 140px 70px 70px;
   /* display: flex; */
   /* align-items: center; */
   /* justify-content: space-evenly; */
@@ -452,7 +452,7 @@ how to remove the virtical space around the range input in IE*/
   }
 
   .controller {
-    grid-template-columns: repeat(3, 75px);
+    grid-template-columns: repeat(4, 70px);
   }
 
   .volumeControlWrap {
@@ -480,7 +480,7 @@ how to remove the virtical space around the range input in IE*/
   }
 
   .controller {
-    grid-template-columns: repeat(2, 75px);
+    grid-template-columns: repeat(3, 70px);
   }
 
   .totalUsersWrap {

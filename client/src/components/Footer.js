@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { faPlay, faPause, faVolumeDown, faVolumeMute, faMicrophone, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faPause, faVolumeDown, faVolumeMute, faMicrophone, faUsers, faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from 'react-redux';
 import ProgressBar from "./ProgressBar";
@@ -130,6 +130,9 @@ function Footer() {
             <FontAwesomeIcon icon={faUsers}/>
             <div class="total_users">{totalUsers}</div>
           </div>
+          <button>
+            <FontAwesomeIcon icon={faCog} size="lg"/>
+          </button>
         </div>
       </div>
     </footer>
