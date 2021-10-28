@@ -10,6 +10,8 @@ const APP_SET_LYRIC_EDITING = "APP/SET_LYRIC_EDITING";
 const APP_TOGGLE_LYRIC_EDITING = "APP/TOGGLE_LYRIC_EDITING";
 const APP_TOGGLE_MUTED = "APP/TOGGLE_MUTED";
 const APP_SET_VOLUME = "APP/SET_VOLUME";
+const APP_TOGGLE_SETTING_MODE = "APP/TOGGLE_SETTING_MODE";
+const APP_TOGGLE_LIGHT_THEME = "APP/TOGGLE_LIGHT_THEME";
 
 const INIT_STATE = {
   isPlaying: false,
@@ -20,6 +22,8 @@ const INIT_STATE = {
   lyricScrollPosition: 0,
   isEditingLyric: false,
   volume: 0.5,
+  isSettingMode: false,
+  isLightTheme: false,
 }
 
 loadState(INIT_STATE);
@@ -66,6 +70,14 @@ export default function reducer(state = INIT_STATE, action) {
 
     case APP_TOGGLE_MUTED:
       newState.isMuted = !state.isMuted;
+      break;
+    
+    case APP_TOGGLE_SETTING_MODE:
+      newState.isSettingMode = !state.isSettingMode;
+      break;
+
+    case APP_TOGGLE_LIGHT_THEME:
+      newState.isLightTheme = !state.isLightTheme;
       break;
     
     default:
