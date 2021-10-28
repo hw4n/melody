@@ -57,18 +57,8 @@ html, body {
   animation: insertion .4s;
 }
 
-.insertAnimation,
-.musicList .playing .music,
-.musicList .priority .music:last-child {
-  animation: insertion .4s;
-}
-
 .takeout {
-  animation: insertion .4s reverse;
-}
-
-.noAnimation .music {
-  animation: none;
+  animation: extraction .4s;
 }
 
 @keyframes insertion {
@@ -79,6 +69,23 @@ html, body {
   to {
     margin-left: 0;
     opacity: 1;
+  }
+}
+
+/* instead of using insertion keyframes above,
+my solution was toggling another new animation
+
+also <Music key={music.id} .../> works EXACTLY as I wanted;
+it does not re-render musics below the queuing music.
+however it still warns about 'i need keys for lists' thing */
+@keyframes extraction {
+  from {
+    margin-left: 0;
+    opacity: 1;
+  }
+  to {
+    margin-left: -3em;
+    opacity: 0;
   }
 }
 

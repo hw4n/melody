@@ -32,7 +32,7 @@ function App() {
     <div className="App" data-theme={isLightTheme ? "light" : ""}>
       <Router>
         { loaderMounted ? (
-          <Loader ready={queue.length ? true : playing} unmounter={setLoaderMounted}/>
+          <Loader transparent={true} ready={queue.length ? true : playing} unmounter={setLoaderMounted}/>
         ) : <></> }
         <Flash/>
         {/* there must be a better way of doing this */}

@@ -14,10 +14,13 @@ function Music(props) {
     ) {
       return;
     }
-    e.target.closest('.music').classList.add('takeout');
+    // apply takeout, remove it after animation
+    e.target.closest('.music').classList.toggle('takeout');
     const musicId = e.target.closest('.music').id;
+    // wait for animation to be completed
     setTimeout(() => {
       requestQueueing(musicId);
+      e.target.closest('.music').classList.toggle('takeout');
     }, 400);
   }
 
