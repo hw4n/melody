@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from 'react-redux';
 import ProgressBar from "./ProgressBar";
 import { isMobileDevice } from "../helper/check";
+import { mode } from '../helper/app';
 
 function Footer() {
   const dispatch = useDispatch();
@@ -15,10 +16,9 @@ function Footer() {
   } = useSelector(store => store.socket);
   const {
     isPlaying,
-    isLyricMode,
+    currentMode,
     isMuted,
     volume,
-    isSettingMode,
   } = useSelector(store => store.app);
 
   const audioRef = useRef();
@@ -100,17 +100,9 @@ function Footer() {
           </button>
           {/* lyric button */}
           <button onClick={() => {
-            // disable setting mode before setting lyricmode
-            // should change mode things to enums but for now...
-            if (isSettingMode) {
-              dispatch({type: "APP/TOGGLE_SETTING_MODE"});
-              setTimeout(() => {
-                dispatch({type: "APP/SET_LYRIC_MODE", setTo: true});
-              }, 100);
-              return
-            }
-            dispatch({type: "APP/TOGGLE_LYRIC_MODE", isLyricMode: !isLyricMode});
-            }} class={isLyricMode ? "active" : ""}>
+            const nextMode = (currentMode === mode.lyric) ? mode.default : mode.lyric;
+            dispatch({type: "APP/SET_CURRENT_MODE", setTo: nextMode});
+          }} class={currentMode === mode.lyric ? "active" : ""}>
             <FontAwesomeIcon icon={faMicrophone} size="lg"/>
           </button>
           {/* mute button and volume range input */}
@@ -141,11 +133,9 @@ function Footer() {
             <div class="total_users">{totalUsers}</div>
           </div>
           <button onClick={() => {
-            if (isLyricMode) {
-              dispatch({type: "APP/SET_LYRIC_MODE", setTo: false});
-            }
-            dispatch({type: "APP/TOGGLE_SETTING_MODE"});
-          }} className={isSettingMode ? "active" : ""}>
+            const nextMode = (currentMode === mode.setting) ? mode.default : mode.setting;
+            dispatch({type: "APP/SET_CURRENT_MODE", setTo: nextMode});
+          }} className={currentMode === mode.setting ? "active" : ""}>
             <FontAwesomeIcon icon={faCog} size="lg"/>
           </button>
         </div>
