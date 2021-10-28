@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { faPlay, faPause, faVolumeDown, faVolumeMute, faMicrophone, faUsers, faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,7 +32,7 @@ function Footer() {
       volumeRef.current.value = -volume;
       dispatch({type: "APP/SET_VOLUME", volume: -volume});
     }
-  }, [isMuted, volume]);
+  }, [dispatch, isMuted, volume]);
 
   useEffect(() => {
     if (volume <= 0) {
