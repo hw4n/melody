@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSelector } from 'react-redux';
-import { filterMusicArrayByKeyword, sortMusicsAsc, sortMusicsDesc, totalRuntime } from '../helper/music';
+import { filterMusicArrayByKeyword } from '../helper/music';
 import Music from './Music';
 
 function MusicList(props) {
   const { isSearching, searchingKeyword } = useSelector(store => store.app);
-  const { listTitle, customClassName, musicArray: originalMusicArray, message } = props;
-  
-  const [titleSort, setTitleSort] = useState(0);
+  const { customClassName, musicArray: originalMusicArray } = props;
+
   const [musicArray, setMusicArray] = useState([]);
   const [filteredMusicArray, setFilteredMusicArray] = useState([]);
 
@@ -28,23 +27,6 @@ function MusicList(props) {
     // filter by keyword and set filtered array
     setFilteredMusicArray(filterMusicArrayByKeyword(originalMusicArray, searchingKeyword));
   }, [isSearching, originalMusicArray, searchingKeyword]);
-
-  // in what order the musicArray should be displayed?
-  useEffect(() => {
-    if (titleSort === 0) {
-      // set arrays back to originals
-      setMusicArray(originalMusicArray);
-      if (isSearching && searchingKeyword) {
-        setFilteredMusicArray(filterMusicArrayByKeyword(originalMusicArray, searchingKeyword));
-      }
-    } else if (titleSort === 1) {
-      setMusicArray(sortMusicsAsc);
-      setFilteredMusicArray(sortMusicsAsc);
-    } else {
-      setMusicArray(sortMusicsDesc);
-      setFilteredMusicArray(sortMusicsDesc);
-    }
-  }, [isSearching, originalMusicArray, searchingKeyword, titleSort]);
 
   if (originalMusicArray.length === 0 || (isSearching && filteredMusicArray.length === 0)) {
     return <></>

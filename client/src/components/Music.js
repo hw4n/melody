@@ -1,6 +1,4 @@
 import React from 'react'
-import { faCheck, faSync, faTimes } from '@fortawesome/free-solid-svg-icons';
-import ConditionalIcon from './ConditionalIcon';
 import { requestQueueing } from '../helper/socket';
 import { setSearch } from '../helper/app';
 import { secondsToTimestring } from '../helper/format';
