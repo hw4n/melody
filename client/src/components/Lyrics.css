@@ -75,9 +75,10 @@
 
 .lyricsEditor {
   resize: none;
-  height: 100%;
+  height: calc(100vh - 75px);
   padding: 10px;
   font-size: 1.1rem;
+  font-family: var(--main-font);
   background-color: var(--primary-text-color);
 }
 
