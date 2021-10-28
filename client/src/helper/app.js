@@ -65,6 +65,7 @@ export function setKeydownListeners(document) {
         e.target.tagName === "TEXTAREA") {
       return;
     }
+    const { currentMode } = store.getState().app;
     switch (e.key) {
       case " ":
         e.preventDefault();
@@ -76,10 +77,16 @@ export function setKeydownListeners(document) {
         break;
       case "l":
       case "L":
-        store.dispatch({type: "APP/TOGGLE_LYRIC_MODE"});
+        store.dispatch({
+          type: "APP/SET_CURRENT_MODE",
+          setTo: currentMode === mode.lyric ? mode.default : mode.lyric
+        });
         break;
       case "Escape":
-        store.dispatch({type: "APP/SET_LYRIC_MODE", setTo: false});
+        store.dispatch({
+          type: "APP/SET_CURRENT_MODE",
+          setTo: mode.default
+        });
         break;
       default:
         break;
@@ -92,4 +99,10 @@ export function setUnloadEvent() {
   window.onbeforeunload = () => {
     socket.disconnect(true);
   };
+}
+
+export const mode = {
+  'default': 0,
+  'lyric': 1,
+  'setting': 2,
 }
