@@ -74,15 +74,14 @@ function LyricsBody(props) {
         </animated.div>
       </div>
     ) : (
-      <div
+      <pre
         class="lyrics"
         ref={lyricsRef}
         onScroll={(e) => {
           const position = e.target.scrollTop;
           dispatch({type: "APP/SET_LYRIC_SCROLL_POSITION", position});
         }}
-        dangerouslySetInnerHTML={{__html: createLyrics(lyrics)}}
-      />
+      >{lyrics ? createLyrics(lyrics) : "No lyrics yet, add the lyrics!"}</pre>
     )
   )
 }
