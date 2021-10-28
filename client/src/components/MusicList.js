@@ -52,20 +52,7 @@ function MusicList(props) {
 
   return (
     <div className="musicList">
-      <div className="songListHeader divider">
-      {isSearching ? (
-        <>
-          <h3><span className="searching">search result </span>{listTitle}</h3>
-          <h3 className="searching">{filteredMusicArray.length} found</h3>
-        </>
-      ): (
-        <>
-          <h3>{listTitle}</h3>
-          <h3>{totalRuntime(musicArray)}</h3>
-        </>
-      )}
-      </div>
-      <div className="columnIndicator divider">
+      <div className="columnIndicator">
         <div className="number">#</div>
         <div className="title">title</div>
         <div className="album">album</div>
