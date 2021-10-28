@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux';
 import { useSpring, animated } from 'react-spring';
 import { hmsToSecond } from '../helper/format';
 
 function LyricsBody(props) {
-  const dispatch = useDispatch();
-  const { lyrics, start, synced, lyricsRef, createLyrics } = props;
+  const { lyrics, start, synced, createLyrics } = props;
 
   const [lyricTimeout, setLyricTimeout] = useState([]);
   const [lyricBlock, setLyricBlock] = useState("");
@@ -74,14 +72,9 @@ function LyricsBody(props) {
         </animated.div>
       </div>
     ) : (
-      <pre
-        class="lyrics"
-        ref={lyricsRef}
-        onScroll={(e) => {
-          const position = e.target.scrollTop;
-          dispatch({type: "APP/SET_LYRIC_SCROLL_POSITION", position});
-        }}
-      >{lyrics ? createLyrics(lyrics) : "No lyrics yet, add the lyrics!"}</pre>
+      <pre class="lyrics">
+        {lyrics ? createLyrics(lyrics) : "No lyrics yet, add the lyrics!"}
+      </pre>
     )
   )
 }
