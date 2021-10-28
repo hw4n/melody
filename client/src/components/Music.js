@@ -10,11 +10,17 @@ function Music(props) {
 
   // enqueue double-clicked music with id
   function handleDoubleClick(e) {
-    if (e.target.classList.contains("clickable")) {
+    if (e.target.classList.contains("clickable")
+    // if clicked music is not in 'queuable' array
+    || !e.target.closest('.music').parentNode.classList.contains('queue')
+    ) {
       return;
     }
+    e.target.closest('.music').classList.add('takeout');
     const musicId = e.target.closest('.music').id;
-    requestQueueing(musicId);
+    setTimeout(() => {
+      requestQueueing(musicId);
+    }, 400);
   }
 
   // start searching with clicked value
