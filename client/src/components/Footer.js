@@ -100,6 +100,15 @@ function Footer() {
           </button>
           {/* lyric button */}
           <button onClick={() => {
+            // disable setting mode before setting lyricmode
+            // should change mode things to enums but for now...
+            if (isSettingMode) {
+              dispatch({type: "APP/TOGGLE_SETTING_MODE"});
+              setTimeout(() => {
+                dispatch({type: "APP/SET_LYRIC_MODE", setTo: true});
+              }, 100);
+              return
+            }
             dispatch({type: "APP/TOGGLE_LYRIC_MODE", isLyricMode: !isLyricMode});
             }} class={isLyricMode ? "active" : ""}>
             <FontAwesomeIcon icon={faMicrophone} size="lg"/>
@@ -132,7 +141,9 @@ function Footer() {
             <div class="total_users">{totalUsers}</div>
           </div>
           <button onClick={() => {
-            dispatch({type: "APP/SET_LYRIC_MODE", setTo: false});
+            if (isLyricMode) {
+              dispatch({type: "APP/SET_LYRIC_MODE", setTo: false});
+            }
             dispatch({type: "APP/TOGGLE_SETTING_MODE"});
           }} className={isSettingMode ? "active" : ""}>
             <FontAwesomeIcon icon={faCog} size="lg"/>
