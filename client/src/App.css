@@ -45,7 +45,7 @@ html, body {
 
 .container {
   counter-reset: music-counter;
-  padding: 0 2em;
+  padding: 2em;
   padding-bottom: calc(2rem + 50px);
 }
 
@@ -104,6 +104,7 @@ html, body {
   flex-direction: column;
   justify-content: center;
   padding-right: .5em;
+  overflow: hidden;
 }
 
 .music .artist {
@@ -165,7 +166,7 @@ html, body {
   height: 40px;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px;
+  padding: 0 1em;
   color: var(--secondary-text-color);
   border-radius: 3px;
 }
@@ -175,7 +176,7 @@ html, body {
   flex-grow: 1;
   background-color: transparent;
   border: none;
-  padding: 10px 10px;
+  padding: 1em;
   color: var(--primary-text-color);
 }
 
@@ -221,7 +222,7 @@ html, body {
 }
 
 .musicList {
-  padding: 2em 0;
+  padding: 1em 0;
 }
 
 .playing,
@@ -252,7 +253,7 @@ footer:focus {
 }
 
 .currentMusic {
-  width: 70%;
+  width: 50%;
   height: 70px;
   display: flex;
 }
@@ -269,9 +270,14 @@ footer:focus {
   overflow: hidden;
 }
 
+.music .title,
+.music .artist,
 .currentTitle,
 .currentArtist {
   width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .currentTitle {
@@ -284,9 +290,11 @@ footer:focus {
   font-size: 75%;
 }
 
+/* actually i need better controller that works with any screen size */
+/* maybe collapse every button to single button which expands buttons upward */
 .controller {
+  /* min-width: 210px; */
   justify-content: flex-end;
-  width: 30%;
   display: grid;
   grid-template-columns: 70px 70px 140px 70px 70px;
   /* display: flex; */
@@ -477,17 +485,12 @@ how to remove the virtical space around the range input in IE*/
 
 @media screen and (max-width: 768px) {
   .container {
-    padding: 0 .75em;
+    padding: .75em;
   }
 
   .columnIndicator .duration,
   .music .duration {
     display: none;
-  }
-
-  .musicList,
-  .search {
-    margin: 1.25em 0;
   }
 
   .currentMusicText {
