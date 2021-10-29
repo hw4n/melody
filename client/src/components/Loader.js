@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Loader.css';
 
 function Loader(props) {
   const { ready, unmounter } = props;
   const [ hide, setHide ] = useState(false);
 
-  if (ready) {
-    setTimeout(() => {
-      setHide(true);
-    }, 1000);
-  }
+  useEffect(() => {
+    // hide the loader after 100ms after ready
+    if (ready) {
+      setTimeout(() => {
+        setHide(true);
+      }, 100);
+    }
+  }, [ready]);
 
   if (hide) {
     setTimeout(() => {
