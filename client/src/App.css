@@ -518,6 +518,10 @@ how to remove the virtical space around the range input in IE*/
   .volumeControlWrap {
     display: none;
   }
+
+  div.lyricsHeaderRight button {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -540,5 +544,11 @@ how to remove the virtical space around the range input in IE*/
 
   .totalUsersWrap {
     display: none;
+  }
+
+  .lyricsHeaderWrap .lyricsHeaderMiddle,
+  pre.lyrics,
+  .lyrics.dynamic .focused.lyrics {
+    font-size: 3vw;
   }
 }
