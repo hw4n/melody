@@ -1,4 +1,5 @@
-import { basename } from 'path';
+import path, { basename } from 'path';
+import fs from 'fs';
 
 import Global from '../interfaces/Global';
 import { shuffleGlobalMusic, playMusic } from '../services/music';
@@ -11,9 +12,6 @@ import { sameMusicHasLyrics } from '../services/db';
 
 initReadline();
 
-const fs = require('fs');
-const { resolve: pathResolve } = require('path');
-const { promisify } = require('util');
 const { ffprobe } = require('@dropb/ffprobe');
 require('dotenv').config();
 
@@ -165,17 +163,23 @@ async function startPlaying() {
   return playMusic().then(() => Promise.resolve());
 }
 
-const readdir = promisify(fs.readdir);
-const stat = promisify(fs.stat);
-
 // scan directory for mp3 files
-async function getFiles(dir) {
-  const subdirs: [string] = await readdir(dir);
+async function scanMp3(dir: string) {
+  // get sub directories and files in the directory
+  const subdirs = fs.readdirSync(dir);
   const files = await Promise.all(subdirs.map(async (subdir) => {
-    const res = pathResolve(dir, subdir);
-    return (await stat(res)).isDirectory() ? getFiles(res) : res;
+    // get an absolute path to the sub directory or file
+    const absolutePath = path.resolve(dir, subdir);
+    const stat = fs.statSync(absolutePath);
+    // if it was a directory, recurse
+    return stat.isDirectory() ? scanMp3(absolutePath) : absolutePath;
   }));
-  return files.reduce((a, f) => a.concat(f), []).filter((f) => f.endsWith('.mp3'));
+  // merge all the files together in one array,
+  // filter non-mp3 files and return
+  return (files
+    .reduce((a: Array<string>, f: string) => a.concat(f), [])
+    .filter((file: string) => path.extname(file) === '.mp3')
+  );
 }
 
 async function firstInit() {
@@ -194,7 +198,7 @@ export default async function initMusic() {
   if (!global.PLAYING_START) {
     await firstInit();
   }
-  const mp3 = await getFiles(mp3Directory);
+  const mp3 = await scanMp3(mp3Directory);
   await loadMusicFiles(mp3);
   await startPlaying();
   initializeSocket();
