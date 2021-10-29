@@ -60,75 +60,43 @@ svg {
   100% {}
 }
 
-/* here i really don't know correct answer */
-/* it might be better to use inline styling */
 path#main_star {
   animation: animatePath -.9s linear 1s infinite alternate;
-}
-.complete #main_star {
-  animation: animatePath -.9s linear 1s forwards alternate;
 }
 
 path#line_1 {
   animation: animatePath -.8s linear 1s infinite alternate,
              animateLine -1s linear 1s infinite alternate;
 }
-.complete #line_1 {
-  animation: animatePath -.8s linear 1s forwards alternate,
-             animateLine -1s linear 1s forwards alternate;
-}
 
 path#line_2 {
   animation: animatePath -.7s linear 1s infinite alternate,
              animateLine -.7s linear 1s infinite alternate;
-}
-.complete #line_2 {
-  animation: animatePath -.7s linear 1s forwards alternate,
-             animateLine -.7s linear 1s forwards alternate;
 }
 
 path#line_3 {
   animation: animatePath -.6s linear 1s infinite alternate,
              animateLine -.4s linear 1s infinite alternate;
 }
-.complete #line_3 {
-  animation: animatePath -.6s linear 1s forwards alternate,
-             animateLine -.4s linear 1s forwards alternate;
-}
 
 path#note_like_thing {
   animation: animatePath -.5s linear 1s infinite alternate;
-}
-.complete #note_like_thing {
-  animation: animatePath -.5s linear 1s forwards alternate;
 }
 
 path#note_1 {
   animation: animatePath -.4s linear 1s infinite alternate;
 }
-.complete #note_1 {
-  animation: animatePath -.3s linear 1s forwards alternate;
-}
 
 path#note_2 {
   animation: animatePath -.3s linear 1s infinite alternate;
-}
-.complete #note_2 {
-  animation: animatePath -.3s linear 1s forwards alternate;
 }
 
 path#note_3 {
   animation: animatePath -.2s linear 1s infinite alternate;
 }
-.complete #note_3 {
-  animation: animatePath -.2s linear 1s forwards alternate;
-}
 
 #note_4 {
   animation: animatePath -.1s linear 1s infinite alternate;
-}
-.complete #note_4 {
-  animation: animatePath -.1s linear 1s forwards alternate;
 }
 
 @keyframes animateFadeOut {
