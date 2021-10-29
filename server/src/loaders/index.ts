@@ -15,6 +15,7 @@ const fs = require('fs');
 const { resolve: pathResolve } = require('path');
 const { promisify } = require('util');
 const { ffprobe } = require('@dropb/ffprobe');
+require('dotenv').config();
 
 const mp3Directory = './mp3';
 
@@ -167,6 +168,7 @@ async function startPlaying() {
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
 
+// scan directory for mp3 files
 async function getFiles(dir) {
   const subdirs: [string] = await readdir(dir);
   const files = await Promise.all(subdirs.map(async (subdir) => {
@@ -180,18 +182,20 @@ async function firstInit() {
   await kuroshiro.init(new KuromojiAnalyzer());
 }
 
-exports.initMusic = () => {
+export default async function initMusic() {
+  // directory storing mp3 files should present in the root directory
   if (!fs.existsSync(mp3Directory)) {
     fs.mkdirSync('./mp3');
     logRed('No music directory! Please put mp3 files in the directory : ./mp3');
     process.exit(-1);
   }
 
+  // initializing for the first time -> kuroshiro must be initialized before anything else
   if (!global.PLAYING_START) {
-    firstInit().then(() => {
-      getFiles(mp3Directory).then(loadMusicFiles).then(startPlaying).then(initializeSocket);
-    });
-  } else {
-    getFiles(mp3Directory).then(loadMusicFiles).then(startPlaying).then(initializeSocket);
+    await firstInit();
   }
-};
+  const mp3 = await getFiles(mp3Directory);
+  await loadMusicFiles(mp3);
+  await startPlaying();
+  initializeSocket();
+}

@@ -1,9 +1,9 @@
 import Global from '../interfaces/Global';
 import { logWhite, logYellow } from '../loaders/logger';
 import { playMusic } from './music';
+import initMusic from '../loaders';
 
 const readline = require('readline');
-const loader = require('../loaders');
 
 declare let global: Global;
 
@@ -23,7 +23,7 @@ export default function initReadline() {
     if (command === 'reload') {
       logYellow('--- RELOADING MUSICS ---');
       clearTimeout(global.NEXT_TIMEOUT);
-      loader.initMusic();
+      initMusic();
     }
   });
   logWhite('Initialized readline and waiting for command');

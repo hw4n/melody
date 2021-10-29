@@ -1,4 +1,5 @@
 import { logWhite } from './loaders/logger';
+import initMusic from './loaders';
 
 require('dotenv').config();
 
@@ -18,7 +19,6 @@ const path = require('path');
 global.SOCKET = io;
 
 const apiRoutes = require('./api');
-const loader = require('./loaders');
 
 const { PORT, STAGE } = process.env;
 app.use('/api', apiRoutes);
@@ -33,4 +33,4 @@ server.listen(PORT, () => {
   logWhite(`Server listening at port ${PORT}`);
 });
 
-loader.initMusic();
+initMusic();
