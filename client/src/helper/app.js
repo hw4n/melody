@@ -106,3 +106,9 @@ export const mode = {
   'lyric': 1,
   'setting': 2,
 }
+
+// start searching with clicked value
+export function handleKeywordClick(e) {
+  const keyword = e.currentTarget.innerText;
+  setSearch(keyword);
+}

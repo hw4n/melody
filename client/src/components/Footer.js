@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from 'react-redux';
 import ProgressBar from "./ProgressBar";
 import { isMobileDevice } from "../helper/check";
-import { mode } from '../helper/app';
+import { handleKeywordClick, mode } from '../helper/app';
 
 function Footer() {
   const dispatch = useDispatch();
@@ -80,7 +80,11 @@ function Footer() {
               <img className="coverArt" src={`/96.png?${start}`} alt="album cover artwork"/>
               <div className="currentMusicText">
                 <div className="currentTitle">{playing.title}</div>
-                <div className="currentArtist">{playing.artist}</div>
+                <div className="currentArtist">
+                  <span className="clickable" onClick={handleKeywordClick}>
+                    {playing.artist}
+                  </span>
+                </div>
               </div>
             </>
           ) : (

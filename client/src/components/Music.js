@@ -1,6 +1,6 @@
 import React from 'react'
 import { requestQueueing } from '../helper/socket';
-import { setSearch } from '../helper/app';
+import { handleKeywordClick, setSearch } from '../helper/app';
 import { secondsToTimestring } from '../helper/format';
 
 function Music(props) {
@@ -22,12 +22,6 @@ function Music(props) {
       requestQueueing(musicId);
       e.target.closest('.music').classList.toggle('takeout');
     }, 400);
-  }
-
-  // start searching with clicked value
-  function handleKeywordClick(e) {
-    const keyword = e.currentTarget.innerText;
-    setSearch(keyword);
   }
 
   return (

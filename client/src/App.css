@@ -240,7 +240,7 @@ however it still warns about 'i need keys for lists' thing */
   background-color: var(--secondary-darker-color);
 }
 
-.music .clickable:hover {
+.clickable:hover {
   cursor: pointer;
   text-decoration: underline;
 }
