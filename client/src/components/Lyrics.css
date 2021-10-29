@@ -50,7 +50,6 @@
 }
 
 .lyrics {
-  font-family: var(--main-font);
   color: var(--primary-text-color);
   font-size: 1.5rem;
   user-select: text;
@@ -80,7 +79,6 @@
   height: calc(100vh - 75px);
   padding: 10px;
   font-size: 1.1rem;
-  font-family: var(--main-font);
   /* editor should be consistent i guess */
   color: black;
   background-color: white;
