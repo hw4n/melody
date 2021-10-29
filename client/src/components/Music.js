@@ -34,7 +34,7 @@ function Music(props) {
     <div className="music" id={music.id} onDoubleClick={handleDoubleClick}>
       <div className="titleAndArtist">
         <div className="title">{music.title}</div>
-        <div className="artist">{music.artist}</div>
+        <div className="artist clickable" onClick={handleKeywordClick}>{music.artist}</div>
       </div>
       <div className="album">
         <span className="clickable" onClick={handleKeywordClick}>{music.album}</span>
