@@ -139,6 +139,18 @@ however it still warns about 'i need keys for lists' thing */
   display: flex;
   padding-bottom: .3em;
   border-bottom: 1px solid var(--secondary-background-color);
+  animation: insertion-top .4s;
+}
+
+@keyframes insertion-top {
+  from {
+    margin-top: -3em;
+    opacity: 0;
+  }
+  to {
+    margin-top: 0;
+    opacity: 1;
+  }
 }
 
 .columnIndicator div {
@@ -177,6 +189,7 @@ however it still warns about 'i need keys for lists' thing */
   padding: 0 1em;
   color: var(--secondary-text-color);
   border-radius: 3px;
+  animation: insertion-top .4s;
 }
 
 .search input {
@@ -248,6 +261,19 @@ footer {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  animation: insertion-bottom .4s;
+}
+
+@keyframes insertion-bottom {
+  from {
+    margin-bottom: -3em;
+    opacity: 0;
+  }
+  to {
+    margin-bottom: 0;
+    opacity: 1;
+  }
 }
 
 footer:focus {
