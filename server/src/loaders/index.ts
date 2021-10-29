@@ -86,70 +86,61 @@ async function insertMusics(musics: Array<IMusic>) {
 }
 
 async function processDbLocalDiff(filePathArray: Array<String>) {
-  return new Promise<Array<String>>((resolve) => {
-    dbMusic.find({}).then((dbMusics) => {
-      logWhite(`${dbMusics.length} / ${filePathArray.length} music found from DB / local files`);
+  // we need to find every music in the db
+  const dbMusics = await dbMusic.find({});
 
-      const dbSet = new Set(dbMusics.map((music) => music.filepath));
-      const localSet = new Set(filePathArray);
-      const dbOnly = diff(dbSet, localSet);
-      const localOnly = diff(localSet, dbSet);
+  // find out difference between paths from db and local
+  // before invoking diff, we need to convert arrays to sets
+  const dbSet = new Set(dbMusics.map((music) => music.filepath));
+  const localSet = new Set(filePathArray);
+  const dbOnly = diff(dbSet, localSet);
+  const localOnly = diff(localSet, dbSet);
 
-      logWhite(`${dbOnly.length} / ${localOnly.length} music only available in DB / local files`);
+  // add every music that does not exist in the db
+  const newMusics = await analyzeMusics(localOnly);
+  const inserted = await insertMusics(newMusics);
 
-      analyzeMusics(localOnly).then(insertMusics).then(() => {
-        resolve(dbOnly);
-      });
-    });
-  });
-}
+  // exclude every music that is not available locally
+  // dbMusics + inserted = all musics in db
+  // so, we can concat dbMusics and inserted to get all musics without querying db again
+  const allMusics = dbMusics.concat(inserted);
 
-async function findEveryMusicAndFilter(pathsToExclude: Array<String>): Promise<IMusic[]> {
-  return dbMusic.find({})
-    .then((musics) => {
-      logWhite('Excluding musics from DB that does not exist locally');
-      return Promise.resolve(musics.filter((music) => !pathsToExclude.includes(music.filepath)));
-    });
+  // allMusics - dbOnly = locally available musics
+  // thus, we can filter out all musics that are not available locally
+  const locallyAvailableMusics = allMusics.filter((music) => !dbOnly.includes(music.filepath));
+
+  // finally, return locally available musics
+  return locallyAvailableMusics;
 }
 
 async function applyLyricsIfPresentInDB(musics: Array<IMusic>) {
-  await Promise.all(
-    musics.map(async (music) => {
-      // skip when lyrics are already available
-      if (music.lyrics) {
-        return music;
-      }
-      const [foundLyric, lyricData] = await sameMusicHasLyrics(music);
-      if (foundLyric) {
-        dbMusic.findByIdAndUpdate({ _id: music.id }, lyricData)
-          .then((updatedMusic) => {
-            logGreen(`Applied lyrics to ${music.title} (${music.id} -> ${updatedMusic.id})`);
-          });
-      }
-      return music;
-    }),
-  );
-  return musics;
+  musics.forEach(async (music) => {
+    const [availabe, lyricData] = await sameMusicHasLyrics(music);
+    // don't apply lyrics if not found or already has lyrics
+    if (!availabe || music.lyrics) return;
+    logGreen(`Applying lyrics to ${music.title} (${music.id})`);
+    dbMusic.findByIdAndUpdate(music.id, lyricData);
+  });
 }
 
+// filePathArray is an array of every mp3 file in the mp3 directory
 async function loadMusicFiles(filePathArray: Array<String>) {
+  // array is empty, which means there is no music in the directory
   if (filePathArray.length === 0) {
     logRed('No musics found! Please put mp3 files in the directory : ./mp3');
     process.exit(-1);
   }
 
-  return processDbLocalDiff(filePathArray)
-    .then(findEveryMusicAndFilter)
-    .then(applyLyricsIfPresentInDB)
-    .then((musics) => {
-      logWhite('Emptying global music object and queue array');
-      global.PLAYING = null;
-      global.QUEUE = [];
+  const locallyAvailableMusics = await processDbLocalDiff(filePathArray);
+  // no await here, because we don't need to wait for this to finish
+  applyLyricsIfPresentInDB(locallyAvailableMusics);
 
-      logWhite(`Refilling global music array with ${musics.length} music`);
-      global.MUSICS = musics;
-      return Promise.resolve();
-    });
+  logWhite('Emptying global music object and queue array');
+  global.PLAYING = null;
+  global.QUEUE = [];
+
+  logWhite(`Refilling global music array with ${locallyAvailableMusics.length} music`);
+  global.MUSICS = locallyAvailableMusics;
 }
 
 async function startPlaying() {
