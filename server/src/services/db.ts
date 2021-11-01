@@ -1,7 +1,7 @@
-import dbMusic, { IMusic } from '../models/Music';
+import dbMusic, { IStoredMusic } from '../models/Music';
 
 // eslint-disable-next-line max-len
-export async function sameMusicHasLyrics(music: IMusic): Promise<[boolean, { synced?: boolean | null, lyrics?: string | null}]> {
+export async function sameMusicHasLyrics(music: IStoredMusic): Promise<[boolean, { synced?: boolean | null, lyrics?: string | null}]> {
   const { duration, title, album } = music;
   return dbMusic.findOne({
     duration,

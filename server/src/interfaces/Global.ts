@@ -1,10 +1,10 @@
 import { Socket } from 'socket.io';
-import { IMusic } from '../models/Music';
+import { IStoredMusic } from '../models/Music';
 
 interface Global {
-  PLAYING: IMusic,
-  QUEUE: IMusic[],
-  MUSICS: IMusic[],
+  PLAYING: IStoredMusic,
+  QUEUE: IStoredMusic[],
+  MUSICS: IStoredMusic[],
   SOCKET: Socket,
   SOCKETS: string[],
   PLAYING_START: number,
