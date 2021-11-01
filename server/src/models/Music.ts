@@ -1,6 +1,7 @@
 import { model, Schema, Document } from 'mongoose';
 
-export interface IMusic extends Document {
+// primitive music interface
+export interface IMusic {
   duration: number;
   size: number;
   bitrate: number;
@@ -12,6 +13,10 @@ export interface IMusic extends Document {
     title?: string;
     artist?: string;
   };
+}
+
+// interface for the mongoose model
+export interface IStoredMusic extends IMusic, Document {
   lyrics?: string;
   synced?: boolean;
 }
@@ -61,4 +66,4 @@ const musicSchema: Schema = new Schema({
   },
 });
 
-export default model<IMusic>('Music', musicSchema);
+export default model<IStoredMusic>('Music', musicSchema);

@@ -1,6 +1,6 @@
 import getCoverArt from './cover';
 import Global from '../interfaces/Global';
-import { IMusic } from '../models/Music';
+import { IStoredMusic } from '../models/Music';
 
 declare let global: Global;
 
@@ -26,13 +26,13 @@ function fetchMusic() {
   };
 }
 
-function pushCurrentMusicAndPlay(music: IMusic) {
+function pushCurrentMusicAndPlay(music: IStoredMusic) {
   global.MUSICS.push(music);
   // eslint-disable-next-line no-use-before-define
   playMusic();
 }
 
-function setNextMusicTimeout(music: IMusic, ms: number): ReturnType<typeof setTimeout> {
+function setNextMusicTimeout(music: IStoredMusic, ms: number): ReturnType<typeof setTimeout> {
   return setTimeout(pushCurrentMusicAndPlay, ms, music);
 }
 

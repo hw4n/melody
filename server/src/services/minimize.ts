@@ -1,6 +1,6 @@
-import { IMusic } from '../models/Music';
+import { IStoredMusic } from '../models/Music';
 
-export function minimizeMusicObject(music: IMusic) {
+export function minimizeMusicObject(music: IStoredMusic) {
   const {
     duration,
     title,
@@ -23,6 +23,6 @@ export function minimizeMusicObject(music: IMusic) {
   };
 }
 
-export function minimizeMusicArray(musicArray: Array<IMusic>) {
+export function minimizeMusicArray(musicArray: Array<IStoredMusic>) {
   return musicArray.map((music) => minimizeMusicObject(music));
 }

@@ -1,18 +1,18 @@
 import path, { basename } from 'path';
 import fs from 'fs';
+import { ffprobe } from '@dropb/ffprobe';
 
 import Global from '../interfaces/Global';
 import { shuffleGlobalMusic, playMusic } from '../services/music';
 import { initializeSocket } from '../services/socket';
 import { logGreen, logRed, logWhite } from './logger';
-import dbMusic, { IMusic } from '../models/Music';
+import dbMusic, { IMusic, IStoredMusic } from '../models/Music';
 import diff from '../services/diff';
 import initReadline from '../services/console';
 import { sameMusicHasLyrics } from '../services/db';
 
 initReadline();
 
-const { ffprobe } = require('@dropb/ffprobe');
 require('dotenv').config();
 
 const mp3Directory = './mp3';
@@ -42,47 +42,39 @@ async function toRomaji(japanese) {
   return result;
 }
 
-async function analyzeMusic(filepath): Promise<IMusic> {
-  return new Promise((resolve) => {
-    ffprobe(filepath).then((data) => {
-      const { duration, size, bit_rate: bitrate } = data.format;
-      const {
-        title = basename(filepath, 'mp3'),
-        album = '-',
-        artist = 'Various Artists',
-      } = data.format.tags;
-
-      Promise.all([toRomaji(title), toRomaji(artist)])
-        .then((romaji) => {
-          const music = {
-            duration,
-            size,
-            bitrate,
-            title,
-            album,
-            artist,
-            filepath,
-            romaji: {
-              title: '',
-              artist: '',
-            },
-          } as IMusic;
-          [music.romaji.title, music.romaji.artist] = romaji;
-          resolve(music);
-        });
-    });
-  });
+async function analyzeMusic(filepath: string): Promise<IMusic> {
+  const metadata = await ffprobe(filepath);
+  const { duration, size, bit_rate: bitrate } = metadata.format;
+  const {
+    // fallbacks when metadata is not available
+    title = basename(filepath, 'mp3'),
+    album = '-',
+    artist = 'Various Artists',
+  } = metadata.format.tags;
+  const romaji = {
+    title: await toRomaji(title),
+    artist: await toRomaji(artist),
+  };
+  return {
+    duration: Number(duration),
+    size: Number(size),
+    bitrate: Number(bitrate),
+    title,
+    album,
+    artist,
+    filepath,
+    romaji,
+  };
 }
 
 async function analyzeMusics(filepaths: Array<String>) {
-  return Promise.all(filepaths.map((filepath) => analyzeMusic(filepath)));
+  return Promise.all(filepaths.map(analyzeMusic));
 }
 
 async function insertMusics(musics: Array<IMusic>) {
-  return new Promise<Array<IMusic>>((resolve) => {
-    logWhite(`Inserting ${musics.length} music into DB`);
-    dbMusic.insertMany(musics).then(resolve);
-  });
+  logWhite(`Inserting ${musics.length} music into DB`);
+  const inserted = await dbMusic.insertMany(musics);
+  return inserted;
 }
 
 async function processDbLocalDiff(filePathArray: Array<String>) {
@@ -113,7 +105,7 @@ async function processDbLocalDiff(filePathArray: Array<String>) {
   return locallyAvailableMusics;
 }
 
-async function applyLyricsIfPresentInDB(musics: Array<IMusic>) {
+async function applyLyricsIfPresentInDB(musics: Array<IStoredMusic>) {
   musics.forEach(async (music) => {
     const [availabe, lyricData] = await sameMusicHasLyrics(music);
     // don't apply lyrics if not found or already has lyrics
