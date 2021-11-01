@@ -151,7 +151,7 @@ async function startPlaying() {
     logWhite('Created directory ./cover because it did not exist');
   }
 
-  return playMusic().then(() => Promise.resolve());
+  await playMusic();
 }
 
 // scan directory for mp3 files
