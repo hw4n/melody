@@ -10,6 +10,7 @@ import dbMusic, { IMusic, IStoredMusic } from '../models/Music';
 import diff from '../services/diff';
 import initReadline from '../services/console';
 import { sameMusicHasLyrics } from '../services/db';
+import { ensureDirectoryExists, ensureCoreDirectoryExists } from '../services/file';
 
 initReadline();
 
@@ -138,10 +139,7 @@ async function loadMusicFiles(filePathArray: Array<String>) {
 async function startPlaying() {
   shuffleGlobalMusic();
 
-  if (!fs.existsSync('./cover')) {
-    fs.mkdirSync('./cover');
-    logWhite('Created directory ./cover because it did not exist');
-  }
+  ensureDirectoryExists('./cover');
 
   await playMusic();
 }
@@ -171,11 +169,7 @@ async function firstInit() {
 
 export default async function initMusic() {
   // directory storing mp3 files should present in the root directory
-  if (!fs.existsSync(mp3Directory)) {
-    fs.mkdirSync('./mp3');
-    logRed('No music directory! Please put mp3 files in the directory : ./mp3');
-    process.exit(-1);
-  }
+  ensureCoreDirectoryExists(mp3Directory, 'Please put mp3 files in the directory');
 
   // initializing for the first time -> kuroshiro must be initialized before anything else
   if (!global.PLAYING_START) {
