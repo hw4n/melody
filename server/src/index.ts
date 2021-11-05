@@ -1,5 +1,8 @@
 import { logWhite } from './loaders/logger';
 import initMusic from './loaders';
+import Global from './interfaces/Global';
+
+declare let global: Global;
 
 require('dotenv').config();
 
