@@ -2,6 +2,9 @@ import { createReadStream } from 'fs';
 import dbMusic from '../models/Music';
 import { logGreen } from '../loaders/logger';
 import { broadcastLyricChange } from '../services/socket';
+import Global from '../interfaces/Global';
+
+declare let global: Global;
 
 const express = require('express');
 
