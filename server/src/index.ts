@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
+import dotenv from 'dotenv';
 
 import { logWhite } from './loaders/logger';
 import initMusic from './loaders';
@@ -10,7 +11,7 @@ import apiRoutes from './api';
 
 declare let global: Global;
 
-require('dotenv').config();
+dotenv.config();
 
 const app = express();
 app.use(express.json());

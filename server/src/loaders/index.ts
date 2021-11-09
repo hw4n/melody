@@ -1,6 +1,10 @@
 import path, { basename } from 'path';
 import fs from 'fs';
 import { ffprobe } from '@dropb/ffprobe';
+import Kuroshiro from 'kuroshiro';
+import KuromojiAnalyzer from 'kuroshiro-analyzer-kuromoji';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
 import Global from '../interfaces/Global';
 import { shuffleGlobalMusic, playMusic } from '../services/music';
@@ -14,7 +18,7 @@ import { ensureDirectoryExists, ensureCoreDirectoryExists } from '../services/fi
 
 initReadline();
 
-require('dotenv').config();
+dotenv.config();
 
 const mp3Directory = './mp3';
 
@@ -23,12 +27,7 @@ global.QUEUE = [];
 global.MUSICS = [];
 global.SOCKETS = [];
 
-const Kuroshiro = require('kuroshiro');
-const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
-
 const kuroshiro = new Kuroshiro();
-
-const mongoose = require('mongoose');
 
 mongoose.connect(process.env.DBURI, {
   useNewUrlParser: true,
