@@ -1,27 +1,28 @@
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import path from 'path';
+
 import { logWhite } from './loaders/logger';
 import initMusic from './loaders';
 import Global from './interfaces/Global';
+import apiRoutes from './api';
 
 declare let global: Global;
 
 require('dotenv').config();
 
-const express = require('express');
-
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
+const server = http.createServer(app);
+const io = new Server(server, {
   pingTimeout: 1000 * 60 * 5,
   pingInterval: 1000 * 10,
   cors: { origin: '*' },
 });
-const path = require('path');
 
 global.SOCKET = io;
-
-const apiRoutes = require('./api');
 
 const { PORT, STAGE } = process.env;
 app.use('/api', apiRoutes);

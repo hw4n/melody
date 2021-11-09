@@ -1,12 +1,12 @@
+import express from 'express';
 import { createReadStream } from 'fs';
+
 import dbMusic from '../models/Music';
 import { logGreen } from '../loaders/logger';
 import { broadcastLyricChange } from '../services/socket';
 import Global from '../interfaces/Global';
 
 declare let global: Global;
-
-const express = require('express');
 
 const router = express.Router();
 
@@ -78,4 +78,4 @@ router.post('/lyrics', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;
