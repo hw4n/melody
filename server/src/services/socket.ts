@@ -1,4 +1,4 @@
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 import { logCyan, logWhite } from '../loaders/logger';
 import { minimizeMusicObject, minimizeMusicArray } from './minimize';
@@ -10,7 +10,7 @@ function emitTotalUsers() {
   global.SOCKET.emit('total_users', global.SOCKETS.length);
 }
 
-export function emitInit(socket: Socket) {
+export function emitInit(socket: Socket | Server) {
   socket.emit('init', {
     priority: minimizeMusicArray(global.QUEUE),
     queue: minimizeMusicArray(global.MUSICS),
@@ -20,7 +20,7 @@ export function emitInit(socket: Socket) {
   });
 }
 
-export function addSocketListeners(io: Socket = global.SOCKET) {
+export function addSocketListeners(io: Server = global.SOCKET) {
   // To prevent adding listeners more than once
   io.removeAllListeners('connection');
   io.on('connection', (socket: Socket) => {
