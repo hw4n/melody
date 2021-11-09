@@ -1,9 +1,9 @@
+import readline from 'readline';
+
 import Global from '../interfaces/Global';
 import { logWhite, logYellow } from '../loaders/logger';
 import { playMusic } from './music';
 import initMusic from '../loaders';
-
-const readline = require('readline');
 
 declare let global: Global;
 
