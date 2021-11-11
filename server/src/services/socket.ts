@@ -21,6 +21,13 @@ export function emitInit(socket: Socket | Server) {
   });
 }
 
+// find socket by id and remove from array
+function removeSocketById(socketId: string) {
+  const index = global.SOCKETS.findIndex((socket) => socket === socketId);
+  if (index === -1) return;
+  global.SOCKETS.splice(index, 1);
+}
+
 export function addSocketListeners(io: Server = global.SOCKET) {
   // To prevent adding listeners more than once
   io.removeAllListeners('connection');
@@ -37,13 +44,7 @@ export function addSocketListeners(io: Server = global.SOCKET) {
 
     socket.on('disconnect', (reason) => {
       logCyan(`${socket.id}: ${reason}`);
-      for (let i = 0; i < global.SOCKETS.length; i += 1) {
-        if (global.SOCKETS[i] === socket.id) {
-          global.SOCKETS.splice(i, 1);
-          logCyan(`Removed ${socket.id}, ${socket.handshake.headers['user-agent']}`);
-          break;
-        }
-      }
+      removeSocketById(socket.id);
       emitTotalUsers();
     });
   });
