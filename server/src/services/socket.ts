@@ -3,6 +3,7 @@ import { Server, Socket } from 'socket.io';
 import { logCyan, logWhite } from '../loaders/logger';
 import { minimizeMusicObject, minimizeMusicArray } from './minimize';
 import Global from '../interfaces/Global';
+import { enqueueMusicById } from './music';
 
 declare let global: Global;
 
@@ -28,16 +29,12 @@ export function addSocketListeners(io: Server = global.SOCKET) {
     logCyan(`${socket.id} connected, ${socket.handshake.headers['user-agent']}`);
     emitInit(socket);
     emitTotalUsers();
-    socket.on('priority', (musicId) => {
-      for (let i = 0; i < global.MUSICS.length; i += 1) {
-        const song = global.MUSICS[i];
-        if (song.id === musicId) {
-          global.QUEUE.push(global.MUSICS.splice(i, 1)[0]);
-          io.emit('priority', song.id);
-          break;
-        }
-      }
+
+    socket.on('priority', (musicId: string) => {
+      enqueueMusicById(musicId);
+      io.emit('priority', musicId);
     });
+
     socket.on('disconnect', (reason) => {
       logCyan(`${socket.id}: ${reason}`);
       for (let i = 0; i < global.SOCKETS.length; i += 1) {

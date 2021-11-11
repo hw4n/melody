@@ -57,3 +57,26 @@ export async function playMusic() {
     start: global.PLAYING_START,
   });
 }
+
+// find index of global music array by music id
+export function findMusicIndexById(musicId: string): number {
+  return global.MUSICS.findIndex((music) => music.id === musicId);
+}
+
+// find and extract music from global music array by music id
+export function extractMusicById(musicId: string) {
+  const index = findMusicIndexById(musicId);
+
+  if (index === -1) return null;
+
+  return global.MUSICS.splice(index, 1)[0];
+}
+
+// enqueue music from global music array by music id
+export function enqueueMusicById(musicId: string) {
+  const music = extractMusicById(musicId);
+
+  if (music === null) return;
+
+  global.QUEUE.push(music);
+}
