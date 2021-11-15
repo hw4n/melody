@@ -111,7 +111,7 @@ async function applyLyricsIfPresentInDB(musics: Array<IStoredMusic>) {
     // don't apply lyrics if not found or already has lyrics
     if (!availabe || music.lyrics) return;
     logGreen(`Applying lyrics to ${music.title} (${music.id})`);
-    dbMusic.findByIdAndUpdate(music.id, lyricData);
+    await dbMusic.findByIdAndUpdate(music.id, lyricData);
   });
 }
 
