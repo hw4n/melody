@@ -107,9 +107,13 @@ async function processDbLocalDiff(filePathArray: Array<String>) {
 
 async function applyLyricsIfPresentInDB(musics: Array<IStoredMusic>) {
   musics.forEach(async (music) => {
-    const [availabe, lyricData] = await sameMusicHasLyrics(music);
-    // don't apply lyrics if not found or already has lyrics
-    if (!availabe || music.lyrics) return;
+    // skip if music has lyrics
+    if (music.lyrics) return;
+
+    const [available, lyricData] = await sameMusicHasLyrics(music);
+    // no lyrics available
+    if (!available) return;
+
     logGreen(`Applying lyrics to ${music.title} (${music.id})`);
     await dbMusic.findByIdAndUpdate(music.id, lyricData);
   });
