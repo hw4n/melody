@@ -103,6 +103,8 @@ Simply put, it's an endless radio station made of your mp3 files.
    cd melody/server
    yarn install
    ```
+   And you **must** install ``ffmpeg`` (as well as ``ffprobe``).  
+   Maybe [here](https://ffmpeg.org/download.html) or any of your choice.
 3. Set environment variables  
    Create ``.env``  
    Use any of your choice
@@ -126,6 +128,11 @@ Simply put, it's an endless radio station made of your mp3 files.
           └ ... └ myAlbum ┐
                           ├ track1.mp3
                           └ track2.mp3
+   ```
+   You can also use a symlink to point mp3 directory, however the link should be named as ``mp3``.  
+   For example,
+   ```
+   $ melody/server> ln -s ~/musics mp3
    ```
 5. Start the backend server
    ```sh
